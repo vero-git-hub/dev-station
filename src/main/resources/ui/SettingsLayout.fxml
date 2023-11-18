@@ -26,10 +26,14 @@
 
         <Label text="Path to Ubuntu:"/>
         <TextField fx:id="ubuntuPathField"/>
-        <Button text="Save"/>
+        <Button text="Save" onAction="#saveUbuntuSettings"/>
 
         <Label text="Path to PhpStorm:"/>
         <TextField fx:id="phpStormPathField"/>
         <Button text="Save" onAction="#savePhpStormSettings"/>
+
+        <Label text="Path to Selenium:"/>
+        <TextField fx:id="seleniumPathField"/>
+        <Button text="Save" onAction="#saveSeleniumSettings"/>
     </VBox>
 </AnchorPane>
