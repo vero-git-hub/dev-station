@@ -7,12 +7,12 @@ import javafx.scene.control.TextField;
 import java.util.prefs.Preferences;
 
 public class SettingsController {
-
     @FXML
     private ComboBox<String> startupTabComboBox;
     @FXML
+    public TextField ubuntuPathField;
+    @FXML
     private TextField phpStormPathField;
-
     private Preferences prefs = Preferences.userNodeForPackage(SettingsController.class);
 
     @FXML
@@ -24,11 +24,18 @@ public class SettingsController {
             prefs.put("defaultTab", newVal);
         });
 
+        ubuntuPathField.setText(prefs.get("ubuntuPath", ""));
         phpStormPathField.setText(prefs.get("phpStormPath", ""));
     }
 
     @FXML
-    private void saveSettings() {
+    private void saveUbuntuSettings() {
+        prefs.put("ubuntuPath", ubuntuPathField.getText());
+        // message about successful saving or validation
+    }
+
+    @FXML
+    private void savePhpStormSettings() {
         prefs.put("phpStormPath", phpStormPathField.getText());
         // message about successful saving or validation
     }

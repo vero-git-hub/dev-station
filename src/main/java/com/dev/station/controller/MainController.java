@@ -1,54 +1,34 @@
 package com.dev.station.controller;
 
+import com.dev.station.manager.TabSelectionManager;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.control.TabPane;
-import javafx.scene.control.ToggleButton;
 
 import java.io.IOException;
 import java.util.prefs.Preferences;
 
 public class MainController {
-
     @FXML
     private TabPane tabPane;
-    @FXML
-    private ToggleButton togglePhpStorm;
-
-    private Preferences prefs = Preferences.userNodeForPackage(MainController.class);
+    private TabSelectionManager tabSelectionManager;
 
     @FXML
     public void initialize() {
-        selectDefaultTab();
-    }
-
-    @FXML
-    private void handleTogglePhpStorm() {
-        if (togglePhpStorm.isSelected()) {
-            launchPhpStorm();
-        } else {
-            // logic to turn off PhpStorm
-        }
-    }
-
-    private void launchPhpStorm() {
+        Preferences prefs = Preferences.userNodeForPackage(getClass());
+        FXMLLoader programLoader = new FXMLLoader(getClass().getResource("/ui/ProgramLayout.fxml"));
         try {
-            String pathToPhpStorm = prefs.get("phpStormPath", "C:\\Program Files");
+            Node programNode = programLoader.load();
+            tabPane.getTabs().get(0).setContent(programNode);
 
-            Runtime.getRuntime().exec(pathToPhpStorm);
+            ProgramController programController = programLoader.getController();
+            programController.init(prefs);
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
 
-    public void selectDefaultTab() {
-        String defaultTab = prefs.get("defaultTab", "Program management 1");
-        switch (defaultTab) {
-            case "Program management 1":
-                tabPane.getSelectionModel().select(0);
-                break;
-            case "Program management 2":
-                tabPane.getSelectionModel().select(1);
-                break;
-        }
+        tabSelectionManager = new TabSelectionManager(prefs, tabPane);
+        tabSelectionManager.selectDefaultTab();
     }
 }

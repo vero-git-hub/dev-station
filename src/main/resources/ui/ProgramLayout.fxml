@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.layout.VBox?>
 
-<?import javafx.scene.layout.AnchorPane?>
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.dev.station.controller.ProgramController"
-            prefHeight="400.0" prefWidth="600.0">
-
-</AnchorPane>
+<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" spacing="10"
+      fx:controller="com.dev.station.controller.ProgramController"
+      prefHeight="400.0" prefWidth="600.0">
+    <ToggleButton fx:id="togglePhpStorm" text="PhpStorm IDE" onAction="#handleTogglePhpStorm"/>
+    <ToggleButton fx:id="toggleUbuntu" text="Ubuntu" onAction="#handleToggleUbuntu"/>
+</VBox>
