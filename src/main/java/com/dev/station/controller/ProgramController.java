@@ -52,26 +52,29 @@ public class ProgramController {
     @FXML
     private void handleToggleSelenium() {
         if (toggleSelenium.isSelected()) {
-            //launchApplication("seleniumPath", "C:\\Program Files\\Selenium\\selenium.exe", new ProcessHolder(seleniumProcess, isSeleniumRunning));
+            boolean launchedExe = launchApplication("seleniumPath", "C:\\Program Files\\Selenium\\selenium.exe", new ProcessHolder(seleniumProcess, isSeleniumRunning));
 
-            launchJarApplication("seleniumJARPath", "C:\\Program Files\\Selenium\\selenium.jar", new ProcessHolder(seleniumProcess, isSeleniumRunning));
-
+            if (launchedExe) {
+                launchJarApplication("seleniumJARPath", "C:\\Program Files\\Selenium\\selenium.jar", new ProcessHolder(seleniumProcess, isSeleniumRunning));
+            }
         } else {
             closeSelenium();
         }
     }
 
-    private void launchApplication(String pathKey, String defaultPath, ProcessHolder processHolder) {
+    private boolean launchApplication(String pathKey, String defaultPath, ProcessHolder processHolder) {
         try {
             if (!processHolder.isRunning) {
                 String path = prefs.get(pathKey, defaultPath);
                 processHolder.process = new ProcessBuilder(path).start();
                 processHolder.isRunning = true;
+                return true;
             }
         } catch (IOException e) {
             e.printStackTrace();
             AlertUtils.showErrorAlert("Failed to start", "The specified file cannot be found.\n Check the file path in the Settings tab.");
         }
+        return false;
     }
 
     private void launchJarApplication(String pathKey, String defaultPath, ProcessHolder processHolder) {
