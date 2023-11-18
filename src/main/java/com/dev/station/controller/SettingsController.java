@@ -15,6 +15,8 @@ public class SettingsController {
     private TextField phpStormPathField;
     @FXML
     private TextField seleniumPathField;
+    @FXML
+    private TextField seleniumJARPathField;
     private Preferences prefs = Preferences.userNodeForPackage(SettingsController.class);
 
     @FXML
@@ -29,6 +31,7 @@ public class SettingsController {
         ubuntuPathField.setText(prefs.get("ubuntuPath", ""));
         phpStormPathField.setText(prefs.get("phpStormPath", ""));
         seleniumPathField.setText(prefs.get("seleniumPath", ""));
+        seleniumJARPathField.setText(prefs.get("seleniumJARPath", ""));
     }
 
     @FXML
@@ -46,6 +49,12 @@ public class SettingsController {
     @FXML
     private void saveSeleniumSettings() {
         prefs.put("seleniumPath", seleniumPathField.getText());
+        // message about successful saving or validation
+    }
+
+    @FXML
+    private void saveSeleniumJARSettings() {
+        prefs.put("seleniumJARPath", seleniumJARPathField.getText());
         // message about successful saving or validation
     }
 }

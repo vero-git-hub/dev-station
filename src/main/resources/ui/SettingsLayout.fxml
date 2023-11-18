@@ -32,8 +32,12 @@
         <TextField fx:id="phpStormPathField"/>
         <Button text="Save" onAction="#savePhpStormSettings"/>
 
-        <Label text="Path to Selenium:"/>
+        <Label text="Path to Selenium (exe):"/>
         <TextField fx:id="seleniumPathField"/>
         <Button text="Save" onAction="#saveSeleniumSettings"/>
+
+        <Label text="Path to Selenium (jar):"/>
+        <TextField fx:id="seleniumJARPathField"/>
+        <Button text="Save" onAction="#saveSeleniumJARSettings"/>
     </VBox>
 </AnchorPane>
