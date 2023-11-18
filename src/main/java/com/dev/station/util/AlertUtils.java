@@ -11,4 +11,12 @@ public class AlertUtils {
         alert.setContentText(content);
         alert.showAndWait();
     }
+
+    public static void showInformationAlert(String title, String content) {
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
 }

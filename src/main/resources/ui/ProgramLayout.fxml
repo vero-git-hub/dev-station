@@ -8,4 +8,5 @@
     <ToggleButton fx:id="togglePhpStorm" text="PhpStorm IDE" onAction="#handleTogglePhpStorm"/>
     <ToggleButton fx:id="toggleUbuntu" text="Ubuntu" onAction="#handleToggleUbuntu"/>
     <ToggleButton fx:id="toggleSelenium" text="Selenium" onAction="#handleToggleSelenium"/>
+    <ToggleButton fx:id="toggleVariableFolder" text="VariableFolder" onAction="#handleToggleVariableFolder"/>
 </VBox>

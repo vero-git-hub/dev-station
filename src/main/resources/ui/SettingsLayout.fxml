@@ -39,5 +39,9 @@
         <Label text="Path to Selenium (jar):"/>
         <TextField fx:id="seleniumJARPathField"/>
         <Button text="Save" onAction="#saveSeleniumJARSettings"/>
+
+        <Label text="Path to variable folder:"/>
+        <TextField fx:id="variableFolderPathField"/>
+        <Button text="Save" onAction="#saveVariableFolderSettings"/>
     </VBox>
 </AnchorPane>

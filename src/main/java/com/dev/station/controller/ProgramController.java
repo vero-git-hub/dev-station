@@ -9,6 +9,10 @@ import javafx.scene.control.ToggleButton;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
 import java.util.prefs.Preferences;
 
@@ -17,15 +21,19 @@ public class ProgramController {
     private Process ubuntuProcess;
     private Process phpStormProcess;
     private Process seleniumProcess;
+    private Process variableFolderProcess;
     private boolean isUbuntuRunning = false;
     private boolean isPhpStormRunning = false;
     private boolean isSeleniumRunning = false;
+    private boolean isVariableFolderRunning = false;
     @FXML
     private ToggleButton toggleUbuntu;
     @FXML
     private ToggleButton togglePhpStorm;
     @FXML
     private ToggleButton toggleSelenium;
+    @FXML
+    private ToggleButton toggleVariableFolder;
 
     public void init(Preferences prefs) {
         this.prefs = prefs;
@@ -59,6 +67,37 @@ public class ProgramController {
             }
         } else {
             closeSelenium();
+        }
+    }
+
+    @FXML
+    private void handleToggleVariableFolder() {
+        if (toggleVariableFolder.isSelected()) {
+            String rootFolderPath = prefs.get("variableFolderPath", "C:\\Default\\Path");
+            try {
+                clearFolderContents(rootFolderPath, "cache");
+                clearFolderContents(rootFolderPath, "log");
+                clearFolderContents(rootFolderPath, "tmp");
+
+                AlertUtils.showInformationAlert("Success", "Successfully cleared contents of all folders.");
+            } catch (IOException e) {
+                e.printStackTrace();
+                AlertUtils.showErrorAlert("Error Clearing Folders", "Failed to clear contents of folders: " + e.getMessage());
+            }
+        }
+    }
+
+    private void clearFolderContents(String rootFolderPath, String folderName) throws IOException {
+        Path folderPath = Paths.get(rootFolderPath, folderName);
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(folderPath)) {
+            for (Path path : stream) {
+                if (Files.isDirectory(path)) {
+                    clearFolderContents(path.toString(), "");
+                    Files.delete(path);
+                } else {
+                    Files.delete(path);
+                }
+            }
         }
     }
 
