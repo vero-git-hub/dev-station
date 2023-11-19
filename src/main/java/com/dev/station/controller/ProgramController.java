@@ -78,6 +78,7 @@ public class ProgramController {
                 clearFolderContents(rootFolderPath, "cache");
                 clearFolderContents(rootFolderPath, "log");
                 clearFolderContents(rootFolderPath, "tmp");
+                clearVarFolderContents(Paths.get(rootFolderPath, "var").toString());
 
                 AlertUtils.showInformationAlert("Success", "Successfully cleared contents of all folders.");
             } catch (IOException e) {
@@ -94,6 +95,22 @@ public class ProgramController {
                 if (Files.isDirectory(path)) {
                     clearFolderContents(path.toString(), "");
                     Files.delete(path);
+                } else {
+                    Files.delete(path);
+                }
+            }
+        }
+    }
+
+    private void clearVarFolderContents(String varFolderPath) throws IOException {
+        Path varPath = Paths.get(varFolderPath);
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(varPath)) {
+            for (Path path : stream) {
+                if (Files.isDirectory(path)) {
+                    if (!path.getFileName().toString().equals("selenium".toLowerCase())) {
+                        clearFolderContents(path.toString(), "");
+                        Files.delete(path);
+                    }
                 } else {
                     Files.delete(path);
                 }
