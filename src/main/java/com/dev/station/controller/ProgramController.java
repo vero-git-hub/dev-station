@@ -25,6 +25,7 @@ public class ProgramController {
     private boolean isUbuntuRunning = false;
     private boolean isPhpStormRunning = false;
     private boolean isSeleniumRunning = false;
+    private boolean isRestorationPerformed = false;
     @FXML
     private ToggleButton toggleUbuntu;
     @FXML
@@ -87,6 +88,7 @@ public class ProgramController {
                 clearVarFolderContents(Paths.get(rootFolderPath, "var").toString());
 
                 AlertUtils.showInformationAlert("Success", "Successfully cleared contents of all folders.");
+                resetRestorationState();
             } catch (IOException e) {
                 e.printStackTrace();
                 AlertUtils.showErrorAlert("Error Clearing Folders", "Failed to clear contents of folders: " + e.getMessage());
@@ -96,7 +98,31 @@ public class ProgramController {
 
     @FXML
     private void handleToggleRecycleBinFolder() {
+        if(toggleRecycleBinFolder.isSelected()) {
+            if (isRestorationPerformed) {
+                AlertUtils.showInformationAlert("Notice", "Files have already been restored.");
+                return;
+            }
 
+            try {
+                try (DirectoryStream<Path> stream = Files.newDirectoryStream(recycleBin.getRecycleBinPath())) {
+                    for (Path fileInRecycleBin : stream) {
+                        String fileName = fileInRecycleBin.getFileName().toString();
+                        recycleBin.restoreFromRecycleBin(fileName);
+                    }
+                }
+                recycleBin.clearMetadata();
+                AlertUtils.showInformationAlert("Success", "All files have been restored from the recycle bin.");
+                isRestorationPerformed = true;
+            } catch (IOException e) {
+                e.printStackTrace();
+                AlertUtils.showErrorAlert("Error Restoring Files", "Failed to restore files: " + e.getMessage());
+            }
+        }
+    }
+
+    private void resetRestorationState() {
+        isRestorationPerformed = false;
     }
 
     private void clearFolderContents(String rootFolderPath, String folderName) throws IOException {

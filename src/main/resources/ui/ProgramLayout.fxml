@@ -2,12 +2,15 @@
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.layout.HBox?>
 <VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" spacing="10"
       fx:controller="com.dev.station.controller.ProgramController"
       prefHeight="400.0" prefWidth="600.0">
     <ToggleButton fx:id="togglePhpStorm" text="PhpStorm IDE" onAction="#handleTogglePhpStorm"/>
     <ToggleButton fx:id="toggleUbuntu" text="Ubuntu" onAction="#handleToggleUbuntu"/>
     <ToggleButton fx:id="toggleSelenium" text="Selenium" onAction="#handleToggleSelenium"/>
-    <ToggleButton fx:id="toggleVariableFolder" text="VariableFolder" onAction="#handleToggleVariableFolder"/>
-    <ToggleButton fx:id="toggleRecycleBinFolder" text="RecycleBinFolder" onAction="#handleToggleRecycleBinFolder"/>
+    <HBox>
+        <ToggleButton fx:id="toggleVariableFolder" text="Clear Variable Folder" onAction="#handleToggleVariableFolder"/>
+        <ToggleButton fx:id="toggleRecycleBinFolder" text="Return Variable Folder" onAction="#handleToggleRecycleBinFolder"/>
+    </HBox>
 </VBox>
