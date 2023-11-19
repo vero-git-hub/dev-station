@@ -10,6 +10,7 @@
 <?import javafx.scene.control.Button?>
 
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.CheckBox?>
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.dev.station.controller.SettingsController"
@@ -51,5 +52,19 @@
             <Button text="Save" onAction="#saveRecycleBinFolderSettings"/>
         </HBox>
 
+        <Label>IMAGES</Label>
+        <Label text="Path to images folder:"/>
+        <TextField fx:id="imagesFolderPathField"/>
+        <Button text="Save" onAction="#saveImagesFolderSettings"/>
+        <HBox>
+            <Label text="Image Width:"/>
+            <TextField fx:id="imageWidthField"/>
+
+            <Label text="Image Height:"/>
+            <TextField fx:id="imageHeightField"/>
+
+            <CheckBox fx:id="useOriginalSizeCheckbox" text="Use Original Image Size"/>
+            <Button text="Save Image Settings" onAction="#saveImageSizeSettings"/>
+        </HBox>
     </VBox>
 </AnchorPane>

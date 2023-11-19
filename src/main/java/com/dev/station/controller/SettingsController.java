@@ -1,6 +1,8 @@
 package com.dev.station.controller;
 
+import com.dev.station.util.AlertUtils;
 import javafx.fxml.FXML;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 
@@ -21,6 +23,14 @@ public class SettingsController {
     private TextField variableFolderPathField;
     @FXML
     private TextField recycleBinFolderPathField;
+    @FXML
+    private TextField imagesFolderPathField;
+    @FXML
+    private TextField imageWidthField;
+    @FXML
+    private TextField imageHeightField;
+    @FXML
+    private CheckBox useOriginalSizeCheckbox;
     private Preferences prefs = Preferences.userNodeForPackage(SettingsController.class);
 
     @FXML
@@ -38,6 +48,11 @@ public class SettingsController {
         seleniumJARPathField.setText(prefs.get("seleniumJARPath", ""));
         variableFolderPathField.setText(prefs.get("variableFolderPath", ""));
         recycleBinFolderPathField.setText(prefs.get("recycleBinFolderPath", ""));
+        imagesFolderPathField.setText(prefs.get("imagesFolderPath", ""));
+
+        imageWidthField.setText(prefs.get("imageWidthField", ""));
+        imageHeightField.setText(prefs.get("imageHeightField", ""));
+        useOriginalSizeCheckbox.setSelected(prefs.getBoolean("useOriginalSizeCheckbox", false));
     }
 
     @FXML
@@ -72,5 +87,23 @@ public class SettingsController {
     @FXML
     private void saveRecycleBinFolderSettings() {
         prefs.put("recycleBinFolderPath", recycleBinFolderPathField.getText());
+    }
+
+    @FXML
+    private void saveImagesFolderSettings() {
+        prefs.put("imagesFolderPath", imagesFolderPathField.getText());
+    }
+
+    @FXML
+    private void saveImageSizeSettings() {
+        String imageWidth = imageWidthField.getText();
+        String imageHeight = imageHeightField.getText();
+        boolean useOriginalSize = useOriginalSizeCheckbox.isSelected();
+
+        prefs.put("imageWidthField", imageWidth);
+        prefs.put("imageHeightField", imageHeight);
+        prefs.putBoolean("useOriginalSizeCheckbox", useOriginalSize);
+
+        AlertUtils.showInformationAlert("Settings Updated", "Image settings updated successfully.");
     }
 }
