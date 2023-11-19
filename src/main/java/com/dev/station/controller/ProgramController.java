@@ -7,15 +7,16 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ToggleButton;
 
-import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Comparator;
 import java.util.concurrent.TimeUnit;
 import java.util.prefs.Preferences;
+import java.util.stream.Stream;
 
 public class ProgramController {
     private Preferences prefs;
@@ -36,10 +37,14 @@ public class ProgramController {
     private ToggleButton toggleVariableFolder;
     @FXML
     public ToggleButton toggleRecycleBinFolder;
+    @FXML
+    public ToggleButton toggleClearRecycleBinFolder;
     private RecycleBin recycleBin;
 
     public void init(Preferences prefs) {
         this.prefs = prefs;
+        String recycleBinPath = prefs.get("recycleBinFolderPath", "C:\\Default\\RecycleBinPath");
+        this.recycleBin = new RecycleBin(recycleBinPath);
     }
 
     @FXML
@@ -77,9 +82,8 @@ public class ProgramController {
     private void handleToggleVariableFolder() {
         if (toggleVariableFolder.isSelected()) {
             String rootFolderPath = prefs.get("variableFolderPath", "C:\\Default\\Path");
-            String recycleBinPath = prefs.get("recycleBinFolderPath", "C:\\Default\\RecycleBinPath");
 
-            recycleBin = new RecycleBin(recycleBinPath);
+            clearRecycleBinContents();
 
             try {
                 clearFolderContents(rootFolderPath, "cache");
@@ -99,6 +103,11 @@ public class ProgramController {
     @FXML
     private void handleToggleRecycleBinFolder() {
         if(toggleRecycleBinFolder.isSelected()) {
+            if (recycleBin.getRecycleBinPath() == null || !Files.exists(recycleBin.getRecycleBinPath())) {
+                AlertUtils.showErrorAlert("Error", "Recycle bin path is not set or does not exist.");
+                return;
+            }
+
             if (isRestorationPerformed) {
                 AlertUtils.showInformationAlert("Notice", "Files have already been restored.");
                 return;
@@ -118,6 +127,58 @@ public class ProgramController {
                 e.printStackTrace();
                 AlertUtils.showErrorAlert("Error Restoring Files", "Failed to restore files: " + e.getMessage());
             }
+        }
+    }
+
+    @FXML
+    private void handleToggleClearRecycleBinFolder() {
+        if(toggleClearRecycleBinFolder.isSelected()) {
+           clearRecycleBin();
+        }
+    }
+
+    private void clearRecycleBinContents() {
+        try {
+            if (Files.exists(recycleBin.getRecycleBinPath()) && Files.isDirectory(recycleBin.getRecycleBinPath())) {
+                try (Stream<Path> paths = Files.walk(recycleBin.getRecycleBinPath())) {
+                    paths.filter(p -> !p.equals(recycleBin.getRecycleBinPath()))
+                            .sorted(Comparator.reverseOrder())
+                            .map(Path::toFile)
+                            .forEach(File::delete);
+                }
+                recycleBin.clearMetadata();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            AlertUtils.showErrorAlert("Error Clearing Recycle Bin", "Failed to clear the recycle bin: " + e.getMessage());
+        }
+    }
+
+    private void clearRecycleBin() {
+        if (recycleBin.getRecycleBinPath() == null || !Files.exists(recycleBin.getRecycleBinPath())) {
+            AlertUtils.showErrorAlert("Error", "Recycle bin path is not set or does not exist.");
+            return;
+        }
+
+        String recycleBinPathString = prefs.get("recycleBinFolderPath", "C:\\Default\\RecycleBinPath");
+        Path recycleBinPath = Paths.get(recycleBinPathString);
+
+        try {
+            if (Files.exists(recycleBinPath) && Files.isDirectory(recycleBinPath)) {
+                try (Stream<Path> paths = Files.walk(recycleBinPath)) {
+                    paths.filter(p -> !p.equals(recycleBinPath))
+                            .sorted(Comparator.reverseOrder())
+                            .map(Path::toFile)
+                            .forEach(File::delete);
+                }
+                recycleBin.clearMetadata();
+                AlertUtils.showInformationAlert("Success", "Recycle bin cleared successfully.");
+            } else {
+                AlertUtils.showErrorAlert("Error", "Recycle bin path does not exist.");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            AlertUtils.showErrorAlert("Error Clearing Recycle Bin", "Failed to clear recycle bin: " + e.getMessage());
         }
     }
 

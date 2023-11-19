@@ -36,6 +36,9 @@ public class RecycleBin {
         Path target = recycleBinPath.resolve(uniqueFileName);
         Files.move(file, target, StandardCopyOption.REPLACE_EXISTING);
 
+        if (!Files.exists(metadataPath)) {
+            Files.createFile(metadataPath);
+        }
         try (BufferedWriter writer = Files.newBufferedWriter(metadataPath, StandardOpenOption.APPEND)) {
             writer.write(uniqueFileName + " -> " + file.toString());
             writer.newLine();
