@@ -1,6 +1,7 @@
 package com.dev.station.controller;
 
 import com.dev.station.entity.ProcessHolder;
+import com.dev.station.entity.RecycleBin;
 import com.dev.station.util.AlertUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -21,11 +22,9 @@ public class ProgramController {
     private Process ubuntuProcess;
     private Process phpStormProcess;
     private Process seleniumProcess;
-    private Process variableFolderProcess;
     private boolean isUbuntuRunning = false;
     private boolean isPhpStormRunning = false;
     private boolean isSeleniumRunning = false;
-    private boolean isVariableFolderRunning = false;
     @FXML
     private ToggleButton toggleUbuntu;
     @FXML
@@ -34,6 +33,9 @@ public class ProgramController {
     private ToggleButton toggleSelenium;
     @FXML
     private ToggleButton toggleVariableFolder;
+    @FXML
+    public ToggleButton toggleRecycleBinFolder;
+    private RecycleBin recycleBin;
 
     public void init(Preferences prefs) {
         this.prefs = prefs;
@@ -74,6 +76,10 @@ public class ProgramController {
     private void handleToggleVariableFolder() {
         if (toggleVariableFolder.isSelected()) {
             String rootFolderPath = prefs.get("variableFolderPath", "C:\\Default\\Path");
+            String recycleBinPath = prefs.get("recycleBinFolderPath", "C:\\Default\\RecycleBinPath");
+
+            recycleBin = new RecycleBin(recycleBinPath);
+
             try {
                 clearFolderContents(rootFolderPath, "cache");
                 clearFolderContents(rootFolderPath, "log");
@@ -88,15 +94,20 @@ public class ProgramController {
         }
     }
 
+    @FXML
+    private void handleToggleRecycleBinFolder() {
+
+    }
+
     private void clearFolderContents(String rootFolderPath, String folderName) throws IOException {
         Path folderPath = Paths.get(rootFolderPath, folderName);
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(folderPath)) {
             for (Path path : stream) {
                 if (Files.isDirectory(path)) {
                     clearFolderContents(path.toString(), "");
-                    Files.delete(path);
+                    recycleBin.moveToRecycleBin(path);
                 } else {
-                    Files.delete(path);
+                    recycleBin.moveToRecycleBin(path);
                 }
             }
         }
@@ -109,10 +120,10 @@ public class ProgramController {
                 if (Files.isDirectory(path)) {
                     if (!path.getFileName().toString().equals("selenium".toLowerCase())) {
                         clearFolderContents(path.toString(), "");
-                        Files.delete(path);
+                        recycleBin.moveToRecycleBin(path);
                     }
                 } else {
-                    Files.delete(path);
+                    recycleBin.moveToRecycleBin(path);
                 }
             }
         }

@@ -19,6 +19,8 @@ public class SettingsController {
     private TextField seleniumJARPathField;
     @FXML
     private TextField variableFolderPathField;
+    @FXML
+    private TextField recycleBinFolderPathField;
     private Preferences prefs = Preferences.userNodeForPackage(SettingsController.class);
 
     @FXML
@@ -35,6 +37,7 @@ public class SettingsController {
         seleniumPathField.setText(prefs.get("seleniumPath", ""));
         seleniumJARPathField.setText(prefs.get("seleniumJARPath", ""));
         variableFolderPathField.setText(prefs.get("variableFolderPath", ""));
+        recycleBinFolderPathField.setText(prefs.get("recycleBinFolderPath", ""));
     }
 
     @FXML
@@ -64,5 +67,10 @@ public class SettingsController {
     @FXML
     private void saveVariableFolderSettings() {
         prefs.put("variableFolderPath", variableFolderPathField.getText());
+    }
+
+    @FXML
+    private void saveRecycleBinFolderSettings() {
+        prefs.put("recycleBinFolderPath", recycleBinFolderPathField.getText());
     }
 }

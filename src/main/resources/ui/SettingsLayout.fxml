@@ -9,6 +9,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.Button?>
 
+<?import javafx.scene.layout.HBox?>
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.dev.station.controller.SettingsController"
@@ -40,8 +41,15 @@
         <TextField fx:id="seleniumJARPathField"/>
         <Button text="Save" onAction="#saveSeleniumJARSettings"/>
 
-        <Label text="Path to variable folder:"/>
-        <TextField fx:id="variableFolderPathField"/>
-        <Button text="Save" onAction="#saveVariableFolderSettings"/>
+        <HBox>
+            <Label text="Path to variable folder:"/>
+            <TextField fx:id="variableFolderPathField"/>
+            <Button text="Save" onAction="#saveVariableFolderSettings"/>
+
+            <Label text="Path to recycleBin folder:"/>
+            <TextField fx:id="recycleBinFolderPathField"/>
+            <Button text="Save" onAction="#saveRecycleBinFolderSettings"/>
+        </HBox>
+
     </VBox>
 </AnchorPane>

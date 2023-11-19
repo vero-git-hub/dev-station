@@ -9,4 +9,5 @@
     <ToggleButton fx:id="toggleUbuntu" text="Ubuntu" onAction="#handleToggleUbuntu"/>
     <ToggleButton fx:id="toggleSelenium" text="Selenium" onAction="#handleToggleSelenium"/>
     <ToggleButton fx:id="toggleVariableFolder" text="VariableFolder" onAction="#handleToggleVariableFolder"/>
+    <ToggleButton fx:id="toggleRecycleBinFolder" text="RecycleBinFolder" onAction="#handleToggleRecycleBinFolder"/>
 </VBox>
