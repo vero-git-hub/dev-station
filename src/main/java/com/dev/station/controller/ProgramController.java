@@ -2,9 +2,14 @@ package com.dev.station.controller;
 
 import com.dev.station.entity.ProcessHolder;
 import com.dev.station.entity.RecycleBin;
+import com.dev.station.entity.VersionFinder;
+import com.dev.station.entity.WebParser;
+import com.dev.station.entity.version.VersionExtractor;
 import com.dev.station.util.AlertUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 
 import java.io.File;
@@ -39,16 +44,66 @@ public class ProgramController {
     public ToggleButton toggleRecycleBinFolder;
     @FXML
     public ToggleButton toggleClearRecycleBinFolder;
+    @FXML
+    private Label versionStatusLabel;
+    @FXML
+    private Button updateButton;
     private RecycleBin recycleBin;
 
     public void init(Preferences prefs) {
         this.prefs = prefs;
         String recycleBinPath = prefs.get("recycleBinFolderPath", "C:\\Default\\RecycleBinPath");
         this.recycleBin = new RecycleBin(recycleBinPath);
+
+        compareDriverVersions();
+    }
+
+    private void compareDriverVersions() {
+        String currentVersion = getCurrentVersion();
+        String websiteVersion = getWebsiteVersion();
+
+        currentVersion = VersionExtractor.extractVersion(currentVersion);
+        websiteVersion = VersionExtractor.extractVersion(websiteVersion);
+
+        if(currentVersion.equals(websiteVersion)) {
+            updateVersionStatus("The versions are the same! -> " + currentVersion);
+        } else {
+            updateVersionStatus("Versions vary!");
+            updateButtonVisibility(true);
+        }
+    }
+
+    private void updateButtonVisibility(boolean isVisible) {
+        updateButton.setVisible(isVisible);
+    }
+
+    private String getWebsiteVersion() {
+        return new WebParser().parseWebsiteForVersion(prefs);
+    }
+
+    private String getCurrentVersion() {
+        VersionFinder finder = new VersionFinder();
+        String version = null;
+        try {
+            version = finder.getVersion(prefs);
+        } catch (IOException | InterruptedException e) {
+            AlertUtils.showErrorAlert("Failed to get driver version", "Check the registry and the method for getting the version.");
+            e.printStackTrace();
+        }
+        return version;
+    }
+
+    private void updateVersionStatus(String message) {
+        versionStatusLabel.setText(message);
     }
 
     @FXML
-    public void handleToggleUbuntu(ActionEvent actionEvent) {
+    private void handleUpdateButton() {
+        System.out.println("Updating in progress...");
+    }
+
+    @FXML
+    public void handleToggleUbuntu() {
         if (toggleUbuntu.isSelected()) {
             launchApplication("ubuntuPath", "C:\\Program Files\\Ubuntu\\ubuntu.exe", new ProcessHolder(ubuntuProcess, isUbuntuRunning));
         } else {

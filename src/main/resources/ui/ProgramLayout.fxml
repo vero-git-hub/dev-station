@@ -4,6 +4,7 @@
 
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Button?>
 <VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" spacing="10"
       fx:controller="com.dev.station.controller.ProgramController"
       prefHeight="400.0" prefWidth="600.0">
@@ -15,5 +16,9 @@
         <ToggleButton fx:id="toggleVariableFolder" text="Move to recycle bin" onAction="#handleToggleVariableFolder"/>
         <ToggleButton fx:id="toggleRecycleBinFolder" text="Return from recycle bin" onAction="#handleToggleRecycleBinFolder"/>
         <ToggleButton fx:id="toggleClearRecycleBinFolder" text="Clear recycle bin" onAction="#handleToggleClearRecycleBinFolder"/>
+    </HBox>
+    <HBox>
+        <Label fx:id="versionStatusLabel"/>
+        <Button fx:id="updateButton" text="Update" visible="false" onAction="#handleUpdateButton"/>
     </HBox>
 </VBox>

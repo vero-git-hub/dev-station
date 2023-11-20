@@ -1,9 +1,6 @@
 package com.dev.station.controller;
 
-import com.dev.station.entity.VersionFinder;
-import com.dev.station.entity.WebParser;
 import com.dev.station.manager.TabSelectionManager;
-import com.dev.station.util.AlertUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -32,32 +29,6 @@ public class MainController {
         tabSelectionManager.selectDefaultTab();
 
         loadImagesController();
-
-        compareDriverVersions();
-    }
-
-    private void compareDriverVersions() {
-        String currentVersion = getCurrentVersion();
-        String websiteVersion = getWebsiteVersion();
-
-        System.out.println("currentVersion " + currentVersion);
-        System.out.println("websiteVersion " + websiteVersion);
-    }
-
-    private String getWebsiteVersion() {
-        return new WebParser().parseWebsiteForVersion(prefs);
-    }
-
-    private String getCurrentVersion() {
-        VersionFinder finder = new VersionFinder();
-        String version = null;
-        try {
-            version = finder.getVersion(prefs);
-        } catch (IOException | InterruptedException e) {
-            AlertUtils.showErrorAlert("Failed to get driver version", "Check the registry and the method for getting the version.");
-            e.printStackTrace();
-        }
-        return version;
     }
 
     private void loadProgramController() {
