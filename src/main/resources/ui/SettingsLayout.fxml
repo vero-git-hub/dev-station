@@ -66,5 +66,15 @@
             <CheckBox fx:id="useOriginalSizeCheckbox" text="Use Original Image Size"/>
             <Button text="Save Image Settings" onAction="#saveImageSizeSettings"/>
         </HBox>
+
+        <Label>Driver</Label>
+
+        <Label text="Registry key for your version:"/>
+        <TextField fx:id="registryKey"/>
+        <Button text="Save" onAction="#saveRegistryKeySettings"/>
+
+        <Label text="Link for website version:"/>
+        <TextField fx:id="websiteUrl"/>
+        <Button text="Save" onAction="#saveWebsiteUrlSettings"/>
     </VBox>
 </AnchorPane>

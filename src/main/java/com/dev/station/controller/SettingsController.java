@@ -31,6 +31,10 @@ public class SettingsController {
     private TextField imageHeightField;
     @FXML
     private CheckBox useOriginalSizeCheckbox;
+    @FXML
+    private TextField registryKey;
+    @FXML
+    private TextField websiteUrl;
     private Preferences prefs = Preferences.userNodeForPackage(SettingsController.class);
 
     @FXML
@@ -53,6 +57,9 @@ public class SettingsController {
         imageWidthField.setText(prefs.get("imageWidthField", ""));
         imageHeightField.setText(prefs.get("imageHeightField", ""));
         useOriginalSizeCheckbox.setSelected(prefs.getBoolean("useOriginalSizeCheckbox", false));
+
+        registryKey.setText(prefs.get("registryKey", ""));
+        websiteUrl.setText(prefs.get("websiteUrl", ""));
     }
 
     @FXML
@@ -105,5 +112,15 @@ public class SettingsController {
         prefs.putBoolean("useOriginalSizeCheckbox", useOriginalSize);
 
         AlertUtils.showInformationAlert("Settings Updated", "Image settings updated successfully.");
+    }
+
+    @FXML
+    private void saveRegistryKeySettings() {
+        prefs.put("registryKey", registryKey.getText());
+    }
+
+    @FXML
+    private void saveWebsiteUrlSettings() {
+        prefs.put("websiteUrl", websiteUrl.getText());
     }
 }
