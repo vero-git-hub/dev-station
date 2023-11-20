@@ -1,4 +1,4 @@
-package com.dev.station.entity;
+package com.dev.station.entity.version;
 
 import java.io.BufferedReader;
 import java.io.IOException;

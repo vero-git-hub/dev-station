@@ -2,11 +2,11 @@ package com.dev.station.controller;
 
 import com.dev.station.entity.ProcessHolder;
 import com.dev.station.entity.RecycleBin;
-import com.dev.station.entity.VersionFinder;
+import com.dev.station.entity.version.UpdateFinder;
+import com.dev.station.entity.version.VersionFinder;
 import com.dev.station.entity.WebParser;
 import com.dev.station.entity.version.VersionExtractor;
 import com.dev.station.util.AlertUtils;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -99,7 +99,9 @@ public class ProgramController {
 
     @FXML
     private void handleUpdateButton() {
-        System.out.println("Updating in progress...");
+        UpdateFinder updateFinder = new UpdateFinder();
+        String updateLink = updateFinder.findUpdateLink(prefs);
+        System.out.println("Update Link: " + updateLink);
     }
 
     @FXML
