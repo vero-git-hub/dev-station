@@ -1,5 +1,6 @@
 package com.dev.station.controller;
 
+import com.dev.station.entity.ChromeVersionFinder;
 import com.dev.station.manager.TabSelectionManager;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -17,20 +18,33 @@ public class MainController {
     private Tab imagesTab;
     private TabSelectionManager tabSelectionManager;
     private ImagesController imagesController;
+    Preferences prefs;
 
     @FXML
     public void initialize() {
-        Preferences prefs = Preferences.userNodeForPackage(getClass());
+        prefs = Preferences.userNodeForPackage(getClass());
 
-        loadProgramController(prefs);
+        loadProgramController();
 
         tabSelectionManager = new TabSelectionManager(prefs, tabPane);
         tabSelectionManager.selectDefaultTab();
 
         loadImagesController();
+
+        getChromeVersion();
     }
 
-    private void loadProgramController(Preferences prefs) {
+    private void getChromeVersion() {
+        ChromeVersionFinder finder = new ChromeVersionFinder();
+        try {
+            String chromeVersion = finder.getChromeVersion();
+            System.out.println("Chrome Version: " + chromeVersion);
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadProgramController() {
         FXMLLoader programLoader = new FXMLLoader(getClass().getResource("/ui/ProgramLayout.fxml"));
         try {
             Node programNode = programLoader.load();
