@@ -69,16 +69,23 @@
 
         <Label>Driver</Label>
 
-        <Label text="Registry key for your version:"/>
-        <TextField fx:id="registryKey"/>
-        <Button text="Save" onAction="#saveRegistryKeySettings"/>
+        <HBox>
+            <Label text="Registry key for your version:"/>
+            <TextField fx:id="registryKey"/>
+            <Button text="Save" onAction="#saveRegistryKeySettings"/>
 
-        <Label text="Link for website version:"/>
-        <TextField fx:id="websiteUrl"/>
-        <Button text="Save" onAction="#saveWebsiteUrlSettings"/>
+            <Label text="Link for website version:"/>
+            <TextField fx:id="websiteUrl"/>
+            <Button text="Save" onAction="#saveWebsiteUrlSettings"/>
 
-        <Label text="Path to driver folder:"/>
-        <TextField fx:id="driverFolderPathField"/>
-        <Button text="Save" onAction="#saveDriverFolderSettings"/>
+            <Label text="Path to driver folder:"/>
+            <TextField fx:id="driverFolderPathField"/>
+            <Button text="Save" onAction="#saveDriverFolderSettings"/>
+
+            <Label text="Driver exe name:"/>
+            <TextField fx:id="driverExeNameField"/>
+            <Button text="Save" onAction="#saveDriverExeNameSettings"/>
+        </HBox>
+
     </VBox>
 </AnchorPane>

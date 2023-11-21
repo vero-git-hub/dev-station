@@ -1,4 +1,4 @@
-package com.dev.station.entity.version;
+package com.dev.station.entity.driver.version;
 
 public class VersionExtractor {
     public static String extractVersion(String version) {

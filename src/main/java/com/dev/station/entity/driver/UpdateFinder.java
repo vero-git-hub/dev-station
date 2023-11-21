@@ -1,4 +1,4 @@
-package com.dev.station.entity.version;
+package com.dev.station.entity.driver;
 
 import com.dev.station.util.AlertUtils;
 import org.jsoup.Jsoup;

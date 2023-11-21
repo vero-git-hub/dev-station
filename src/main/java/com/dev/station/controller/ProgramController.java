@@ -2,11 +2,12 @@ package com.dev.station.controller;
 
 import com.dev.station.entity.ProcessHolder;
 import com.dev.station.entity.RecycleBin;
-import com.dev.station.entity.version.FileDownloader;
-import com.dev.station.entity.version.UpdateFinder;
-import com.dev.station.entity.version.VersionFinder;
+import com.dev.station.entity.driver.FileDownloader;
+import com.dev.station.entity.driver.UpdateFinder;
+import com.dev.station.entity.driver.ZipExtractor;
+import com.dev.station.entity.driver.version.VersionFinder;
 import com.dev.station.entity.WebParser;
-import com.dev.station.entity.version.VersionExtractor;
+import com.dev.station.entity.driver.version.VersionExtractor;
 import com.dev.station.util.AlertUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -88,8 +89,8 @@ public class ProgramController {
         try {
             version = finder.getVersion(prefs);
         } catch (IOException | InterruptedException e) {
-            AlertUtils.showErrorAlert("Failed to get driver version", "Check the registry and the method for getting the version.");
             e.printStackTrace();
+            AlertUtils.showErrorAlert("Failed to get driver version", "Check the registry and the method for getting the version.");
         }
         return version;
     }
@@ -103,12 +104,25 @@ public class ProgramController {
         UpdateFinder updateFinder = new UpdateFinder();
         String fileURL = updateFinder.findUpdateLink(prefs);
         String saveDir = prefs.get("driverFolderPath", "");
+        String zipFilePath = null;
 
         try {
-            FileDownloader.downloadFile(fileURL, saveDir);
+            zipFilePath = FileDownloader.downloadFile(fileURL, saveDir);
             AlertUtils.showInformationAlert("Success", "File downloaded successfully: " + saveDir);
         } catch (IOException e) {
             e.printStackTrace();
+            AlertUtils.showErrorAlert("Failed", "Error uploading file to " + saveDir);
+        }
+
+        String outputDir = prefs.get("driverFolderPath", "");
+        String fileNameToExtract = prefs.get("driverExeName", "");
+
+        try {
+            ZipExtractor.extractDriver(zipFilePath, outputDir, fileNameToExtract);
+            AlertUtils.showInformationAlert("Success", "Driver was successfully extracted to: " + outputDir);
+        } catch (IOException e) {
+            e.printStackTrace();
+            AlertUtils.showErrorAlert("Failed", "Failed to extract file to: " + outputDir);
         }
     }
 

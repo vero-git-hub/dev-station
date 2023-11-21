@@ -37,6 +37,8 @@ public class SettingsController {
     private TextField websiteUrl;
     @FXML
     private TextField driverFolderPathField;
+    @FXML
+    private TextField driverExeNameField;
     private Preferences prefs = Preferences.userNodeForPackage(SettingsController.class);
 
     @FXML
@@ -63,6 +65,7 @@ public class SettingsController {
         registryKey.setText(prefs.get("registryKey", ""));
         websiteUrl.setText(prefs.get("websiteUrl", ""));
         driverFolderPathField.setText(prefs.get("driverFolderPath", ""));
+        driverExeNameField.setText(prefs.get("driverExeName", ""));
     }
 
     @FXML
@@ -130,5 +133,10 @@ public class SettingsController {
     @FXML
     private void saveDriverFolderSettings() {
         prefs.put("driverFolderPath", driverFolderPathField.getText());
+    }
+
+    @FXML
+    private void saveDriverExeNameSettings() {
+        prefs.put("driverExeName", driverExeNameField.getText());
     }
 }

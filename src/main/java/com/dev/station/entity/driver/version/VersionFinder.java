@@ -1,4 +1,4 @@
-package com.dev.station.entity.version;
+package com.dev.station.entity.driver.version;
 
 import java.io.BufferedReader;
 import java.io.IOException;
