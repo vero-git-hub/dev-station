@@ -76,5 +76,9 @@
         <Label text="Link for website version:"/>
         <TextField fx:id="websiteUrl"/>
         <Button text="Save" onAction="#saveWebsiteUrlSettings"/>
+
+        <Label text="Path to driver folder:"/>
+        <TextField fx:id="driverFolderPathField"/>
+        <Button text="Save" onAction="#saveDriverFolderSettings"/>
     </VBox>
 </AnchorPane>

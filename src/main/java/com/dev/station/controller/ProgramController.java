@@ -2,6 +2,7 @@ package com.dev.station.controller;
 
 import com.dev.station.entity.ProcessHolder;
 import com.dev.station.entity.RecycleBin;
+import com.dev.station.entity.version.FileDownloader;
 import com.dev.station.entity.version.UpdateFinder;
 import com.dev.station.entity.version.VersionFinder;
 import com.dev.station.entity.WebParser;
@@ -100,8 +101,15 @@ public class ProgramController {
     @FXML
     private void handleUpdateButton() {
         UpdateFinder updateFinder = new UpdateFinder();
-        String updateLink = updateFinder.findUpdateLink(prefs);
-        System.out.println("Update Link: " + updateLink);
+        String fileURL = updateFinder.findUpdateLink(prefs);
+        String saveDir = prefs.get("driverFolderPath", "");
+
+        try {
+            FileDownloader.downloadFile(fileURL, saveDir);
+            AlertUtils.showInformationAlert("Success", "File downloaded successfully: " + saveDir);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
