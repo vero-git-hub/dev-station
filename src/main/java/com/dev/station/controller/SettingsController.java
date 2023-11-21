@@ -12,8 +12,6 @@ public class SettingsController {
     @FXML
     private ComboBox<String> startupTabComboBox;
     @FXML
-    public TextField ubuntuPathField;
-    @FXML
     private TextField phpStormPathField;
     @FXML
     private TextField seleniumPathField;
@@ -50,7 +48,6 @@ public class SettingsController {
             prefs.put("defaultTab", newVal);
         });
 
-        ubuntuPathField.setText(prefs.get("ubuntuPath", ""));
         phpStormPathField.setText(prefs.get("phpStormPath", ""));
         seleniumPathField.setText(prefs.get("seleniumPath", ""));
         seleniumJARPathField.setText(prefs.get("seleniumJARPath", ""));
@@ -66,12 +63,6 @@ public class SettingsController {
         websiteUrl.setText(prefs.get("websiteUrl", ""));
         driverFolderPathField.setText(prefs.get("driverFolderPath", ""));
         driverExeNameField.setText(prefs.get("driverExeName", ""));
-    }
-
-    @FXML
-    private void saveUbuntuSettings() {
-        prefs.put("ubuntuPath", ubuntuPathField.getText());
-        // message about successful saving or validation
     }
 
     @FXML

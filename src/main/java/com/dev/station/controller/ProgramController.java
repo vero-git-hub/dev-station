@@ -27,15 +27,11 @@ import java.util.stream.Stream;
 
 public class ProgramController {
     private Preferences prefs;
-    private Process ubuntuProcess;
     private Process phpStormProcess;
     private Process seleniumProcess;
-    private boolean isUbuntuRunning = false;
     private boolean isPhpStormRunning = false;
     private boolean isSeleniumRunning = false;
     private boolean isRestorationPerformed = false;
-    @FXML
-    private ToggleButton toggleUbuntu;
     @FXML
     private ToggleButton togglePhpStorm;
     @FXML
@@ -120,18 +116,11 @@ public class ProgramController {
         try {
             ZipExtractor.extractDriver(zipFilePath, outputDir, fileNameToExtract);
             AlertUtils.showInformationAlert("Success", "Driver was successfully extracted to: " + outputDir);
+            updateVersionStatus("Driver version updated");
+            updateButtonVisibility(false);
         } catch (IOException e) {
             e.printStackTrace();
             AlertUtils.showErrorAlert("Failed", "Failed to extract file to: " + outputDir);
-        }
-    }
-
-    @FXML
-    public void handleToggleUbuntu() {
-        if (toggleUbuntu.isSelected()) {
-            launchApplication("ubuntuPath", "C:\\Program Files\\Ubuntu\\ubuntu.exe", new ProcessHolder(ubuntuProcess, isUbuntuRunning));
-        } else {
-            closeUbuntu();
         }
     }
 
@@ -328,8 +317,6 @@ public class ProgramController {
             AlertUtils.showErrorAlert("Failed to start", "The specified JAR file cannot be found or failed to start.\nCheck the file path in the Settings tab.");
         }
     }
-
-    public void closeUbuntu() {}
 
     public void closePhpStorm() {
         // close PhpStorm

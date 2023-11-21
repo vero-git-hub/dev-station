@@ -26,10 +26,6 @@
             </items>
         </ComboBox>
 
-        <Label text="Path to Ubuntu:"/>
-        <TextField fx:id="ubuntuPathField"/>
-        <Button text="Save" onAction="#saveUbuntuSettings"/>
-
         <Label text="Path to PhpStorm:"/>
         <TextField fx:id="phpStormPathField"/>
         <Button text="Save" onAction="#savePhpStormSettings"/>
