@@ -1,11 +1,13 @@
 package com.dev.station.controller;
 
 import com.dev.station.manager.TabSelectionManager;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.layout.StackPane;
 
 import java.io.IOException;
 import java.util.prefs.Preferences;
@@ -18,17 +20,30 @@ public class MainController {
     private TabSelectionManager tabSelectionManager;
     private ImagesController imagesController;
     Preferences prefs;
+    @FXML
+    private StackPane contentArea;
 
     @FXML
     public void initialize() {
         prefs = Preferences.userNodeForPackage(getClass());
 
-        loadProgramController();
+//        loadProgramController();
+//
+//        tabSelectionManager = new TabSelectionManager(prefs, tabPane);
+//        tabSelectionManager.selectDefaultTab();
+//
+//        loadImagesController();
+    }
 
-        tabSelectionManager = new TabSelectionManager(prefs, tabPane);
-        tabSelectionManager.selectDefaultTab();
-
-        loadImagesController();
+    @FXML
+    private void handleSettingsButtonAction(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/SettingsLayout.fxml"));
+            Node settings = loader.load();
+            contentArea.getChildren().setAll(settings);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void loadProgramController() {
