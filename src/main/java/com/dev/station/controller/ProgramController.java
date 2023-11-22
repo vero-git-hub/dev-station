@@ -26,7 +26,7 @@ import java.util.prefs.Preferences;
 import java.util.stream.Stream;
 
 public class ProgramController {
-    private Preferences prefs;
+    private Preferences prefs = MainController.prefs;
     private Process phpStormProcess;
     private Process seleniumProcess;
     private boolean isPhpStormRunning = false;
@@ -43,20 +43,20 @@ public class ProgramController {
     @FXML
     public ToggleButton toggleClearRecycleBinFolder;
     @FXML
-    private Label versionStatusLabel;
+    private Label versionStatusLabel = new Label();
     @FXML
     private Button updateButton;
     private RecycleBin recycleBin;
 
-    public void init(Preferences prefs) {
-        this.prefs = prefs;
+    @FXML
+    private void initialize() {
         String recycleBinPath = prefs.get("recycleBinFolderPath", "C:\\Default\\RecycleBinPath");
         this.recycleBin = new RecycleBin(recycleBinPath);
 
         compareDriverVersions();
     }
 
-    private void compareDriverVersions() {
+    public void compareDriverVersions() {
         String currentVersion = getCurrentVersion();
         String websiteVersion = getWebsiteVersion();
 
