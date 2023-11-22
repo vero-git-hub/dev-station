@@ -5,6 +5,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.StackPane;
@@ -33,6 +34,16 @@ public class MainController {
 //        tabSelectionManager.selectDefaultTab();
 //
 //        loadImagesController();
+    }
+
+    @FXML
+    private void handleImagesButtonAction() {
+        try {
+            Node imagesContent = FXMLLoader.load(getClass().getResource("/ui/ImagesLayout.fxml"));
+            contentArea.getChildren().setAll(imagesContent);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML

@@ -37,3 +37,17 @@
 .settings-container {
     -fx-font-size: 16px;
 }
+
+.images-layout {
+    -fx-alignment: center;
+}
+
+.images-layout TilePane {
+    -fx-alignment: center;
+}
+
+.images-layout .image-view {
+    -fx-border-color: #ccc;
+    -fx-border-radius: 5;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 10, 0, 0, 0);
+}
