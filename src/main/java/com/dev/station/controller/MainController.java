@@ -23,17 +23,69 @@ public class MainController {
     Preferences prefs;
     @FXML
     private StackPane contentArea;
+    @FXML private Button manuallyButton;
+    @FXML private Button programManagement1Button;
+    @FXML private Button programManagement2Button;
+    @FXML private Button seleniumButton;
 
     @FXML
     public void initialize() {
         prefs = Preferences.userNodeForPackage(getClass());
 
+        manuallyButton.setOnAction(event -> {
+            loadProgramLayout();
+            setActiveButton(manuallyButton);
+        });
+
+        programManagement1Button.setOnAction(event -> {
+            loadProgramManagement1Content();
+            setActiveButton(programManagement1Button);
+        });
+
+        programManagement2Button.setOnAction(event -> {
+            loadProgramManagement2Content();
+            setActiveButton(programManagement2Button);
+        });
+
+        seleniumButton.setOnAction(event -> {
+            loadSeleniumContent();
+            setActiveButton(seleniumButton);
+        });
+        
 //        loadProgramController();
 //
 //        tabSelectionManager = new TabSelectionManager(prefs, tabPane);
 //        tabSelectionManager.selectDefaultTab();
 //
 //        loadImagesController();
+    }
+
+    private void loadSeleniumContent() {
+    }
+
+    private void loadProgramManagement2Content() {
+    }
+
+    private void loadProgramManagement1Content() {
+    }
+
+    private void setActiveButton(Button activeButton) {
+        manuallyButton.getStyleClass().remove("active-button");
+        programManagement1Button.getStyleClass().remove("active-button");
+        programManagement2Button.getStyleClass().remove("active-button");
+        seleniumButton.getStyleClass().remove("active-button");
+
+        activeButton.getStyleClass().add("active-button");
+    }
+
+    private void loadProgramLayout() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/ManuallyLayout.fxml"));
+            Node programLayout = loader.load();
+            contentArea.getChildren().setAll(programLayout);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML

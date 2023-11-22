@@ -34,10 +34,10 @@
 
     <left>
         <VBox fx:id="menuVBox" styleClass="menu-vbox">
-            <Button text="Manually" styleClass="menu-button, clickable"/>
-            <Button text="Program management 1" styleClass="menu-button, clickable"/>
-            <Button text="Program management 2" styleClass="menu-button, clickable"/>
-            <Button text="Selenium" styleClass="menu-button, clickable"/>
+            <Button fx:id="manuallyButton" text="Manually" styleClass="menu-button, clickable"/>
+            <Button fx:id="programManagement1Button" text="Program management 1" styleClass="menu-button, clickable"/>
+            <Button fx:id="programManagement2Button" text="Program management 2" styleClass="menu-button, clickable"/>
+            <Button fx:id="seleniumButton" text="Selenium" styleClass="menu-button, clickable"/>
         </VBox>
     </left>
 

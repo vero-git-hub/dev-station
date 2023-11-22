@@ -34,7 +34,7 @@
     -fx-font-size: 16px;
 }
 
-.settings-container {
+.settings-container, .tab-container {
     -fx-font-size: 16px;
 }
 
@@ -50,4 +50,9 @@
     -fx-border-color: #ccc;
     -fx-border-radius: 5;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 10, 0, 0, 0);
+}
+
+.active-button {
+    -fx-background-color: #f0f0f0;
+    -fx-text-fill: black;
 }

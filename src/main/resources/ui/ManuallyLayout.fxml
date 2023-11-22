@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.layout.VBox?>
+<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" spacing="10"
+      fx:controller="com.dev.station.controller.ProgramController" styleClass="tab-container">
+    <padding>
+        <Insets top="10" right="10" bottom="10" left="10"/>
+    </padding>
+    <ToggleButton fx:id="togglePhpStorm" text="PhpStorm IDE" onAction="#handleTogglePhpStorm" styleClass="clickable"/>
+</VBox>
