@@ -1,13 +1,7 @@
-package com.dev.station.controller;
+package com.dev.station.controller.sidebar;
 
-import com.dev.station.entity.ProcessHolder;
+import com.dev.station.controller.MainController;
 import com.dev.station.entity.RecycleBin;
-import com.dev.station.entity.WebParser;
-import com.dev.station.entity.driver.FileDownloader;
-import com.dev.station.entity.driver.UpdateFinder;
-import com.dev.station.entity.driver.ZipExtractor;
-import com.dev.station.entity.driver.version.VersionExtractor;
-import com.dev.station.entity.driver.version.VersionFinder;
 import com.dev.station.util.AlertUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -20,21 +14,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 import java.util.prefs.Preferences;
 import java.util.stream.Stream;
 
-public class ProgramController {
-    private Preferences prefs = MainController.prefs;
-    private Process phpStormProcess;
-    private Process seleniumProcess;
-    private boolean isPhpStormRunning = false;
-    private boolean isSeleniumRunning = false;
+public class ClearController {
+    private final Preferences prefs = MainController.prefs;
     private boolean isRestorationPerformed = false;
-    @FXML
-    private ToggleButton togglePhpStorm;
-    @FXML
-    private ToggleButton toggleSelenium;
+    private RecycleBin recycleBin;
     @FXML
     private ToggleButton toggleVariableFolder;
     @FXML
@@ -42,21 +28,14 @@ public class ProgramController {
     @FXML
     public ToggleButton toggleClearRecycleBinFolder;
     @FXML
-    private Label versionStatusLabel = new Label();
-    @FXML
-    private Button updateButton;
-    @FXML
     private TabPane tabPane;
     @FXML
     private Tab uniqueTabId1;
-    private RecycleBin recycleBin;
 
     @FXML
     private void initialize() {
         String recycleBinPath = prefs.get("recycleBinFolderPath", "C:\\Default\\RecycleBinPath");
         this.recycleBin = new RecycleBin(recycleBinPath);
-
-        compareDriverVersions();
 
         ContextMenu contextMenu = new ContextMenu();
         MenuItem renameItem = new MenuItem("Rename");
@@ -87,96 +66,6 @@ public class ProgramController {
                 tab.setText(savedTitle);
             }
         });
-    }
-
-    public void compareDriverVersions() {
-        String currentVersion = getCurrentVersion();
-        String websiteVersion = getWebsiteVersion();
-
-        currentVersion = VersionExtractor.extractVersion(currentVersion);
-        websiteVersion = VersionExtractor.extractVersion(websiteVersion);
-
-        if(currentVersion.equals(websiteVersion)) {
-            updateVersionStatus("The versions are the same! -> " + currentVersion);
-        } else {
-            updateVersionStatus("Versions vary!");
-            updateButtonVisibility(true);
-        }
-    }
-
-    private void updateButtonVisibility(boolean isVisible) {
-        updateButton.setVisible(isVisible);
-    }
-
-    private String getWebsiteVersion() {
-        return new WebParser().parseWebsiteForVersion(prefs);
-    }
-
-    private String getCurrentVersion() {
-        VersionFinder finder = new VersionFinder();
-        String version = null;
-        try {
-            version = finder.getVersion(prefs);
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-            AlertUtils.showErrorAlert("Failed to get driver version", "Check the registry and the method for getting the version.");
-        }
-        return version;
-    }
-
-    private void updateVersionStatus(String message) {
-        versionStatusLabel.setText(message);
-    }
-
-    @FXML
-    private void handleUpdateButton() {
-        UpdateFinder updateFinder = new UpdateFinder();
-        String fileURL = updateFinder.findUpdateLink(prefs);
-        String saveDir = prefs.get("driverFolderPath", "");
-        String zipFilePath = null;
-
-        try {
-            zipFilePath = FileDownloader.downloadFile(fileURL, saveDir);
-            AlertUtils.showInformationAlert("Success", "File downloaded successfully: " + saveDir);
-        } catch (IOException e) {
-            e.printStackTrace();
-            AlertUtils.showErrorAlert("Failed", "Error uploading file to " + saveDir);
-        }
-
-        String outputDir = prefs.get("driverFolderPath", "");
-        String fileNameToExtract = prefs.get("driverExeName", "");
-
-        try {
-            ZipExtractor.extractDriver(zipFilePath, outputDir, fileNameToExtract);
-            AlertUtils.showInformationAlert("Success", "Driver was successfully extracted to: " + outputDir);
-            updateVersionStatus("Driver version updated");
-            updateButtonVisibility(false);
-        } catch (IOException e) {
-            e.printStackTrace();
-            AlertUtils.showErrorAlert("Failed", "Failed to extract file to: " + outputDir);
-        }
-    }
-
-    @FXML
-    private void handleTogglePhpStorm() {
-        if (togglePhpStorm.isSelected()) {
-            launchApplication("phpStormPath", "C:\\Program Files\\PhpStorm\\phpstorm.exe", new ProcessHolder(phpStormProcess, isPhpStormRunning));
-        } else {
-            closePhpStorm();
-        }
-    }
-
-    @FXML
-    private void handleToggleSelenium() {
-        if (toggleSelenium.isSelected()) {
-            boolean launchedExe = launchApplication("seleniumPath", "C:\\Program Files\\Selenium\\selenium.exe", new ProcessHolder(seleniumProcess, isSeleniumRunning));
-
-            if (launchedExe) {
-                launchJarApplication("seleniumJARPath", "C:\\Program Files\\Selenium\\selenium.jar", new ProcessHolder(seleniumProcess, isSeleniumRunning));
-            }
-        } else {
-            closeSelenium();
-        }
     }
 
     @FXML
@@ -234,7 +123,7 @@ public class ProgramController {
     @FXML
     private void handleToggleClearRecycleBinFolder() {
         if(toggleClearRecycleBinFolder.isSelected()) {
-           clearRecycleBin();
+            clearRecycleBin();
         }
     }
 
@@ -316,44 +205,4 @@ public class ProgramController {
             }
         }
     }
-
-    private boolean launchApplication(String pathKey, String defaultPath, ProcessHolder processHolder) {
-        try {
-            if (!processHolder.isRunning) {
-                String path = prefs.get(pathKey, defaultPath);
-                processHolder.process = new ProcessBuilder(path).start();
-                processHolder.isRunning = true;
-                return true;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            AlertUtils.showErrorAlert("Failed to start", "The specified file cannot be found.\n Check the file path in the Settings tab.");
-        }
-        return false;
-    }
-
-    private void launchJarApplication(String pathKey, String defaultPath, ProcessHolder processHolder) {
-        try {
-            if (!processHolder.isRunning) {
-                String jarPath = prefs.get(pathKey, defaultPath);
-                ProcessBuilder pb = new ProcessBuilder("java", "-jar", jarPath);
-                processHolder.process = pb.start();
-
-                boolean isFinished = processHolder.process.waitFor(2, TimeUnit.SECONDS);
-                if (isFinished && processHolder.process.exitValue() != 0) {
-                    throw new IOException("Error running jar: process terminated with exit code " + processHolder.process.exitValue());
-                }
-                processHolder.isRunning = true;
-            }
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-            AlertUtils.showErrorAlert("Failed to start", "The specified JAR file cannot be found or failed to start.\nCheck the file path in the Settings tab.");
-        }
-    }
-
-    public void closePhpStorm() {
-        // close PhpStorm
-    }
-
-    private void closeSelenium() {}
 }

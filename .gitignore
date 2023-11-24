@@ -41,3 +41,6 @@ build/
 .mvn/
 mvnw
 mvnw.cmd
+
+src/main/resources/images/
+src/main/resources/com/dev/station/

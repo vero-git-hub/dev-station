@@ -1,4 +1,4 @@
-package com.dev.station.controller;
+package com.dev.station.controller.header;
 
 import com.dev.station.util.AlertUtils;
 import javafx.fxml.FXML;

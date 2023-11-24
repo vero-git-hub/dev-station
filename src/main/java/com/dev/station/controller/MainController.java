@@ -13,8 +13,6 @@ public class MainController {
     public static Preferences prefs;
     @FXML private StackPane contentArea;
     @FXML private Button manuallyButton;
-    @FXML private Button programManagement1Button;
-    @FXML private Button programManagement2Button;
     @FXML private Button clearButton;
     @FXML private Button seleniumButton;
 
@@ -23,24 +21,33 @@ public class MainController {
         prefs = Preferences.userNodeForPackage(getClass());
 
         manuallyButton.setOnAction(event -> {
-            loadProgramLayout();
+            loadManuallyContent();
             setActiveButton(manuallyButton);
-        });
-
-        clearButton.setOnAction(event -> {
-            loadClearContent();
-            setActiveButton(clearButton);
         });
 
         seleniumButton.setOnAction(event -> {
             loadSeleniumContent();
             setActiveButton(seleniumButton);
         });
+
+        clearButton.setOnAction(event -> {
+            loadClearContent();
+            setActiveButton(clearButton);
+        });
     }
 
+    private void loadClearContent() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/sidebar/ClearLayout.fxml"));
+            Node seleniumLayout = loader.load();
+            contentArea.getChildren().setAll(seleniumLayout);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     private void loadSeleniumContent() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/SeleniumLayout.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/sidebar/SeleniumLayout.fxml"));
             Node seleniumLayout = loader.load();
             contentArea.getChildren().setAll(seleniumLayout);
         } catch (IOException e) {
@@ -48,11 +55,11 @@ public class MainController {
         }
     }
 
-    private void loadClearContent() {
+    private void loadManuallyContent() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/ProgramLayout.fxml"));
-            Node seleniumLayout = loader.load();
-            contentArea.getChildren().setAll(seleniumLayout);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/sidebar/ManuallyLayout.fxml"));
+            Node programLayout = loader.load();
+            contentArea.getChildren().setAll(programLayout);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -66,20 +73,10 @@ public class MainController {
         activeButton.getStyleClass().add("active-button");
     }
 
-    private void loadProgramLayout() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/ManuallyLayout.fxml"));
-            Node programLayout = loader.load();
-            contentArea.getChildren().setAll(programLayout);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     @FXML
     private void handleImagesButtonAction() {
         try {
-            Node imagesContent = FXMLLoader.load(getClass().getResource("/ui/ImagesLayout.fxml"));
+            Node imagesContent = FXMLLoader.load(getClass().getResource("/ui/header/ImagesLayout.fxml"));
             contentArea.getChildren().setAll(imagesContent);
         } catch (IOException e) {
             e.printStackTrace();
@@ -89,7 +86,7 @@ public class MainController {
     @FXML
     private void handleSettingsButtonAction() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/SettingsLayout.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/header/SettingsLayout.fxml"));
             Node settings = loader.load();
             contentArea.getChildren().setAll(settings);
         } catch (IOException e) {

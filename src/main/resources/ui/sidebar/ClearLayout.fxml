@@ -5,13 +5,13 @@
 <?import javafx.scene.layout.*?>
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.dev.station.controller.ProgramController">
+            fx:controller="com.dev.station.controller.sidebar.ClearController">
     <TabPane fx:id="tabPane" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"
              tabClosingPolicy="UNAVAILABLE">
 
         <Tab fx:id="uniqueTabId1" text="Program Manager 1" styleClass="tab, clickable">
             <ScrollPane fitToWidth="true">
-                <VBox spacing="10" styleClass="settings-container">
+                <VBox spacing="10" styleClass="tab-container">
                     <padding>
                         <Insets top="10" right="10" bottom="10" left="10"/>
                     </padding>

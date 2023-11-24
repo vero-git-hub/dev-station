@@ -1,4 +1,4 @@
-package com.dev.station.controller;
+package com.dev.station.controller.header;
 
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
