@@ -15,6 +15,7 @@ public class MainController {
     @FXML private Button manuallyButton;
     @FXML private Button programManagement1Button;
     @FXML private Button programManagement2Button;
+    @FXML private Button clearButton;
     @FXML private Button seleniumButton;
 
     @FXML
@@ -26,14 +27,9 @@ public class MainController {
             setActiveButton(manuallyButton);
         });
 
-        programManagement1Button.setOnAction(event -> {
-            loadProgramManagement1Content();
-            setActiveButton(programManagement1Button);
-        });
-
-        programManagement2Button.setOnAction(event -> {
-            loadProgramManagement2Content();
-            setActiveButton(programManagement2Button);
+        clearButton.setOnAction(event -> {
+            loadClearContent();
+            setActiveButton(clearButton);
         });
 
         seleniumButton.setOnAction(event -> {
@@ -52,17 +48,20 @@ public class MainController {
         }
     }
 
-    private void loadProgramManagement2Content() {
-    }
-
-    private void loadProgramManagement1Content() {
+    private void loadClearContent() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/ProgramLayout.fxml"));
+            Node seleniumLayout = loader.load();
+            contentArea.getChildren().setAll(seleniumLayout);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void setActiveButton(Button activeButton) {
         manuallyButton.getStyleClass().remove("active-button");
-        programManagement1Button.getStyleClass().remove("active-button");
-        programManagement2Button.getStyleClass().remove("active-button");
         seleniumButton.getStyleClass().remove("active-button");
+        clearButton.getStyleClass().remove("active-button");
 
         activeButton.getStyleClass().add("active-button");
     }

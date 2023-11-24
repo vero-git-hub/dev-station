@@ -1,17 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ToggleButton?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.dev.station.controller.ProgramController">
+    <TabPane AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"
+             tabClosingPolicy="UNAVAILABLE">
 
-<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" spacing="10"
-      fx:controller="com.dev.station.controller.ProgramController"
-      prefHeight="400.0" prefWidth="600.0">
-    <HBox>
-        <Label>Variable Folder</Label>
-        <ToggleButton fx:id="toggleVariableFolder" text="Move to recycle bin" onAction="#handleToggleVariableFolder"/>
-        <ToggleButton fx:id="toggleRecycleBinFolder" text="Return from recycle bin" onAction="#handleToggleRecycleBinFolder"/>
-        <ToggleButton fx:id="toggleClearRecycleBinFolder" text="Clear recycle bin" onAction="#handleToggleClearRecycleBinFolder"/>
-    </HBox>
-</VBox>
+        <Tab text="ProgramManager 1" styleClass="tab, clickable">
+            <ScrollPane fitToWidth="true">
+                <VBox spacing="10" styleClass="settings-container">
+                    <padding>
+                        <Insets top="10" right="10" bottom="10" left="10"/>
+                    </padding>
+
+                    <ToggleButton fx:id="toggleVariableFolder" text="Move to recycle bin" onAction="#handleToggleVariableFolder" styleClass="clickable"/>
+                    <ToggleButton fx:id="toggleRecycleBinFolder" text="Return from recycle bin" onAction="#handleToggleRecycleBinFolder" styleClass="clickable"/>
+                    <ToggleButton fx:id="toggleClearRecycleBinFolder" text="Clear recycle bin" onAction="#handleToggleClearRecycleBinFolder" styleClass="clickable"/>
+                </VBox>
+            </ScrollPane>
+        </Tab>
+    </TabPane>
+</AnchorPane>

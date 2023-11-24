@@ -35,9 +35,8 @@
     <left>
         <VBox fx:id="menuVBox" styleClass="menu-vbox">
             <Button fx:id="manuallyButton" text="Manually" styleClass="menu-button, clickable"/>
-            <Button fx:id="programManagement1Button" text="Program management 1" styleClass="menu-button, clickable"/>
-            <Button fx:id="programManagement2Button" text="Program management 2" styleClass="menu-button, clickable"/>
             <Button fx:id="seleniumButton" text="Selenium" styleClass="menu-button, clickable"/>
+            <Button fx:id="clearButton" text="Clear" styleClass="menu-button, clickable"/>
         </VBox>
     </left>
 
@@ -49,7 +48,7 @@
 
     <bottom>
         <HBox alignment="CENTER" styleClass="footer">
-            <Label text="v0.0.20"/>
+            <Label text="v0.1.4"/>
         </HBox>
     </bottom>
 </BorderPane>
