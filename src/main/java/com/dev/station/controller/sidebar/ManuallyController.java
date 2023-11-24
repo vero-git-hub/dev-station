@@ -1,7 +1,7 @@
 package com.dev.station.controller.sidebar;
 
 import com.dev.station.entity.ProcessHolder;
-import com.dev.station.manager.FileManager;
+import com.dev.station.manager.LaunchManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.ToggleButton;
 
@@ -14,7 +14,7 @@ public class ManuallyController {
     private void handleTogglePhpStorm() {
         if (togglePhpStorm.isSelected()) {
             boolean isPhpStormRunning = false;
-            FileManager.launchApplication("phpStormPath", "C:\\Program Files\\PhpStorm\\phpstorm.exe", new ProcessHolder(phpStormProcess, isPhpStormRunning));
+            LaunchManager.launchApplication("phpStormPath", "C:\\Program Files\\PhpStorm\\phpstorm.exe", new ProcessHolder(phpStormProcess, isPhpStormRunning));
         }
     }
 }

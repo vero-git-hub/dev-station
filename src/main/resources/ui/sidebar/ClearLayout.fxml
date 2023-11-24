@@ -3,10 +3,9 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.Text?>
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.dev.station.controller.sidebar.CleanController">
+            fx:controller="com.dev.station.controller.sidebar.ClearController">
     <TabPane fx:id="tabPane" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"
              tabClosingPolicy="UNAVAILABLE">
 
@@ -17,9 +16,11 @@
                         <Insets top="10" right="10" bottom="10" left="10"/>
                     </padding>
 
-                    <ToggleButton fx:id="toggleVariableFolder1" text="Move to recycle bin" onAction="#handleToggleVariableFolder" styleClass="clickable"/>
-                    <ToggleButton fx:id="toggleRecycleBinFolder1" text="Return from recycle bin" onAction="#handleToggleRecycleBinFolder" styleClass="clickable"/>
-                    <ToggleButton fx:id="toggleClearRecycleBinFolder1" text="Clear recycle bin" onAction="#handleToggleClearRecycleBinFolder" styleClass="clickable"/>
+                    <ToggleButton fx:id="toggleMoveFiles" text="Move to recycle bin" onAction="#moveFilesToRecycleBin" styleClass="clickable"/>
+
+                    <ToggleButton fx:id="toggleReturnFiles" text="Return from recycle bin" onAction="#returnFromRecycleBin" styleClass="clickable"/>
+
+                    <ToggleButton fx:id="toggleClearRecycleBin" text="Clear recycle bin" onAction="#clearRecycleBin" styleClass="clickable"/>
                 </VBox>
             </ScrollPane>
         </Tab>
@@ -31,9 +32,11 @@
                         <Insets top="10" right="10" bottom="10" left="10"/>
                     </padding>
 
-                    <ToggleButton fx:id="toggleVariableFolder2" text="Move to recycle bin" onAction="#handleToggleVariableFolder" styleClass="clickable"/>
-                    <ToggleButton fx:id="toggleRecycleBinFolder2" text="Return from recycle bin" onAction="#handleToggleRecycleBinFolder" styleClass="clickable"/>
-                    <ToggleButton fx:id="toggleClearRecycleBinFolder2" text="Clear recycle bin" onAction="#handleToggleClearRecycleBinFolder" styleClass="clickable"/>
+                    <ToggleButton fx:id="toggleMoveFiles2" text="Move to recycle bin" onAction="#moveFilesToRecycleBin2" styleClass="clickable"/>
+
+                    <ToggleButton fx:id="toggleReturnFiles2" text="Return from recycle bin" onAction="#returnFromRecycleBin2" styleClass="clickable"/>
+
+                    <ToggleButton fx:id="toggleClearRecycleBin2" text="Clear recycle bin" onAction="#clearRecycleBin2" styleClass="clickable"/>
                 </VBox>
             </ScrollPane>
         </Tab>

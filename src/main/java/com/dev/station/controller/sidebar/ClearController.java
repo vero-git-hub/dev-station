@@ -2,6 +2,7 @@ package com.dev.station.controller.sidebar;
 
 import com.dev.station.controller.MainController;
 import com.dev.station.entity.RecycleBin;
+import com.dev.station.manager.FileManager;
 import com.dev.station.util.AlertUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -17,19 +18,24 @@ import java.util.Optional;
 import java.util.prefs.Preferences;
 import java.util.stream.Stream;
 
-public class CleanController {
+public class ClearController {
     private final Preferences prefs = MainController.prefs;
     private boolean isRestorationPerformed = false;
+    private boolean isRestorationPerformed2 = false;
     private RecycleBin recycleBin;
-    @FXML private ToggleButton toggleVariableFolder;
-    @FXML private ToggleButton toggleRecycleBinFolder;
-    @FXML private ToggleButton toggleClearRecycleBinFolder;
+    private RecycleBin recycleBin2;
+    @FXML private ToggleButton toggleMoveFiles;
+    @FXML private ToggleButton toggleReturnFiles;
+    @FXML private ToggleButton toggleClearRecycleBin;
+    @FXML private ToggleButton toggleMoveFiles2;
+    @FXML private ToggleButton toggleReturnFiles2;
+    @FXML private ToggleButton toggleClearRecycleBin2;
     @FXML private TabPane tabPane;
 
     @FXML
     private void initialize() {
-        String recycleBinPath = prefs.get("recycleBinFolderPath", "C:\\Default\\RecycleBinPath");
-        this.recycleBin = new RecycleBin(recycleBinPath);
+        defineRecycleBin();
+        defineRecycleBin2();
 
         tabPane.getTabs().forEach(this::setupTabContextMenu);
 
@@ -47,6 +53,16 @@ public class CleanController {
                 tab.setText(prefs.get(tabId, tab.getText()));
             }
         });
+    }
+
+    private void defineRecycleBin() {
+        String recycleBinPath = prefs.get("firstRecycleBin", "C:\\Default\\RecycleBinPath");
+        this.recycleBin = new RecycleBin(recycleBinPath);
+    }
+
+    private void defineRecycleBin2() {
+        String recycleBinPath = prefs.get("secondRecycleBin", "C:\\Default\\RecycleBinPath");
+        this.recycleBin2 = new RecycleBin(recycleBinPath);
     }
 
     private void setupTabContextMenu(Tab tab) {
@@ -77,20 +93,20 @@ public class CleanController {
     }
 
     @FXML
-    private void handleToggleVariableFolder() {
-        if (toggleVariableFolder.isSelected()) {
-            String rootFolderPath = prefs.get("variableFolderPath", "C:\\Default\\Path");
+    private void moveFilesToRecycleBin() {
+        if (toggleMoveFiles.isSelected()) {
+            String rootFolderPath = prefs.get("fieldClearFirstFolder", "C:\\Default\\Path");
 
-            clearRecycleBinContents();
+            clearRecycleBinContents(recycleBin);
 
             try {
-                clearFolderContents(rootFolderPath, "cache");
-                clearFolderContents(rootFolderPath, "log");
-                clearFolderContents(rootFolderPath, "tmp");
-                clearVarFolderContents(Paths.get(rootFolderPath, "var").toString());
+                FileManager.clearFolderContents(rootFolderPath, "cache", recycleBin);
+                FileManager.clearFolderContents(rootFolderPath, "log", recycleBin);
+                FileManager.clearFolderContents(rootFolderPath, "tmp", recycleBin);
+                FileManager.clearVarFolderContents(Paths.get(rootFolderPath, "var").toString(), recycleBin);
 
                 AlertUtils.showInformationAlert("Success", "Successfully cleared contents of all folders.");
-                resetRestorationState();
+                isRestorationPerformed = false;
             } catch (IOException e) {
                 e.printStackTrace();
                 AlertUtils.showErrorAlert("Error Clearing Folders", "Failed to clear contents of folders: " + e.getMessage());
@@ -99,8 +115,8 @@ public class CleanController {
     }
 
     @FXML
-    private void handleToggleRecycleBinFolder() {
-        if(toggleRecycleBinFolder.isSelected()) {
+    private void returnFromRecycleBin() {
+        if(toggleReturnFiles.isSelected()) {
             if (recycleBin.getRecycleBinPath() == null || !Files.exists(recycleBin.getRecycleBinPath())) {
                 AlertUtils.showErrorAlert("Error", "Recycle bin path is not set or does not exist.");
                 return;
@@ -112,6 +128,8 @@ public class CleanController {
             }
 
             try {
+                deleteFilesBeforeRecovery("fieldClearFirstFolder");
+
                 try (DirectoryStream<Path> stream = Files.newDirectoryStream(recycleBin.getRecycleBinPath())) {
                     for (Path fileInRecycleBin : stream) {
                         String fileName = fileInRecycleBin.getFileName().toString();
@@ -129,13 +147,90 @@ public class CleanController {
     }
 
     @FXML
-    private void handleToggleClearRecycleBinFolder() {
-        if(toggleClearRecycleBinFolder.isSelected()) {
-            clearRecycleBin();
+    private void clearRecycleBin() {
+        if(toggleClearRecycleBin.isSelected()) {
+            handleClearRecycleBin(recycleBin, "firstRecycleBin");
         }
     }
 
-    private void clearRecycleBinContents() {
+    @FXML
+    private void moveFilesToRecycleBin2() {
+        if (toggleMoveFiles2.isSelected()) {
+            String rootFolderPath = prefs.get("fieldClearSecondFolder", "C:\\Default\\Path");
+
+            clearRecycleBinContents(recycleBin2);
+
+            try {
+                FileManager.clearFolderContents(rootFolderPath, "cache", recycleBin2);
+                FileManager.clearFolderContents(rootFolderPath, "log", recycleBin2);
+                FileManager.clearFolderContents(rootFolderPath, "tmp", recycleBin2);
+                FileManager.clearVarFolderContents(Paths.get(rootFolderPath, "var").toString(), recycleBin2);
+
+                AlertUtils.showInformationAlert("Success", "Successfully cleared contents of all folders.");
+                isRestorationPerformed2 = false;
+            } catch (IOException e) {
+                e.printStackTrace();
+                AlertUtils.showErrorAlert("Error Clearing Folders", "Failed to clear contents of folders: " + e.getMessage());
+            }
+        }
+    }
+
+    @FXML
+    private void returnFromRecycleBin2() {
+        if(toggleReturnFiles2.isSelected()) {
+            if (recycleBin2.getRecycleBinPath() == null || !Files.exists(recycleBin2.getRecycleBinPath())) {
+                AlertUtils.showErrorAlert("Error", "Recycle bin path is not set or does not exist.");
+                return;
+            }
+
+            if (isRestorationPerformed2) {
+                AlertUtils.showInformationAlert("Notice", "Files have already been restored.");
+                return;
+            }
+
+            try {
+                deleteFilesBeforeRecovery("fieldClearSecondFolder");
+
+                try (DirectoryStream<Path> stream = Files.newDirectoryStream(recycleBin2.getRecycleBinPath())) {
+                    for (Path fileInRecycleBin : stream) {
+                        String fileName = fileInRecycleBin.getFileName().toString();
+                        recycleBin2.restoreFromRecycleBin(fileName);
+                    }
+                }
+                recycleBin2.clearMetadata();
+                AlertUtils.showInformationAlert("Success", "All files have been restored from the recycle bin.");
+                isRestorationPerformed2 = true;
+            } catch (IOException e) {
+                e.printStackTrace();
+                AlertUtils.showErrorAlert("Error Restoring Files", "Failed to restore files: " + e.getMessage());
+            }
+        }
+    }
+
+    private void deleteFilesBeforeRecovery(String keyFieldClearFolder) {
+        String rootFolderPath = prefs.get(keyFieldClearFolder, "C:\\Default\\Path");
+
+        try {
+            FileManager.deleteFolderContents(rootFolderPath, "cache");
+            FileManager.deleteFolderContents(rootFolderPath, "log");
+            FileManager.deleteFolderContents(rootFolderPath, "tmp");
+            FileManager.deleteVarFolderContents(Paths.get(rootFolderPath, "var").toString());
+
+            AlertUtils.showInformationAlert("Success", "Successfully cleared contents of all folders.");
+        } catch (IOException e) {
+            e.printStackTrace();
+            AlertUtils.showErrorAlert("Error Clearing Folders", "Failed to clear contents of folders: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void clearRecycleBin2() {
+        if(toggleClearRecycleBin2.isSelected()) {
+            handleClearRecycleBin(recycleBin2, "secondRecycleBin");
+        }
+    }
+
+    private void clearRecycleBinContents(RecycleBin recycleBin) {
         try {
             if (Files.exists(recycleBin.getRecycleBinPath()) && Files.isDirectory(recycleBin.getRecycleBinPath())) {
                 try (Stream<Path> paths = Files.walk(recycleBin.getRecycleBinPath())) {
@@ -152,13 +247,13 @@ public class CleanController {
         }
     }
 
-    private void clearRecycleBin() {
+    private void handleClearRecycleBin(RecycleBin recycleBin, String keyRecycleBin) {
         if (recycleBin.getRecycleBinPath() == null || !Files.exists(recycleBin.getRecycleBinPath())) {
             AlertUtils.showErrorAlert("Error", "Recycle bin path is not set or does not exist.");
             return;
         }
 
-        String recycleBinPathString = prefs.get("recycleBinFolderPath", "C:\\Default\\RecycleBinPath");
+        String recycleBinPathString = prefs.get(keyRecycleBin, "C:\\Default\\RecycleBinPath");
         Path recycleBinPath = Paths.get(recycleBinPathString);
 
         try {
@@ -177,40 +272,6 @@ public class CleanController {
         } catch (IOException e) {
             e.printStackTrace();
             AlertUtils.showErrorAlert("Error Clearing Recycle Bin", "Failed to clear recycle bin: " + e.getMessage());
-        }
-    }
-
-    private void resetRestorationState() {
-        isRestorationPerformed = false;
-    }
-
-    private void clearFolderContents(String rootFolderPath, String folderName) throws IOException {
-        Path folderPath = Paths.get(rootFolderPath, folderName);
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream(folderPath)) {
-            for (Path path : stream) {
-                if (Files.isDirectory(path)) {
-                    clearFolderContents(path.toString(), "");
-                    recycleBin.moveToRecycleBin(path);
-                } else {
-                    recycleBin.moveToRecycleBin(path);
-                }
-            }
-        }
-    }
-
-    private void clearVarFolderContents(String varFolderPath) throws IOException {
-        Path varPath = Paths.get(varFolderPath);
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream(varPath)) {
-            for (Path path : stream) {
-                if (Files.isDirectory(path)) {
-                    if (!path.getFileName().toString().equals("selenium".toLowerCase())) {
-                        clearFolderContents(path.toString(), "");
-                        recycleBin.moveToRecycleBin(path);
-                    }
-                } else {
-                    recycleBin.moveToRecycleBin(path);
-                }
-            }
         }
     }
 }

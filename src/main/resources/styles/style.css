@@ -61,3 +61,7 @@
     -fx-background-color: #d2d1d1;
     -fx-text-fill: black;
 }
+
+.bold-label {
+    -fx-font-weight: bold;
+}

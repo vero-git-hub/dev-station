@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import java.util.prefs.Preferences;
 
-public class FileManager {
+public class LaunchManager {
 
     private static final Preferences prefs = MainController.prefs;
 

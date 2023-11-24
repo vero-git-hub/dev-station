@@ -18,14 +18,14 @@
                         <Insets top="10" right="10" bottom="10" left="10"/>
                     </padding>
 
-                    <ComboBox fx:id="startupTabComboBox">
-                        <items>
-                            <FXCollections fx:factory="observableArrayList">
-                                <String fx:value="Program management 1"/>
-                                <String fx:value="Program management 2"/>
-                            </FXCollections>
-                        </items>
-                    </ComboBox>
+<!--                    <ComboBox fx:id="startupTabComboBox">-->
+<!--                        <items>-->
+<!--                            <FXCollections fx:factory="observableArrayList">-->
+<!--                                <String fx:value="Program management 1"/>-->
+<!--                                <String fx:value="Program management 2"/>-->
+<!--                            </FXCollections>-->
+<!--                        </items>-->
+<!--                    </ComboBox>-->
                 </VBox>
             </ScrollPane>
         </Tab>
@@ -62,20 +62,26 @@
             </ScrollPane>
         </Tab>
 
-        <Tab text="Clean" styleClass="tab">
+        <Tab text="Clear" styleClass="tab">
             <ScrollPane fitToWidth="true">
                 <VBox spacing="10" styleClass="settings-container">
                     <padding>
                         <Insets top="10" right="10" bottom="10" left="10"/>
                     </padding>
 
-                    <Label text="Path to variable folder:"/>
-                    <TextField fx:id="variableFolderPathField"/>
-                    <Button text="Save" onAction="#saveVariableFolderSettings"/>
+                    <Label styleClass="bold-label">First folder</Label>
+                    <Label text="Path to folder:"/>
+                    <TextField fx:id="fieldClearFirstFolder"/>
+                    <Label text="Path to recycleBin:"/>
+                    <TextField fx:id="firstRecycleBinFolderField"/>
 
-                    <Label text="Path to recycleBin folder:"/>
-                    <TextField fx:id="recycleBinFolderPathField"/>
-                    <Button text="Save" onAction="#saveRecycleBinFolderSettings"/>
+                    <Label styleClass="bold-label">Second folder</Label>
+                    <Label text="Path to folder:"/>
+                    <TextField fx:id="fieldClearSecondFolder"/>
+                    <Label text="Path to recycleBin:"/>
+                    <TextField fx:id="secondRecycleBinFolderField"/>
+
+                    <Button text="Save" onAction="#saveClearTabSettings"/>
 
                     <Button text="Remove all tabs" onAction="#removeAllTabsSettings"/>
                 </VBox>

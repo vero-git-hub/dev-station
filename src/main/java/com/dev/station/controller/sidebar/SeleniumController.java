@@ -8,7 +8,7 @@ import com.dev.station.entity.driver.UpdateFinder;
 import com.dev.station.entity.driver.ZipExtractor;
 import com.dev.station.entity.driver.version.VersionExtractor;
 import com.dev.station.entity.driver.version.VersionFinder;
-import com.dev.station.manager.FileManager;
+import com.dev.station.manager.LaunchManager;
 import com.dev.station.util.AlertUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -105,10 +105,10 @@ public class SeleniumController {
     private void handleToggleSelenium() {
         if (toggleSelenium.isSelected()) {
             boolean isSeleniumRunning = false;
-            boolean launchedExe = FileManager.launchApplication("seleniumPath", "C:\\Program Files\\Selenium\\selenium.exe", new ProcessHolder(seleniumProcess, isSeleniumRunning));
+            boolean launchedExe = LaunchManager.launchApplication("seleniumPath", "C:\\Program Files\\Selenium\\selenium.exe", new ProcessHolder(seleniumProcess, isSeleniumRunning));
 
             if (launchedExe) {
-                FileManager.launchJarApplication("seleniumJARPath", "C:\\Program Files\\Selenium\\selenium.jar", new ProcessHolder(seleniumProcess, isSeleniumRunning));
+                LaunchManager.launchJarApplication("seleniumJARPath", "C:\\Program Files\\Selenium\\selenium.jar", new ProcessHolder(seleniumProcess, isSeleniumRunning));
             }
         }
     }

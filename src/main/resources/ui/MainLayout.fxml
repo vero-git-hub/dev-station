@@ -48,7 +48,7 @@
 
     <bottom>
         <HBox alignment="CENTER" styleClass="footer">
-            <Label text="v0.1.4"/>
+            <Label text="v0.1.9"/>
         </HBox>
     </bottom>
 </BorderPane>

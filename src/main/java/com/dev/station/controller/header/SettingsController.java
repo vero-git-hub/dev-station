@@ -21,9 +21,13 @@ public class SettingsController {
     @FXML
     private TextField seleniumJARPathField;
     @FXML
-    private TextField variableFolderPathField;
+    private TextField fieldClearFirstFolder;
     @FXML
-    private TextField recycleBinFolderPathField;
+    private TextField fieldClearSecondFolder;
+    @FXML
+    private TextField firstRecycleBinFolderField;
+    @FXML
+    private TextField secondRecycleBinFolderField;
     @FXML
     private TextField imagesFolderPathField;
     @FXML
@@ -43,18 +47,15 @@ public class SettingsController {
 
     @FXML
     public void initialize() {
-        String defaultTab = prefs.get("defaultTab", "Program management 1");
-        startupTabComboBox.getSelectionModel().select(defaultTab);
-
-        startupTabComboBox.valueProperty().addListener((obs, oldVal, newVal) -> {
-            prefs.put("defaultTab", newVal);
-        });
-
         phpStormPathField.setText(prefs.get("phpStormPath", ""));
         seleniumPathField.setText(prefs.get("seleniumPath", ""));
         seleniumJARPathField.setText(prefs.get("seleniumJARPath", ""));
-        variableFolderPathField.setText(prefs.get("variableFolderPath", ""));
-        recycleBinFolderPathField.setText(prefs.get("recycleBinFolderPath", ""));
+
+        fieldClearFirstFolder.setText(prefs.get("fieldClearFirstFolder", ""));
+        fieldClearSecondFolder.setText(prefs.get("fieldClearSecondFolder", ""));
+        firstRecycleBinFolderField.setText(prefs.get("firstRecycleBin", ""));
+        secondRecycleBinFolderField.setText(prefs.get("secondRecycleBin", ""));
+
         imagesFolderPathField.setText(prefs.get("imagesFolderPath", ""));
 
         imageWidthField.setText(prefs.get("imageWidthField", ""));
@@ -86,13 +87,12 @@ public class SettingsController {
     }
 
     @FXML
-    private void saveVariableFolderSettings() {
-        prefs.put("variableFolderPath", variableFolderPathField.getText());
-    }
-
-    @FXML
-    private void saveRecycleBinFolderSettings() {
-        prefs.put("recycleBinFolderPath", recycleBinFolderPathField.getText());
+    private void saveClearTabSettings() {
+        prefs.put("fieldClearFirstFolder", fieldClearFirstFolder.getText());
+        prefs.put("fieldClearSecondFolder", fieldClearSecondFolder.getText());
+        prefs.put("firstRecycleBin", firstRecycleBinFolderField.getText());
+        prefs.put("secondRecycleBin", secondRecycleBinFolderField.getText());
+        AlertUtils.showInformationAlert("Success!", "Save clear tab settings.");
     }
 
     @FXML
@@ -156,7 +156,5 @@ public class SettingsController {
         } catch (BackingStoreException e) {
             e.printStackTrace();
         }
-
-
     }
 }

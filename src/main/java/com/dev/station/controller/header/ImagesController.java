@@ -1,5 +1,6 @@
 package com.dev.station.controller.header;
 
+import com.dev.station.controller.MainController;
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -11,9 +12,9 @@ import java.nio.file.Path;
 import java.util.prefs.Preferences;
 
 public class ImagesController {
+    private final Preferences prefs = MainController.prefs;
     @FXML
     private TilePane imagesTilePane;
-    private Preferences prefs = Preferences.userNodeForPackage(ImagesController.class);
 
     public void initialize() {
         loadImages();
