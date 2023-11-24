@@ -31,35 +31,49 @@ public class CleanController {
         String recycleBinPath = prefs.get("recycleBinFolderPath", "C:\\Default\\RecycleBinPath");
         this.recycleBin = new RecycleBin(recycleBinPath);
 
+        tabPane.getTabs().forEach(this::setupTabContextMenu);
+
+        String defaultTabId = prefs.get("defaultTabId", null);
+        if (defaultTabId != null) {
+            tabPane.getTabs().stream()
+                    .filter(tab -> tab.getId().equals(defaultTabId))
+                    .findFirst()
+                    .ifPresent(tabPane.getSelectionModel()::select);
+        }
+
+        tabPane.getTabs().forEach(tab -> {
+            String tabId = tab.getId();
+            if (tabId != null && prefs.get(tabId, null) != null) {
+                tab.setText(prefs.get(tabId, tab.getText()));
+            }
+        });
+    }
+
+    private void setupTabContextMenu(Tab tab) {
         ContextMenu contextMenu = new ContextMenu();
         MenuItem renameItem = new MenuItem("Rename");
-        contextMenu.getItems().add(renameItem);
+        MenuItem setDefaultItem = new MenuItem("Set as Default");
+        contextMenu.getItems().addAll(renameItem, setDefaultItem);
 
-        tabPane.getTabs().forEach(tab -> {
-            tab.setContextMenu(contextMenu);
-        });
+        renameItem.setOnAction(e -> handleRenameTab(tab));
+        setDefaultItem.setOnAction(e -> handleSetDefaultTab(tab));
 
-        renameItem.setOnAction(e -> {
-            Tab selectedTab = tabPane.getSelectionModel().getSelectedItem();
-            if (selectedTab != null) {
-                TextInputDialog dialog = new TextInputDialog(selectedTab.getText());
-                dialog.setTitle("Renaming a tab");
-                dialog.setHeaderText("Enter a new name for the tab:");
-                Optional<String> result = dialog.showAndWait();
-                result.ifPresent(name -> {
-                    selectedTab.setText(name);
-                    prefs.put(selectedTab.getId(), name);
-                });
-            }
-        });
+        tab.setContextMenu(contextMenu);
+    }
 
-        tabPane.getTabs().forEach(tab -> {
-            String tabId = ((Tab) tab).getId();
-            if (tabId != null) {
-                String savedTitle = prefs.get(tabId, tab.getText());
-                tab.setText(savedTitle);
-            }
+    private void handleRenameTab(Tab tab) {
+        TextInputDialog dialog = new TextInputDialog(tab.getText());
+        dialog.setTitle("Renaming a tab");
+        dialog.setHeaderText("Enter a new name for the tab:");
+        Optional<String> result = dialog.showAndWait();
+        result.ifPresent(name -> {
+            tab.setText(name);
+            prefs.put(tab.getId(), name);
         });
+    }
+
+    private void handleSetDefaultTab(Tab tab) {
+        prefs.put("defaultTabId", tab.getId());
     }
 
     @FXML
