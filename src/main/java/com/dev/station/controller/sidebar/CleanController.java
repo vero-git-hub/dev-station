@@ -17,20 +17,14 @@ import java.util.Optional;
 import java.util.prefs.Preferences;
 import java.util.stream.Stream;
 
-public class ClearController {
+public class CleanController {
     private final Preferences prefs = MainController.prefs;
     private boolean isRestorationPerformed = false;
     private RecycleBin recycleBin;
-    @FXML
-    private ToggleButton toggleVariableFolder;
-    @FXML
-    public ToggleButton toggleRecycleBinFolder;
-    @FXML
-    public ToggleButton toggleClearRecycleBinFolder;
-    @FXML
-    private TabPane tabPane;
-    @FXML
-    private Tab uniqueTabId1;
+    @FXML private ToggleButton toggleVariableFolder;
+    @FXML private ToggleButton toggleRecycleBinFolder;
+    @FXML private ToggleButton toggleClearRecycleBinFolder;
+    @FXML private TabPane tabPane;
 
     @FXML
     private void initialize() {

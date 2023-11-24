@@ -38,7 +38,7 @@ public class MainController {
 
     private void loadClearContent() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/sidebar/ClearLayout.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/sidebar/CleanLayout.fxml"));
             Node seleniumLayout = loader.load();
             contentArea.getChildren().setAll(seleniumLayout);
         } catch (IOException e) {

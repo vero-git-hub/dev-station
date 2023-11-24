@@ -62,7 +62,7 @@
             </ScrollPane>
         </Tab>
 
-        <Tab text="Cleaning" styleClass="tab">
+        <Tab text="Clean" styleClass="tab">
             <ScrollPane fitToWidth="true">
                 <VBox spacing="10" styleClass="settings-container">
                     <padding>
@@ -76,6 +76,8 @@
                     <Label text="Path to recycleBin folder:"/>
                     <TextField fx:id="recycleBinFolderPathField"/>
                     <Button text="Save" onAction="#saveRecycleBinFolderSettings"/>
+
+                    <Button text="Remove all tabs" onAction="#removeAllTabsSettings"/>
                 </VBox>
             </ScrollPane>
         </Tab>
