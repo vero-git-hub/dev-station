@@ -2,17 +2,15 @@ package com.dev.station.controller;
 
 import com.dev.station.entity.ProcessHolder;
 import com.dev.station.entity.RecycleBin;
+import com.dev.station.entity.WebParser;
 import com.dev.station.entity.driver.FileDownloader;
 import com.dev.station.entity.driver.UpdateFinder;
 import com.dev.station.entity.driver.ZipExtractor;
-import com.dev.station.entity.driver.version.VersionFinder;
-import com.dev.station.entity.WebParser;
 import com.dev.station.entity.driver.version.VersionExtractor;
+import com.dev.station.entity.driver.version.VersionFinder;
 import com.dev.station.util.AlertUtils;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ToggleButton;
+import javafx.scene.control.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,6 +19,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Comparator;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.prefs.Preferences;
 import java.util.stream.Stream;
@@ -46,6 +45,10 @@ public class ProgramController {
     private Label versionStatusLabel = new Label();
     @FXML
     private Button updateButton;
+    @FXML
+    private TabPane tabPane;
+    @FXML
+    private Tab uniqueTabId1;
     private RecycleBin recycleBin;
 
     @FXML
@@ -54,6 +57,36 @@ public class ProgramController {
         this.recycleBin = new RecycleBin(recycleBinPath);
 
         compareDriverVersions();
+
+        ContextMenu contextMenu = new ContextMenu();
+        MenuItem renameItem = new MenuItem("Rename");
+        contextMenu.getItems().add(renameItem);
+
+        tabPane.getTabs().forEach(tab -> {
+            tab.setContextMenu(contextMenu);
+        });
+
+        renameItem.setOnAction(e -> {
+            Tab selectedTab = tabPane.getSelectionModel().getSelectedItem();
+            if (selectedTab != null) {
+                TextInputDialog dialog = new TextInputDialog(selectedTab.getText());
+                dialog.setTitle("Renaming a tab");
+                dialog.setHeaderText("Enter a new name for the tab:");
+                Optional<String> result = dialog.showAndWait();
+                result.ifPresent(name -> {
+                    selectedTab.setText(name);
+                    prefs.put(selectedTab.getId(), name);
+                });
+            }
+        });
+
+        tabPane.getTabs().forEach(tab -> {
+            String tabId = ((Tab) tab).getId();
+            if (tabId != null) {
+                String savedTitle = prefs.get(tabId, tab.getText());
+                tab.setText(savedTitle);
+            }
+        });
     }
 
     public void compareDriverVersions() {

@@ -6,10 +6,10 @@
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.dev.station.controller.ProgramController">
-    <TabPane AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"
+    <TabPane fx:id="tabPane" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"
              tabClosingPolicy="UNAVAILABLE">
 
-        <Tab text="ProgramManager 1" styleClass="tab, clickable">
+        <Tab fx:id="uniqueTabId1" text="Program Manager 1" styleClass="tab, clickable">
             <ScrollPane fitToWidth="true">
                 <VBox spacing="10" styleClass="settings-container">
                     <padding>
