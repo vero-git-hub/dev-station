@@ -65,3 +65,19 @@
 .bold-label {
     -fx-font-weight: bold;
 }
+
+.button-save {
+    -fx-graphic: url('../images/save-30.png');
+}
+
+.button-home {
+    -fx-graphic: url('../images/header/home-30.png');
+}
+
+.button-return {
+    -fx-graphic: url('../images/return-30.png');
+}
+
+.button-clear {
+    -fx-graphic: url('../images/recycle-bin-30.png');
+}

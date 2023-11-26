@@ -93,4 +93,9 @@ public class MainController {
             e.printStackTrace();
         }
     }
+
+    @FXML
+    private void returnHome() {
+        contentArea.getChildren().clear();
+    }
 }

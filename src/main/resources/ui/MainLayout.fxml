@@ -7,11 +7,15 @@
 
 <BorderPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.dev.station.controller.MainController" stylesheets="@../styles/style.css">
     <top>
-        <HBox spacing="10" alignment="CENTER_RIGHT" styleClass="header-hbox">
+        <HBox spacing="10" styleClass="header-hbox" style="-fx-padding: 10 10 10 10;">
+            <Button onAction="#returnHome" styleClass="button-home, clickable"/>
+
+            <Region HBox.hgrow="ALWAYS"/>
+
             <Button fx:id="imagesButton" styleClass="images-button, clickable" onAction="#handleImagesButtonAction">
                 <graphic>
                     <ImageView>
-                        <Image url="@../images/images-24.png"/>
+                        <Image url="@../images/header/images-24.png"/>
                         <fitWidth>28</fitWidth>
                         <fitHeight>28</fitHeight>
                         <preserveRatio>true</preserveRatio>
@@ -22,7 +26,7 @@
             <Button fx:id="settingsButton" onAction="#handleSettingsButtonAction" styleClass="settings-button, clickable">
                 <graphic>
                     <ImageView>
-                        <Image url="@../images/setting-48.png"/>
+                        <Image url="@../images/header/setting-48.png"/>
                         <fitWidth>28</fitWidth>
                         <fitHeight>28</fitHeight>
                         <preserveRatio>true</preserveRatio>

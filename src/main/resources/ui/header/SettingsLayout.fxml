@@ -3,6 +3,8 @@
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.dev.station.controller.header.SettingsController">
@@ -36,7 +38,7 @@
 
                     <Label text="Path to PhpStorm:"/>
                     <TextField fx:id="phpStormPathField"/>
-                    <Button text="Save" onAction="#savePhpStormSettings" styleClass="clickable"/>
+                    <Button onAction="#savePhpStormSettings" styleClass="button-save, clickable"/>
                 </VBox>
             </ScrollPane>
         </Tab>
@@ -54,7 +56,7 @@
                     <Label text="Path to Selenium (jar):"/>
                     <TextField fx:id="seleniumJARPathField"/>
 
-                    <Button text="Save" onAction="#saveSeleniumSettings" styleClass="clickable"/>
+                    <Button onAction="#saveSeleniumSettings" styleClass="button-save, clickable"/>
                 </VBox>
             </ScrollPane>
         </Tab>
@@ -78,7 +80,7 @@
                     <Label text="Path to recycleBin:"/>
                     <TextField fx:id="secondRecycleBinFolderField"/>
 
-                    <Button text="Save" onAction="#saveClearTabSettings" styleClass="clickable"/>
+                    <Button onAction="#saveClearTabSettings" styleClass="button-save, clickable"/>
 
                     <Button text="Remove all tabs" onAction="#removeAllTabsSettings" styleClass="clickable"/>
                 </VBox>
@@ -103,7 +105,7 @@
 
                     <CheckBox fx:id="useOriginalSizeCheckbox" text="Use Original Image Size" styleClass="clickable"/>
 
-                    <Button text="Save" onAction="#saveImagesSettings" styleClass="clickable"/>
+                    <Button onAction="#saveImagesSettings" styleClass="button-save, clickable"/>
                 </VBox>
             </ScrollPane>
         </Tab>
@@ -127,7 +129,7 @@
                     <Label text="Driver exe name:"/>
                     <TextField fx:id="driverExeNameField"/>
 
-                    <Button text="Save" onAction="#saveDriverSettings" styleClass="clickable"/>
+                    <Button onAction="#saveDriverSettings" styleClass="button-save, clickable"/>
                 </VBox>
             </ScrollPane>
         </Tab>

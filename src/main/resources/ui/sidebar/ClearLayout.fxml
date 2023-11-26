@@ -18,9 +18,10 @@
 
                     <ToggleButton fx:id="toggleMoveFiles" text="Move to recycle bin" onAction="#moveFilesToRecycleBin" styleClass="clickable"/>
 
-                    <ToggleButton fx:id="toggleReturnFiles" text="Return from recycle bin" onAction="#returnFromRecycleBin" styleClass="clickable"/>
-
-                    <ToggleButton fx:id="toggleClearRecycleBin" text="Clear recycle bin" onAction="#clearRecycleBin" styleClass="clickable"/>
+                    <HBox spacing="10">
+                        <ToggleButton fx:id="toggleReturnFiles" onAction="#returnFromRecycleBin" styleClass="button-return, clickable"/>
+                        <ToggleButton fx:id="toggleClearRecycleBin" onAction="#clearRecycleBin" styleClass="button-clear, clickable"/>
+                    </HBox>
                 </VBox>
             </ScrollPane>
         </Tab>
@@ -34,9 +35,10 @@
 
                     <ToggleButton fx:id="toggleMoveFiles2" text="Move to recycle bin" onAction="#moveFilesToRecycleBin2" styleClass="clickable"/>
 
-                    <ToggleButton fx:id="toggleReturnFiles2" text="Return from recycle bin" onAction="#returnFromRecycleBin2" styleClass="clickable"/>
-
-                    <ToggleButton fx:id="toggleClearRecycleBin2" text="Clear recycle bin" onAction="#clearRecycleBin2" styleClass="clickable"/>
+                    <HBox spacing="10">
+                        <ToggleButton fx:id="toggleReturnFiles2" onAction="#returnFromRecycleBin2" styleClass="button-return, clickable"/>
+                        <ToggleButton fx:id="toggleClearRecycleBin2" onAction="#clearRecycleBin2" styleClass="button-clear, clickable"/>
+                    </HBox>
                 </VBox>
             </ScrollPane>
         </Tab>
