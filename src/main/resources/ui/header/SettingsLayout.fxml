@@ -1,17 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.collections.FXCollections?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import java.lang.String?>
-
-<?import javafx.geometry.Insets?>
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.dev.station.controller.header.SettingsController">
     <TabPane AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"
              tabClosingPolicy="UNAVAILABLE">
-        <Tab text="General" styleClass="tab">
+        <Tab text="General" styleClass="tab, clickable">
             <ScrollPane fitToWidth="true">
                 <VBox spacing="10" styleClass="settings-container">
                     <padding>
@@ -30,7 +27,7 @@
             </ScrollPane>
         </Tab>
 
-        <Tab text="PhpStorm" styleClass="tab">
+        <Tab text="PhpStorm" styleClass="tab, clickable">
             <ScrollPane fitToWidth="true">
                 <VBox spacing="10" styleClass="settings-container">
                     <padding>
@@ -39,12 +36,12 @@
 
                     <Label text="Path to PhpStorm:"/>
                     <TextField fx:id="phpStormPathField"/>
-                    <Button text="Save" onAction="#savePhpStormSettings"/>
+                    <Button text="Save" onAction="#savePhpStormSettings" styleClass="clickable"/>
                 </VBox>
             </ScrollPane>
         </Tab>
 
-        <Tab text="Selenium" styleClass="tab">
+        <Tab text="Selenium" styleClass="tab, clickable">
             <ScrollPane fitToWidth="true">
                 <VBox spacing="10" styleClass="settings-container">
                     <padding>
@@ -53,16 +50,16 @@
 
                     <Label text="Path to Selenium (exe):"/>
                     <TextField fx:id="seleniumPathField"/>
-                    <Button text="Save" onAction="#saveSeleniumSettings"/>
 
                     <Label text="Path to Selenium (jar):"/>
                     <TextField fx:id="seleniumJARPathField"/>
-                    <Button text="Save" onAction="#saveSeleniumJARSettings"/>
+
+                    <Button text="Save" onAction="#saveSeleniumSettings" styleClass="clickable"/>
                 </VBox>
             </ScrollPane>
         </Tab>
 
-        <Tab text="Clear" styleClass="tab">
+        <Tab text="Clear" styleClass="tab, clickable">
             <ScrollPane fitToWidth="true">
                 <VBox spacing="10" styleClass="settings-container">
                     <padding>
@@ -81,14 +78,14 @@
                     <Label text="Path to recycleBin:"/>
                     <TextField fx:id="secondRecycleBinFolderField"/>
 
-                    <Button text="Save" onAction="#saveClearTabSettings"/>
+                    <Button text="Save" onAction="#saveClearTabSettings" styleClass="clickable"/>
 
-                    <Button text="Remove all tabs" onAction="#removeAllTabsSettings"/>
+                    <Button text="Remove all tabs" onAction="#removeAllTabsSettings" styleClass="clickable"/>
                 </VBox>
             </ScrollPane>
         </Tab>
 
-        <Tab text="Images" styleClass="tab">
+        <Tab text="Images" styleClass="tab, clickable">
             <ScrollPane fitToWidth="true">
                 <VBox spacing="10" styleClass="settings-container">
                     <padding>
@@ -97,7 +94,6 @@
 
                     <Label text="Path to images folder:"/>
                     <TextField fx:id="imagesFolderPathField"/>
-                    <Button text="Save" onAction="#saveImagesFolderSettings"/>
 
                     <Label text="Image Width:"/>
                     <TextField fx:id="imageWidthField"/>
@@ -105,13 +101,14 @@
                     <Label text="Image Height:"/>
                     <TextField fx:id="imageHeightField"/>
 
-                    <CheckBox fx:id="useOriginalSizeCheckbox" text="Use Original Image Size"/>
-                    <Button text="Save Image Settings" onAction="#saveImageSizeSettings"/>
+                    <CheckBox fx:id="useOriginalSizeCheckbox" text="Use Original Image Size" styleClass="clickable"/>
+
+                    <Button text="Save" onAction="#saveImagesSettings" styleClass="clickable"/>
                 </VBox>
             </ScrollPane>
         </Tab>
 
-        <Tab text="Driver" styleClass="tab">
+        <Tab text="Driver" styleClass="tab, clickable">
             <ScrollPane fitToWidth="true">
                 <VBox spacing="10" styleClass="settings-container">
                     <padding>
@@ -120,19 +117,17 @@
 
                     <Label text="Registry key for your version:"/>
                     <TextField fx:id="registryKey"/>
-                    <Button text="Save" onAction="#saveRegistryKeySettings"/>
 
                     <Label text="Link for website version:"/>
                     <TextField fx:id="websiteUrl"/>
-                    <Button text="Save" onAction="#saveWebsiteUrlSettings"/>
 
                     <Label text="Path to driver folder:"/>
                     <TextField fx:id="driverFolderPathField"/>
-                    <Button text="Save" onAction="#saveDriverFolderSettings"/>
 
                     <Label text="Driver exe name:"/>
                     <TextField fx:id="driverExeNameField"/>
-                    <Button text="Save" onAction="#saveDriverExeNameSettings"/>
+
+                    <Button text="Save" onAction="#saveDriverSettings" styleClass="clickable"/>
                 </VBox>
             </ScrollPane>
         </Tab>
