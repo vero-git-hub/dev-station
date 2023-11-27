@@ -8,12 +8,18 @@ import com.dev.station.entity.driver.UpdateFinder;
 import com.dev.station.entity.driver.ZipExtractor;
 import com.dev.station.entity.driver.version.VersionExtractor;
 import com.dev.station.entity.driver.version.VersionFinder;
+import com.dev.station.manager.DriverManager;
 import com.dev.station.manager.LaunchManager;
 import com.dev.station.util.AlertUtils;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 
 import java.io.IOException;
 import java.util.prefs.Preferences;
@@ -27,6 +33,8 @@ public class SeleniumController {
     private Label versionStatusLabel = new Label();
     @FXML
     private Button updateButton;
+    @FXML private VBox mainLayout;
+    @FXML private StackPane notificationPane;
 
     @FXML
     private void initialize() {
@@ -34,38 +42,36 @@ public class SeleniumController {
     }
 
     public void compareDriverVersions() {
-        String currentVersion = getCurrentVersion();
-        String websiteVersion = getWebsiteVersion();
+        String currentVersion = DriverManager.getCurrentVersion(prefs);
+        String websiteVersion = DriverManager.getWebsiteVersion(prefs);
 
         currentVersion = VersionExtractor.extractVersion(currentVersion);
         websiteVersion = VersionExtractor.extractVersion(websiteVersion);
 
         if(currentVersion.equals(websiteVersion)) {
             updateVersionStatus("The versions are the same! -> " + currentVersion);
+
         } else {
             updateVersionStatus("Versions vary!");
             updateButtonVisibility(true);
         }
+        showTemporaryNotification("Driver versions successfully received and compared");
+    }
+
+    private void showTemporaryNotification(String message) {
+        Label notificationLabel = new Label(message);
+        notificationLabel.getStyleClass().add("notification-label");
+
+        notificationPane.getChildren().add(notificationLabel);
+
+        Timeline timeline = new Timeline(new KeyFrame(
+                Duration.seconds(2),
+                ae -> notificationPane.getChildren().remove(notificationLabel)));
+        timeline.play();
     }
 
     private void updateButtonVisibility(boolean isVisible) {
         updateButton.setVisible(isVisible);
-    }
-
-    private String getWebsiteVersion() {
-        return new WebParser().parseWebsiteForVersion(prefs);
-    }
-
-    private String getCurrentVersion() {
-        VersionFinder finder = new VersionFinder();
-        String version = null;
-        try {
-            version = finder.getVersion(prefs);
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-            AlertUtils.showErrorAlert("Failed to get driver version", "Check the registry and the method for getting the version.");
-        }
-        return version;
     }
 
     private void updateVersionStatus(String message) {

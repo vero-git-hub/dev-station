@@ -8,8 +8,9 @@
     -fx-background-color: #4CAF50;
     -fx-text-fill: white;
     -fx-padding: 10px 20px;
-    -fx-margin: 5px 0;
     -fx-border-radius: 5px;
+    -fx-pref-width: 200px;
+    -fx-max-width: infinity;
 }
 
 .menu-button:hover {
@@ -80,4 +81,16 @@
 
 .button-clear {
     -fx-graphic: url('../images/recycle-bin-30.png');
+}
+
+.notification-label {
+    -fx-background-color: #f0f4c3;
+    -fx-border-color: #cddc39;
+    -fx-border-width: 2;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-padding: 15;
+    -fx-font-size: 14px;
+    -fx-text-fill: #333;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 10, 0, 0, 5);
 }
