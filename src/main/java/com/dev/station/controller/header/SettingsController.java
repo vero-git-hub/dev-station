@@ -3,9 +3,7 @@ package com.dev.station.controller.header;
 import com.dev.station.controller.MainController;
 import com.dev.station.util.AlertUtils;
 import javafx.fxml.FXML;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -14,46 +12,56 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
+import java.util.Locale;
+import java.util.ResourceBundle;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 public class SettingsController {
     private final Preferences prefs = MainController.prefs;
-    @FXML
-    private ComboBox<String> startupTabComboBox;
-    @FXML
-    private TextField phpStormPathField;
-    @FXML
-    private TextField seleniumPathField;
-    @FXML
-    private TextField seleniumJARPathField;
-    @FXML
-    private TextField fieldClearFirstFolder;
-    @FXML
-    private TextField fieldClearSecondFolder;
-    @FXML
-    private TextField firstRecycleBinFolderField;
-    @FXML
-    private TextField secondRecycleBinFolderField;
-    @FXML
-    private TextField imagesFolderPathField;
-    @FXML
-    private TextField imageWidthField;
-    @FXML
-    private TextField imageHeightField;
-    @FXML
-    private CheckBox useOriginalSizeCheckbox;
-    @FXML
-    private TextField registryKey;
-    @FXML
-    private TextField websiteUrl;
-    @FXML
-    private TextField driverFolderPathField;
-    @FXML
-    private TextField driverExeNameField;
+    @FXML private ComboBox<String> startupTabComboBox;
+    @FXML private TextField phpStormPathField;
+    @FXML private TextField seleniumPathField;
+    @FXML private TextField seleniumJARPathField;
+    @FXML private TextField fieldClearFirstFolder;
+    @FXML private TextField fieldClearSecondFolder;
+    @FXML private TextField firstRecycleBinFolderField;
+    @FXML private TextField secondRecycleBinFolderField;
+    @FXML private TextField imagesFolderPathField;
+    @FXML private TextField imageWidthField;
+    @FXML private TextField imageHeightField;
+    @FXML private CheckBox useOriginalSizeCheckbox;
+    @FXML private TextField registryKey;
+    @FXML private TextField websiteUrl;
+    @FXML private TextField driverFolderPathField;
+    @FXML private TextField driverExeNameField;
+    @FXML private Tab generalTab;
+    @FXML private Tab driverTab;
+    @FXML private Tab clearTab;
+    @FXML private Tab imagesTab;
+    @FXML private TitledPane driverSettingsAccordion;
+    @FXML private TitledPane seleniumSettingsAccordion;
+    @FXML public Label registryKeyLabel;
+    @FXML public Label websiteUrlLabel;
+    @FXML public Label driverFolderPathFieldLabel;
+    @FXML public Label driverExeNameFieldLabel;
+    @FXML public Label seleniumPathFieldLabel;
+    @FXML public Label seleniumJARPathFieldLabel;
+    @FXML public Label firstFolderLabel;
+    @FXML public Label firstFolderPathLabel;
+    @FXML public Label firstRecycleBinPathLabel;
+    @FXML public Label secondFolderLabel;
+    @FXML public Label secondFolderPathLabel;
+    @FXML public Label secondRecycleBinPathLabel;
+    @FXML public Button removeAllTabsButton;
+    @FXML public Label imagesFolderPathLabel;
+    @FXML public Label imageWidthLabel;
+    @FXML public Label imageHeightLabel;
 
     @FXML
     public void initialize() {
+        localize();
+
         phpStormPathField.setText(prefs.get("phpStormPath", ""));
         seleniumPathField.setText(prefs.get("seleniumPath", ""));
         seleniumJARPathField.setText(prefs.get("seleniumJARPath", ""));
@@ -73,6 +81,41 @@ public class SettingsController {
         websiteUrl.setText(prefs.get("websiteUrl", ""));
         driverFolderPathField.setText(prefs.get("driverFolderPath", ""));
         driverExeNameField.setText(prefs.get("driverExeName", ""));
+    }
+
+    private void localize() {
+        Locale locale = Locale.getDefault();
+        //locale = new Locale("en");
+        ResourceBundle bundle = ResourceBundle.getBundle("messages", locale);
+
+        generalTab.setText(bundle.getString("settingsTabGeneral"));
+        driverTab.setText(bundle.getString("settingsTabDriver"));
+        clearTab.setText(bundle.getString("settingsTabClear"));
+        imagesTab.setText(bundle.getString("settingsTabImages"));
+
+        driverSettingsAccordion.setText(bundle.getString("driverSettingsAccordion"));
+        seleniumSettingsAccordion.setText(bundle.getString("seleniumSettingsAccordion"));
+
+        registryKeyLabel.setText(bundle.getString("registryKeyLabel"));
+        websiteUrlLabel.setText(bundle.getString("websiteUrlLabel"));
+        driverFolderPathFieldLabel.setText(bundle.getString("driverFolderPathFieldLabel"));
+        driverExeNameFieldLabel.setText(bundle.getString("driverExeNameFieldLabel"));
+        seleniumPathFieldLabel.setText(bundle.getString("seleniumPathFieldLabel"));
+        seleniumJARPathFieldLabel.setText(bundle.getString("seleniumJARPathFieldLabel"));
+
+        firstFolderLabel.setText(bundle.getString("firstFolderLabel"));
+        firstFolderPathLabel.setText(bundle.getString("firstFolderPathLabel"));
+        firstRecycleBinPathLabel.setText(bundle.getString("firstRecycleBinPathLabel"));
+        secondFolderLabel.setText(bundle.getString("secondFolderLabel"));
+        secondFolderPathLabel.setText(bundle.getString("secondFolderPathLabel"));
+        secondRecycleBinPathLabel.setText(bundle.getString("secondRecycleBinPathLabel"));
+        removeAllTabsButton.setText(bundle.getString("removeAllTabsButton"));
+
+        useOriginalSizeCheckbox.setText(bundle.getString("useOriginalSizeCheckbox"));
+
+        imagesFolderPathLabel.setText(bundle.getString("imagesFolderPathLabel"));
+        imageWidthLabel.setText(bundle.getString("imageWidthLabel"));
+        imageHeightLabel.setText(bundle.getString("imageHeightLabel"));
     }
 
     @FXML

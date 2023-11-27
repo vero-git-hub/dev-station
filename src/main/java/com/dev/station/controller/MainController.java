@@ -7,6 +7,8 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
 
 import java.io.IOException;
+import java.util.Locale;
+import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
 
 public class MainController {
@@ -18,6 +20,8 @@ public class MainController {
 
     @FXML
     public void initialize() {
+        localize();
+
         prefs = Preferences.userNodeForPackage(getClass());
 
         manuallyButton.setOnAction(event -> {
@@ -34,6 +38,15 @@ public class MainController {
             loadClearContent();
             setActiveButton(clearButton);
         });
+    }
+
+    private void localize() {
+        Locale locale = Locale.getDefault();
+        //locale = new Locale("en");
+        ResourceBundle bundle = ResourceBundle.getBundle("messages", locale);
+        manuallyButton.setText(bundle.getString("scriptsMenu"));
+        seleniumButton.setText(bundle.getString("driverMenu"));
+        clearButton.setText(bundle.getString("clearMenu"));
     }
 
     private void loadClearContent() {

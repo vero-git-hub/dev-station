@@ -8,7 +8,16 @@
 <BorderPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.dev.station.controller.MainController" stylesheets="@../styles/style.css">
     <top>
         <HBox spacing="10" styleClass="header-hbox" style="-fx-padding: 10 10 10 10;">
-            <Button onAction="#returnHome" styleClass="button-home, clickable"/>
+            <Button onAction="#returnHome" styleClass="clickable">
+                <graphic>
+                    <ImageView>
+                        <Image url="@../images/header/home-30.png"/>
+                        <fitWidth>28</fitWidth>
+                        <fitHeight>28</fitHeight>
+                        <preserveRatio>true</preserveRatio>
+                    </ImageView>
+                </graphic>
+            </Button>
 
             <Region HBox.hgrow="ALWAYS"/>
 
@@ -51,7 +60,7 @@
     </center>
 
     <bottom>
-        <HBox alignment="CENTER" styleClass="footer">
+        <HBox alignment="BOTTOM_RIGHT" styleClass="footer">
             <Label text="v0.1.9"/>
         </HBox>
     </bottom>

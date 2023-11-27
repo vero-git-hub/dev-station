@@ -41,7 +41,6 @@ public class FileManager {
     }
 
     public static void deleteFolderContents(String rootFolderPath, String folderName) throws IOException {
-        System.out.println("delete!");
         Path folderPath = Paths.get(rootFolderPath, folderName);
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(folderPath)) {
             for (Path path : stream) {

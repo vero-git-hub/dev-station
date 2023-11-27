@@ -10,7 +10,7 @@
             fx:controller="com.dev.station.controller.header.SettingsController">
     <TabPane AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"
              tabClosingPolicy="UNAVAILABLE">
-        <Tab text="General" styleClass="tab, clickable">
+        <Tab fx:id="generalTab" text="General" styleClass="tab, clickable">
             <ScrollPane fitToWidth="true">
                 <VBox spacing="10" styleClass="settings-container">
                     <padding>
@@ -43,93 +43,102 @@
             </ScrollPane>
         </Tab>
 
-        <Tab text="Selenium" styleClass="tab, clickable">
-            <ScrollPane fitToWidth="true">
-                <VBox spacing="10" styleClass="settings-container">
-                    <padding>
-                        <Insets top="10" right="10" bottom="10" left="10"/>
-                    </padding>
+        <Tab fx:id="driverTab" styleClass="tab, clickable">
+            <content>
+                <ScrollPane fitToWidth="true">
+                    <content>
+                        <VBox spacing="10" styleClass="settings-container">
+                            <padding>
+                                <Insets top="10" right="10" bottom="10" left="10"/>
+                            </padding>
 
-                    <Label text="Path to Selenium (exe):"/>
-                    <TextField fx:id="seleniumPathField"/>
+                            <Accordion>
+                                <panes>
+                                    <TitledPane fx:id="driverSettingsAccordion" text="Driver settings">
+                                        <content>
+                                            <VBox spacing="10">
+                                                <Label fx:id="registryKeyLabel" text=""/>
+                                                <TextField fx:id="registryKey"/>
 
-                    <Label text="Path to Selenium (jar):"/>
-                    <TextField fx:id="seleniumJARPathField"/>
+                                                <Label fx:id="websiteUrlLabel" text=""/>
+                                                <TextField fx:id="websiteUrl"/>
 
-                    <Button onAction="#saveSeleniumSettings" styleClass="button-save, clickable"/>
-                </VBox>
-            </ScrollPane>
+                                                <Label fx:id="driverFolderPathFieldLabel" text=""/>
+                                                <TextField fx:id="driverFolderPathField"/>
+
+                                                <Label fx:id="driverExeNameFieldLabel" text=""/>
+                                                <TextField fx:id="driverExeNameField"/>
+
+                                                <Button onAction="#saveDriverSettings" styleClass="button-save, clickable"/>
+                                            </VBox>
+                                        </content>
+                                    </TitledPane>
+
+                                    <TitledPane fx:id="seleniumSettingsAccordion" text="Selenium settings">
+                                        <content>
+                                            <VBox spacing="10">
+                                                <Label fx:id="seleniumPathFieldLabel" text=""/>
+                                                <TextField fx:id="seleniumPathField"/>
+
+                                                <Label fx:id="seleniumJARPathFieldLabel" text=""/>
+                                                <TextField fx:id="seleniumJARPathField"/>
+
+                                                <Button onAction="#saveSeleniumSettings" styleClass="button-save, clickable"/>
+                                            </VBox>
+                                        </content>
+                                    </TitledPane>
+                                </panes>
+                            </Accordion>
+                        </VBox>
+                    </content>
+                </ScrollPane>
+            </content>
         </Tab>
 
-        <Tab text="Clear" styleClass="tab, clickable">
+        <Tab fx:id="clearTab" text="Clear" styleClass="tab, clickable">
             <ScrollPane fitToWidth="true">
                 <VBox spacing="10" styleClass="settings-container">
                     <padding>
                         <Insets top="10" right="10" bottom="10" left="10"/>
                     </padding>
 
-                    <Label styleClass="bold-label">First folder</Label>
-                    <Label text="Path to folder:"/>
+                    <Label fx:id="firstFolderLabel" styleClass="bold-label"/>
+                    <Label fx:id="firstFolderPathLabel"/>
                     <TextField fx:id="fieldClearFirstFolder"/>
-                    <Label text="Path to recycleBin:"/>
+                    <Label fx:id="firstRecycleBinPathLabel"/>
                     <TextField fx:id="firstRecycleBinFolderField"/>
 
-                    <Label styleClass="bold-label">Second folder</Label>
-                    <Label text="Path to folder:"/>
+                    <Label fx:id="secondFolderLabel" styleClass="bold-label"/>
+                    <Label fx:id="secondFolderPathLabel"/>
                     <TextField fx:id="fieldClearSecondFolder"/>
-                    <Label text="Path to recycleBin:"/>
+                    <Label fx:id="secondRecycleBinPathLabel"/>
                     <TextField fx:id="secondRecycleBinFolderField"/>
 
                     <Button onAction="#saveClearTabSettings" styleClass="button-save, clickable"/>
 
-                    <Button text="Remove all tabs" onAction="#removeAllTabsSettings" styleClass="clickable"/>
+                    <Button fx:id="removeAllTabsButton" onAction="#removeAllTabsSettings" styleClass="clickable"/>
                 </VBox>
             </ScrollPane>
         </Tab>
-
-        <Tab text="Images" styleClass="tab, clickable">
+        <Tab fx:id="imagesTab" text="Images" styleClass="tab, clickable">
             <ScrollPane fitToWidth="true">
                 <VBox spacing="10" styleClass="settings-container">
                     <padding>
                         <Insets top="10" right="10" bottom="10" left="10"/>
                     </padding>
 
-                    <Label text="Path to images folder:"/>
+                    <Label fx:id="imagesFolderPathLabel" text="Path to images folder:"/>
                     <TextField fx:id="imagesFolderPathField"/>
 
-                    <Label text="Image Width:"/>
+                    <Label fx:id="imageWidthLabel" text="Image Width:"/>
                     <TextField fx:id="imageWidthField"/>
 
-                    <Label text="Image Height:"/>
+                    <Label fx:id="imageHeightLabel" text="Image Height:"/>
                     <TextField fx:id="imageHeightField"/>
 
-                    <CheckBox fx:id="useOriginalSizeCheckbox" text="Use Original Image Size" styleClass="clickable"/>
+                    <CheckBox fx:id="useOriginalSizeCheckbox" styleClass="clickable"/>
 
                     <Button onAction="#saveImagesSettings" styleClass="button-save, clickable"/>
-                </VBox>
-            </ScrollPane>
-        </Tab>
-
-        <Tab text="Driver" styleClass="tab, clickable">
-            <ScrollPane fitToWidth="true">
-                <VBox spacing="10" styleClass="settings-container">
-                    <padding>
-                        <Insets top="10" right="10" bottom="10" left="10"/>
-                    </padding>
-
-                    <Label text="Registry key for your version:"/>
-                    <TextField fx:id="registryKey"/>
-
-                    <Label text="Link for website version:"/>
-                    <TextField fx:id="websiteUrl"/>
-
-                    <Label text="Path to driver folder:"/>
-                    <TextField fx:id="driverFolderPathField"/>
-
-                    <Label text="Driver exe name:"/>
-                    <TextField fx:id="driverExeNameField"/>
-
-                    <Button onAction="#saveDriverSettings" styleClass="button-save, clickable"/>
                 </VBox>
             </ScrollPane>
         </Tab>

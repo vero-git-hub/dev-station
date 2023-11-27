@@ -18,7 +18,7 @@
                         <Insets top="10" right="10" bottom="10" left="10"/>
                     </padding>
                     <HBox spacing="10">
-                        <ToggleButton fx:id="toggleMoveFiles" text="Move to recycle bin" onAction="#moveFilesToRecycleBin" styleClass="clickable"/>
+                        <ToggleButton fx:id="toggleMoveFiles" onAction="#moveFilesToRecycleBin" styleClass="clickable"/>
 
                         <ToggleButton fx:id="toggleReturnFiles" onAction="#returnFromRecycleBin" styleClass="clickable">
                             <graphic>

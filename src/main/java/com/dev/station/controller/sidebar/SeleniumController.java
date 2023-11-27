@@ -22,6 +22,8 @@ import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
 import java.io.IOException;
+import java.util.Locale;
+import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
 
 public class SeleniumController {
@@ -35,9 +37,16 @@ public class SeleniumController {
     private Button updateButton;
     @FXML private VBox mainLayout;
     @FXML private StackPane notificationPane;
+    ResourceBundle bundle;
 
     @FXML
     private void initialize() {
+        Locale locale = Locale.getDefault();
+        //locale = new Locale("en");
+        bundle = ResourceBundle.getBundle("messages", locale);
+        updateButton.setText(bundle.getString("updateButton"));
+        toggleSelenium.setText(bundle.getString("toggleSelenium"));
+
         compareDriverVersions();
     }
 
@@ -48,14 +57,17 @@ public class SeleniumController {
         currentVersion = VersionExtractor.extractVersion(currentVersion);
         websiteVersion = VersionExtractor.extractVersion(websiteVersion);
 
+        String versionStatus;
         if(currentVersion.equals(websiteVersion)) {
-            updateVersionStatus("The versions are the same! -> " + currentVersion);
+            versionStatus = bundle.getString("versionSame");
+            updateVersionStatus(versionStatus + " " + currentVersion);
 
         } else {
-            updateVersionStatus("Versions vary!");
+            versionStatus = bundle.getString("versionVary");
+            updateVersionStatus(versionStatus);
             updateButtonVisibility(true);
         }
-        showTemporaryNotification("Driver versions successfully received and compared");
+        showTemporaryNotification(bundle.getString("driverVersionsComparisonSuccess"));
     }
 
     private void showTemporaryNotification(String message) {

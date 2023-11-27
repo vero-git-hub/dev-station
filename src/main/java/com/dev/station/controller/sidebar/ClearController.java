@@ -14,7 +14,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Comparator;
+import java.util.Locale;
 import java.util.Optional;
+import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
 import java.util.stream.Stream;
 
@@ -31,9 +33,17 @@ public class ClearController {
     @FXML private ToggleButton toggleReturnFiles2;
     @FXML private ToggleButton toggleClearRecycleBin2;
     @FXML private TabPane tabPane;
+    ResourceBundle bundle;
 
     @FXML
     private void initialize() {
+        Locale locale = Locale.getDefault();
+        //locale = new Locale("en");
+        bundle = ResourceBundle.getBundle("messages", locale);
+
+        toggleMoveFiles.setText(bundle.getString("toggleMoveFiles"));
+        toggleMoveFiles2.setText(bundle.getString("toggleMoveFiles"));
+
         defineRecycleBin();
         defineRecycleBin2();
 
@@ -105,11 +115,11 @@ public class ClearController {
                 FileManager.clearFolderContents(rootFolderPath, "tmp", recycleBin);
                 FileManager.clearVarFolderContents(Paths.get(rootFolderPath, "var").toString(), recycleBin);
 
-                AlertUtils.showInformationAlert("Success", "Successfully cleared contents of all folders.");
+                AlertUtils.showInformationAlert(getTranslate("showInformationAlert"), getTranslate("moveFilesToRecycleBinSuccess"));
                 isRestorationPerformed = false;
             } catch (IOException e) {
                 e.printStackTrace();
-                AlertUtils.showErrorAlert("Error Clearing Folders", "Failed to clear contents of folders: " + e.getMessage());
+                AlertUtils.showErrorAlert(getTranslate("showErrorAlert"), getTranslate("moveFilesToRecycleBinError") + " " + e.getMessage());
             }
         }
     }
@@ -118,12 +128,12 @@ public class ClearController {
     private void returnFromRecycleBin() {
         if(toggleReturnFiles.isSelected()) {
             if (recycleBin.getRecycleBinPath() == null || !Files.exists(recycleBin.getRecycleBinPath())) {
-                AlertUtils.showErrorAlert("Error", "Recycle bin path is not set or does not exist.");
+                AlertUtils.showErrorAlert(getTranslate("showErrorAlert"), getTranslate("returnFromRecycleBinNull"));
                 return;
             }
 
             if (isRestorationPerformed) {
-                AlertUtils.showInformationAlert("Notice", "Files have already been restored.");
+                AlertUtils.showInformationAlert(getTranslate("showInformationAlert"), getTranslate("returnFromRecycleBinInfo"));
                 return;
             }
 
@@ -137,11 +147,11 @@ public class ClearController {
                     }
                 }
                 recycleBin.clearMetadata();
-                AlertUtils.showInformationAlert("Success", "All files have been restored from the recycle bin.");
+                AlertUtils.showInformationAlert(bundle.getString("showInformationAlert"), getTranslate("returnFromRecycleBinSuccess"));
                 isRestorationPerformed = true;
             } catch (IOException e) {
                 e.printStackTrace();
-                AlertUtils.showErrorAlert("Error Restoring Files", "Failed to restore files: " + e.getMessage());
+                AlertUtils.showErrorAlert(bundle.getString("showErrorAlert"), getTranslate("returnFromRecycleBinError") + " " + e.getMessage());
             }
         }
     }
@@ -166,11 +176,11 @@ public class ClearController {
                 FileManager.clearFolderContents(rootFolderPath, "tmp", recycleBin2);
                 FileManager.clearVarFolderContents(Paths.get(rootFolderPath, "var").toString(), recycleBin2);
 
-                AlertUtils.showInformationAlert("Success", "Successfully cleared contents of all folders.");
+                AlertUtils.showInformationAlert(getTranslate("showInformationAlert"), getTranslate("moveFilesToRecycleBinSuccess"));
                 isRestorationPerformed2 = false;
             } catch (IOException e) {
                 e.printStackTrace();
-                AlertUtils.showErrorAlert("Error Clearing Folders", "Failed to clear contents of folders: " + e.getMessage());
+                AlertUtils.showErrorAlert(getTranslate("showErrorAlert"), getTranslate("moveFilesToRecycleBinError") + " " + e.getMessage());
             }
         }
     }
@@ -179,12 +189,12 @@ public class ClearController {
     private void returnFromRecycleBin2() {
         if(toggleReturnFiles2.isSelected()) {
             if (recycleBin2.getRecycleBinPath() == null || !Files.exists(recycleBin2.getRecycleBinPath())) {
-                AlertUtils.showErrorAlert("Error", "Recycle bin path is not set or does not exist.");
+                AlertUtils.showErrorAlert(getTranslate("showErrorAlert"), getTranslate("returnFromRecycleBinNull"));
                 return;
             }
 
             if (isRestorationPerformed2) {
-                AlertUtils.showInformationAlert("Notice", "Files have already been restored.");
+                AlertUtils.showInformationAlert(getTranslate("showInformationAlert"), getTranslate("returnFromRecycleBinInfo"));
                 return;
             }
 
@@ -198,11 +208,11 @@ public class ClearController {
                     }
                 }
                 recycleBin2.clearMetadata();
-                AlertUtils.showInformationAlert("Success", "All files have been restored from the recycle bin.");
+                AlertUtils.showInformationAlert(getTranslate("showInformationAlert"), getTranslate("returnFromRecycleBinSuccess"));
                 isRestorationPerformed2 = true;
             } catch (IOException e) {
                 e.printStackTrace();
-                AlertUtils.showErrorAlert("Error Restoring Files", "Failed to restore files: " + e.getMessage());
+                AlertUtils.showErrorAlert(getTranslate("showErrorAlert"), getTranslate("returnFromRecycleBinError") + " " + e.getMessage());
             }
         }
     }
@@ -216,10 +226,10 @@ public class ClearController {
             FileManager.deleteFolderContents(rootFolderPath, "tmp");
             FileManager.deleteVarFolderContents(Paths.get(rootFolderPath, "var").toString());
 
-            AlertUtils.showInformationAlert("Success", "Successfully cleared contents of all folders.");
+            AlertUtils.showInformationAlert(getTranslate("showInformationAlert"), getTranslate("deleteFilesBeforeRecoverySuccess"));
         } catch (IOException e) {
             e.printStackTrace();
-            AlertUtils.showErrorAlert("Error Clearing Folders", "Failed to clear contents of folders: " + e.getMessage());
+            AlertUtils.showErrorAlert(getTranslate("showErrorAlert"), getTranslate("deleteFilesBeforeRecoveryError") + " " + e.getMessage());
         }
     }
 
@@ -243,13 +253,13 @@ public class ClearController {
             }
         } catch (IOException e) {
             e.printStackTrace();
-            AlertUtils.showErrorAlert("Error Clearing Recycle Bin", "Failed to clear the recycle bin: " + e.getMessage());
+            AlertUtils.showErrorAlert(getTranslate("showErrorAlert"), getTranslate("clearRecycleBinContentsError") + " " + e.getMessage());
         }
     }
 
     private void handleClearRecycleBin(RecycleBin recycleBin, String keyRecycleBin) {
         if (recycleBin.getRecycleBinPath() == null || !Files.exists(recycleBin.getRecycleBinPath())) {
-            AlertUtils.showErrorAlert("Error", "Recycle bin path is not set or does not exist.");
+            AlertUtils.showErrorAlert(getTranslate("showErrorAlert"), getTranslate("handleClearRecycleBinNotExist"));
             return;
         }
 
@@ -265,13 +275,17 @@ public class ClearController {
                             .forEach(File::delete);
                 }
                 recycleBin.clearMetadata();
-                AlertUtils.showInformationAlert("Success", "Recycle bin cleared successfully.");
+                AlertUtils.showInformationAlert(getTranslate("showInformationAlert"), getTranslate("handleClearRecycleBinSuccess"));
             } else {
-                AlertUtils.showErrorAlert("Error", "Recycle bin path does not exist.");
+                AlertUtils.showErrorAlert(getTranslate("showErrorAlert"), getTranslate("handleClearRecycleBinPathError"));
             }
         } catch (IOException e) {
             e.printStackTrace();
-            AlertUtils.showErrorAlert("Error Clearing Recycle Bin", "Failed to clear recycle bin: " + e.getMessage());
+            AlertUtils.showErrorAlert(getTranslate("showErrorAlert"),  getTranslate("handleClearRecycleBinError") + " " + e.getMessage());
         }
+    }
+
+    private String getTranslate(String key) {
+        return bundle.getString(key);
     }
 }
