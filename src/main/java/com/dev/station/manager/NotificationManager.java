@@ -11,6 +11,10 @@ public class NotificationManager {
         this.bundle = bundle;
     }
 
+    public void updateResourceBundle(ResourceBundle newBundle) {
+        this.bundle = newBundle;
+    }
+
     public void showInformationAlert(String key) {
         String message = getTranslatedText(key);
         AlertUtils.showInformationAlert(bundle.getString("informationAlert"), message);

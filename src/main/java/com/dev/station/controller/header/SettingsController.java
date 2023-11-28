@@ -1,5 +1,6 @@
 package com.dev.station.controller.header;
 
+import com.dev.station.Localizable;
 import com.dev.station.controller.MainController;
 import com.dev.station.manager.LanguageManager;
 import com.dev.station.manager.NotificationManager;
@@ -17,7 +18,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
 
-public class SettingsController {
+public class SettingsController implements Localizable {
     private final Preferences prefs = MainController.prefs;
     private NotificationManager notificationManager;
     @FXML private ComboBox<String> startupTabComboBox;
@@ -61,19 +62,20 @@ public class SettingsController {
     @FXML
     private ComboBox<String> languageComboBox;
 
+    public SettingsController() {
+        LanguageManager.registerForUpdates(this::updateUI);
+    }
+
     @FXML
     public void initialize() {
-        String savedLanguage = prefs.get("selectedLanguage", "English");
-        languageComboBox.setValue(savedLanguage);
+        notificationManager = new NotificationManager(LanguageManager.getResourceBundle());
+        LanguageManager.registerNotificationManager(notificationManager);
 
-        languageComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal != null && !newVal.equals(oldVal)) {
-                switchLanguage(newVal);
-            }
-        });
+        loadSavedLanguage();
+        downloadUserValues();
+    }
 
-        localize();
-
+    private void downloadUserValues() {
         phpStormPathField.setText(prefs.get("phpStormPath", ""));
         seleniumPathField.setText(prefs.get("seleniumPath", ""));
         seleniumJARPathField.setText(prefs.get("seleniumJARPath", ""));
@@ -95,13 +97,41 @@ public class SettingsController {
         driverExeNameField.setText(prefs.get("driverExeName", ""));
     }
 
-    private void switchLanguage(String language) {
-        Locale locale = LanguageManager.getLocale(language);
-        prefs.put("selectedLanguage", language);
-        LanguageManager.switchLanguage(locale);
+    @Override
+    public void loadSavedLanguage() {
+        String savedLanguage = prefs.get("selectedLanguage", "English");
+        languageComboBox.setValue(savedLanguage);
+
+        languageComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null && !newVal.equals(oldVal)) {
+                Locale newLocale = LanguageManager.getLocale(newVal);
+                switchLanguage(newLocale);
+            }
+        });
+
+        Locale initialLocale = LanguageManager.getLocale(savedLanguage);
+        switchLanguage(initialLocale);
     }
 
-    private void localize() {
+    @Override
+    public void switchLanguage(Locale newLocale) {
+        String newLanguage;
+        if (newLocale.equals(Locale.ENGLISH)) {
+            newLanguage = "English";
+        } else if (newLocale.equals(new Locale("ru", "RU"))) {
+            newLanguage = "Русский";
+        } else {
+            newLanguage = "English";
+        }
+
+        prefs.put("selectedLanguage", newLanguage);
+
+        LanguageManager.switchLanguage(newLocale);
+        updateUI();
+    }
+
+    @Override
+    public void updateUI() {
         ResourceBundle bundle = LanguageManager.getResourceBundle();
 
         this.notificationManager = new NotificationManager(bundle);

@@ -9,7 +9,7 @@
 
 <?import javafx.scene.layout.StackPane?>
 <VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" spacing="10"
-      fx:controller="com.dev.station.controller.sidebar.SeleniumController" styleClass="tab-container">
+      fx:controller="com.dev.station.controller.sidebar.DriverController" styleClass="tab-container">
     <padding>
         <Insets top="10" right="10" bottom="10" left="10"/>
     </padding>

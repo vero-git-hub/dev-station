@@ -9,7 +9,6 @@ import com.dev.station.entity.driver.version.VersionExtractor;
 import com.dev.station.manager.DriverManager;
 import com.dev.station.manager.LaunchManager;
 import com.dev.station.manager.NotificationManager;
-import com.dev.station.util.AlertUtils;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
@@ -25,7 +24,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
 
-public class SeleniumController {
+public class DriverController {
     private final Preferences prefs = MainController.prefs;
     private Process seleniumProcess;
     @FXML

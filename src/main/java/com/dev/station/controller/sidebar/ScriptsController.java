@@ -1,11 +1,9 @@
 package com.dev.station.controller.sidebar;
 
-import com.dev.station.entity.ProcessHolder;
-import com.dev.station.manager.LaunchManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.ToggleButton;
 
-public class ManuallyController {
+public class ScriptsController {
     private Process phpStormProcess;
     @FXML
     private ToggleButton togglePhpStorm;

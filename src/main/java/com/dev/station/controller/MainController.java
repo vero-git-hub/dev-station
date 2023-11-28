@@ -1,5 +1,6 @@
 package com.dev.station.controller;
 
+import com.dev.station.Localizable;
 import com.dev.station.manager.LanguageManager;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,7 +13,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
 
-public class MainController {
+public class MainController implements Localizable {
     public static Preferences prefs;
     @FXML private StackPane contentArea;
     @FXML private Button manuallyButton;
@@ -26,8 +27,7 @@ public class MainController {
     @FXML
     public void initialize() {
         prefs = Preferences.userNodeForPackage(getClass());
-
-        localize();
+        loadSavedLanguage();
 
         manuallyButton.setOnAction(event -> {
             loadManuallyContent();
@@ -45,13 +45,21 @@ public class MainController {
         });
     }
 
-    private void localize() {
+    @Override
+    public void loadSavedLanguage() {
         String savedLanguage = prefs.get("selectedLanguage", "English");
         Locale locale = LanguageManager.getLocale(savedLanguage);
         LanguageManager.switchLanguage(locale);
     }
 
-    private void updateUI() {
+    @Override
+    public void switchLanguage(Locale newLocale) {
+        LanguageManager.switchLanguage(newLocale);
+        updateUI();
+    }
+
+    @Override
+    public void updateUI() {
         ResourceBundle bundle = LanguageManager.getResourceBundle();
         manuallyButton.setText(bundle.getString("scriptsMenu"));
         seleniumButton.setText(bundle.getString("driverMenu"));
@@ -70,7 +78,7 @@ public class MainController {
 
     private void loadSeleniumContent() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/sidebar/SeleniumLayout.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/sidebar/DriverLayout.fxml"));
             Node seleniumLayout = loader.load();
             contentArea.getChildren().setAll(seleniumLayout);
         } catch (IOException e) {
@@ -80,7 +88,7 @@ public class MainController {
 
     private void loadManuallyContent() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/sidebar/ManuallyLayout.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/sidebar/ScriptsLayout.fxml"));
             Node programLayout = loader.load();
             contentArea.getChildren().setAll(programLayout);
         } catch (IOException e) {
