@@ -1,14 +1,21 @@
 package com.dev.station.entity.driver;
 
-import com.dev.station.util.AlertUtils;
+import com.dev.station.manager.NotificationManager;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
 import java.io.IOException;
 import java.util.prefs.Preferences;
 
 public class UpdateFinder {
+    private final NotificationManager notificationManager;
+
+    public UpdateFinder(NotificationManager notificationManager) {
+        this.notificationManager = notificationManager;
+    }
+
     public String findUpdateLink(Preferences prefs) {
         try {
             Document doc = Jsoup.connect(prefs.get("websiteUrl", "")).get();
@@ -22,13 +29,13 @@ public class UpdateFinder {
                 if (chromeDriver.equals("chromedriver") && win64.equals("win64")) {
                     Elements tdElements = row.select("td");
                     if (tdElements.isEmpty()) {
-                        AlertUtils.showErrorAlert("Error getting driver URL", "TD elements not found");
+                        notificationManager.showErrorAlert("findUpdateLinkTDError");
                         continue;
                     }
 
                     Element linkElement = tdElements.select("code").first();
                     if (linkElement == null) {
-                        AlertUtils.showErrorAlert("Error getting driver URL", "Code element not found in TD");
+                        notificationManager.showErrorAlert("findUpdateLinkCodeError");
                         continue;
                     }
 
@@ -36,9 +43,10 @@ public class UpdateFinder {
                 }
             }
         } catch (IOException e) {
-            AlertUtils.showErrorAlert("Error getting driver URL", "HTML structure has changed.");
+            notificationManager.showErrorAlert("findUpdateLinkHTMLError");
             e.printStackTrace();
         }
-        return "Couldn't find link";
+        notificationManager.showErrorAlert("missingLink");
+        return "";
     }
 }

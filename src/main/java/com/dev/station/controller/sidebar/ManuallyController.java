@@ -12,9 +12,9 @@ public class ManuallyController {
 
     @FXML
     private void handleTogglePhpStorm() {
-        if (togglePhpStorm.isSelected()) {
-            boolean isPhpStormRunning = false;
-            LaunchManager.launchApplication("phpStormPath", "C:\\Program Files\\PhpStorm\\phpstorm.exe", new ProcessHolder(phpStormProcess, isPhpStormRunning));
-        }
+//        if (togglePhpStorm.isSelected()) {
+//            boolean isPhpStormRunning = false;
+//            LaunchManager.launchApplication("phpStormPath", "C:\\Program Files\\PhpStorm\\phpstorm.exe", new ProcessHolder(phpStormProcess, isPhpStormRunning));
+//        }
     }
 }

@@ -1,7 +1,7 @@
 package com.dev.station.controller.header;
 
 import com.dev.station.controller.MainController;
-import com.dev.station.util.AlertUtils;
+import com.dev.station.manager.NotificationManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
@@ -14,11 +14,11 @@ import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
 import java.util.Locale;
 import java.util.ResourceBundle;
-import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 public class SettingsController {
     private final Preferences prefs = MainController.prefs;
+    private NotificationManager notificationManager;
     @FXML private ComboBox<String> startupTabComboBox;
     @FXML private TextField phpStormPathField;
     @FXML private TextField seleniumPathField;
@@ -87,6 +87,7 @@ public class SettingsController {
         Locale locale = Locale.getDefault();
         //locale = new Locale("en");
         ResourceBundle bundle = ResourceBundle.getBundle("messages", locale);
+        this.notificationManager = new NotificationManager(bundle);
 
         generalTab.setText(bundle.getString("settingsTabGeneral"));
         driverTab.setText(bundle.getString("settingsTabDriver"));
@@ -120,14 +121,14 @@ public class SettingsController {
 
     @FXML
     private void savePhpStormSettings() {
-        String path = phpStormPathField.getText();
-
-        if (isValidPath(path) && path.endsWith("exe") && new File(path).exists()) {
-            prefs.put("phpStormPath", path);
-            AlertUtils.showInformationAlert("Success", "Path to PhpStorm updated successfully.");
-        } else {
-            AlertUtils.showErrorAlert("Invalid Path", "The entered path is not valid. Please enter a correct path to PhpStorm (ends with \".exe\").");
-        }
+//        String path = phpStormPathField.getText();
+//
+//        if (isValidPath(path) && path.endsWith("exe") && new File(path).exists()) {
+//            prefs.put("phpStormPath", path);
+//            AlertUtils.showInformationAlert("Success", "Path to PhpStorm updated successfully.");
+//        } else {
+//            AlertUtils.showErrorAlert("Invalid Path", "The entered path is not valid. Please enter a correct path to PhpStorm (ends with \".exe\").");
+//        }
     }
 
     @FXML
@@ -136,9 +137,9 @@ public class SettingsController {
 
         if (isValidPath(seleniumPath) && seleniumPath.endsWith(".exe") && new File(seleniumPath).exists()) {
             prefs.put("seleniumPath", seleniumPath);
-            AlertUtils.showInformationAlert("Success", "Path to Selenium executable updated successfully.");
+            notificationManager.showInformationAlert("successUpdateSeleniumPath");
         } else {
-            AlertUtils.showErrorAlert("Invalid Path", "The entered path is not valid. Please enter a correct path to the Selenium executable (ends with \".exe\").");
+            notificationManager.showErrorAlert("errorUpdateSeleniumPath");
         }
 
         saveSeleniumJARSettings();
@@ -149,9 +150,9 @@ public class SettingsController {
 
         if (isValidPath(seleniumJARPath) && seleniumJARPath.endsWith(".jar") && new File(seleniumJARPath).exists()) {
             prefs.put("seleniumJARPath", seleniumJARPath);
-            AlertUtils.showInformationAlert("Success", "Path to Selenium JAR updated successfully.");
+            notificationManager.showErrorAlert("successUpdateSeleniumJarPath");
         } else {
-            AlertUtils.showErrorAlert("Invalid Path", "The entered path is not valid. Please enter a correct path to the Selenium JAR (ends with \".jar\")..");
+            notificationManager.showErrorAlert("errorUpdateSeleniumJarPath");
         }
     }
 
@@ -166,9 +167,10 @@ public class SettingsController {
             prefs.put("fieldClearSecondFolder", fieldClearSecondFolder.getText());
             prefs.put("firstRecycleBin", firstRecycleBinFolderField.getText());
             prefs.put("secondRecycleBin", secondRecycleBinFolderField.getText());
-            AlertUtils.showInformationAlert("Success!", "Save clear tab settings.");
+
+            notificationManager.showInformationAlert("successSaveSettings");
         } else {
-            AlertUtils.showErrorAlert("Invalid Path", "One or more entered paths are invalid. Please enter correct directory paths.");
+            notificationManager.showErrorAlert("errorSaveSettings");
         }
     }
 
@@ -195,7 +197,7 @@ public class SettingsController {
         prefs.put("imageHeightField", imageHeight);
         prefs.putBoolean("useOriginalSizeCheckbox", useOriginalSize);
 
-        AlertUtils.showInformationAlert("Settings Updated", "Image settings updated successfully.");
+        notificationManager.showInformationAlert("successSaveSettings");
     }
 
     @FXML
@@ -209,35 +211,20 @@ public class SettingsController {
             prefs.put("websiteUrl", websiteUrl.getText());
             prefs.put("driverFolderPath", driverFolderPathField.getText());
             prefs.put("driverExeName", driverExeNameField.getText());
-            AlertUtils.showInformationAlert("Success!", "Driver settings saved successfully.");
+
+            notificationManager.showInformationAlert("successSaveSettings");
         } else {
-            AlertUtils.showErrorAlert("Invalid Input", "One or more entered values are invalid. Please enter correct information.");
+            notificationManager.showErrorAlert("errorSaveSettings");
         }
     }
 
     @FXML
     private void removeAllTabsSettings() {
-        try {
-            System.out.println("Before deletion:");
-            String[] keysBefore = prefs.keys();
-            for (String key : keysBefore) {
-                System.out.println(key + ": " + prefs.get(key, "default"));
-            }
-
-            int tabCount = prefs.getInt("tabCount", 0);
-            for (int i = 1; i <= tabCount; i++) {
-                prefs.remove("uniqueTabId" + i);
-            }
-            prefs.remove("tabCount");
-
-            System.out.println("After deletion:");
-            String[] keysAfter = prefs.keys();
-            for (String key : keysAfter) {
-                System.out.println(key + ": " + prefs.get(key, "default"));
-            }
-        } catch (BackingStoreException e) {
-            e.printStackTrace();
+        int tabCount = prefs.getInt("tabCount", 0);
+        for (int i = 1; i <= tabCount; i++) {
+            prefs.remove("uniqueTabId" + i);
         }
+        prefs.remove("tabCount");
     }
 
     private boolean isValidRegistryKey(String registryKey) {

@@ -1,11 +1,19 @@
 package com.dev.station.entity.driver.version;
 
+import com.dev.station.manager.NotificationManager;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.prefs.Preferences;
 
 public class VersionFinder {
+    private final NotificationManager notificationManager;
+
+    public VersionFinder(NotificationManager notificationManager) {
+        this.notificationManager = notificationManager;
+    }
+
     public String getVersion(Preferences prefs) throws IOException, InterruptedException {
         String registryKey = prefs.get("registryKey", "");
 
@@ -20,6 +28,7 @@ public class VersionFinder {
         }
         reader.close();
 
-        return "Could not determine your version";
+        notificationManager.showErrorAlert("getVersionError");
+        return "";
     }
 }

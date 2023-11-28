@@ -47,9 +47,9 @@
                         <Insets top="10" right="10" bottom="10" left="10"/>
                     </padding>
                     <HBox spacing="10">
-                        <ToggleButton fx:id="toggleMoveFiles2" text="Move to recycle bin" onAction="#moveFilesToRecycleBin2" styleClass="clickable"/>
+                        <ToggleButton fx:id="toggleMoveFiles2" onAction="#moveFilesToRecycleBin" styleClass="clickable"/>
 
-                        <ToggleButton fx:id="toggleReturnFiles2" onAction="#returnFromRecycleBin2" styleClass="clickable">
+                        <ToggleButton fx:id="toggleReturnFiles2" onAction="#returnFromRecycleBin" styleClass="clickable">
                             <graphic>
                                 <ImageView fitWidth="25" fitHeight="25" preserveRatio="true">
                                     <Image url="@../../images/return-30.png"/>
@@ -57,7 +57,7 @@
                             </graphic>
                         </ToggleButton>
 
-                        <ToggleButton fx:id="toggleClearRecycleBin2" onAction="#clearRecycleBin2" styleClass="clickable">
+                        <ToggleButton fx:id="toggleClearRecycleBin2" onAction="#clearRecycleBin" styleClass="clickable">
                             <graphic>
                                 <ImageView fitWidth="25" fitHeight="25" preserveRatio="true">
                                     <Image url="@../../images/recycle-bin-30.png"/>

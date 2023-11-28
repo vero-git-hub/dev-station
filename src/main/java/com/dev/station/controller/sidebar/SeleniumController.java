@@ -2,14 +2,13 @@ package com.dev.station.controller.sidebar;
 
 import com.dev.station.controller.MainController;
 import com.dev.station.entity.ProcessHolder;
-import com.dev.station.entity.WebParser;
 import com.dev.station.entity.driver.FileDownloader;
 import com.dev.station.entity.driver.UpdateFinder;
 import com.dev.station.entity.driver.ZipExtractor;
 import com.dev.station.entity.driver.version.VersionExtractor;
-import com.dev.station.entity.driver.version.VersionFinder;
 import com.dev.station.manager.DriverManager;
 import com.dev.station.manager.LaunchManager;
+import com.dev.station.manager.NotificationManager;
 import com.dev.station.util.AlertUtils;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -38,12 +37,19 @@ public class SeleniumController {
     @FXML private VBox mainLayout;
     @FXML private StackPane notificationPane;
     ResourceBundle bundle;
+    NotificationManager notificationManager;
+    DriverManager driverManager;
+    LaunchManager launchManager;
 
     @FXML
     private void initialize() {
         Locale locale = Locale.getDefault();
         //locale = new Locale("en");
         bundle = ResourceBundle.getBundle("messages", locale);
+        notificationManager = new NotificationManager(bundle);
+        driverManager = new DriverManager(notificationManager);
+        launchManager = new LaunchManager(notificationManager);
+
         updateButton.setText(bundle.getString("updateButton"));
         toggleSelenium.setText(bundle.getString("toggleSelenium"));
 
@@ -51,8 +57,8 @@ public class SeleniumController {
     }
 
     public void compareDriverVersions() {
-        String currentVersion = DriverManager.getCurrentVersion(prefs);
-        String websiteVersion = DriverManager.getWebsiteVersion(prefs);
+        String currentVersion = driverManager.getCurrentVersion(prefs);
+        String websiteVersion = driverManager.getWebsiteVersion(prefs);
 
         currentVersion = VersionExtractor.extractVersion(currentVersion);
         websiteVersion = VersionExtractor.extractVersion(websiteVersion);
@@ -92,17 +98,17 @@ public class SeleniumController {
 
     @FXML
     private void handleUpdateButton() {
-        UpdateFinder updateFinder = new UpdateFinder();
+        UpdateFinder updateFinder = new UpdateFinder(notificationManager);
         String fileURL = updateFinder.findUpdateLink(prefs);
         String saveDir = prefs.get("driverFolderPath", "");
         String zipFilePath = null;
 
         try {
             zipFilePath = FileDownloader.downloadFile(fileURL, saveDir);
-            AlertUtils.showInformationAlert("Success", "File downloaded successfully: " + saveDir);
+            notificationManager.showInformationAlert("successDownloaded");
         } catch (IOException e) {
+            notificationManager.showErrorAlert("errorDownloaded");
             e.printStackTrace();
-            AlertUtils.showErrorAlert("Failed", "Error uploading file to " + saveDir);
         }
 
         String outputDir = prefs.get("driverFolderPath", "");
@@ -110,12 +116,12 @@ public class SeleniumController {
 
         try {
             ZipExtractor.extractDriver(zipFilePath, outputDir, fileNameToExtract);
-            AlertUtils.showInformationAlert("Success", "Driver was successfully extracted to: " + outputDir);
+            notificationManager.showInformationAlert("successExtracted");
             updateVersionStatus("Driver version updated");
             updateButtonVisibility(false);
         } catch (IOException e) {
+            notificationManager.showErrorAlert("errorExtracted");
             e.printStackTrace();
-            AlertUtils.showErrorAlert("Failed", "Failed to extract file to: " + outputDir);
         }
     }
 
@@ -123,10 +129,10 @@ public class SeleniumController {
     private void handleToggleSelenium() {
         if (toggleSelenium.isSelected()) {
             boolean isSeleniumRunning = false;
-            boolean launchedExe = LaunchManager.launchApplication("seleniumPath", "C:\\Program Files\\Selenium\\selenium.exe", new ProcessHolder(seleniumProcess, isSeleniumRunning));
+            boolean launchedExe = launchManager.launchApplication("seleniumPath", "C:\\Program Files\\Selenium\\selenium.exe", new ProcessHolder(seleniumProcess, isSeleniumRunning));
 
             if (launchedExe) {
-                LaunchManager.launchJarApplication("seleniumJARPath", "C:\\Program Files\\Selenium\\selenium.jar", new ProcessHolder(seleniumProcess, isSeleniumRunning));
+                launchManager.launchJarApplication("seleniumJARPath", "C:\\Program Files\\Selenium\\selenium.jar", new ProcessHolder(seleniumProcess, isSeleniumRunning));
             }
         }
     }

@@ -1,5 +1,6 @@
 package com.dev.station.controller;
 
+import com.dev.station.manager.NotificationManager;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
