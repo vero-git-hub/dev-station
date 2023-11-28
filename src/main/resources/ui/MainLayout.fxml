@@ -8,7 +8,7 @@
 <BorderPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.dev.station.controller.MainController" stylesheets="@../styles/style.css">
     <top>
         <HBox spacing="10" styleClass="header-hbox" style="-fx-padding: 10 10 10 10;">
-            <Button onAction="#returnHome" styleClass="clickable">
+            <Button fx:id="homeButton" onAction="#returnHome" styleClass="clickable">
                 <graphic>
                     <ImageView>
                         <Image url="@../images/header/home-30.png"/>
@@ -47,8 +47,8 @@
 
     <left>
         <VBox fx:id="menuVBox" styleClass="menu-vbox">
-            <Button fx:id="manuallyButton" text="Manually" styleClass="menu-button, clickable"/>
-            <Button fx:id="seleniumButton" text="Selenium" styleClass="menu-button, clickable"/>
+            <Button fx:id="scriptsButton" text="Manually" styleClass="menu-button, clickable"/>
+            <Button fx:id="driverButton" text="Selenium" styleClass="menu-button, clickable"/>
             <Button fx:id="clearButton" text="Clear" styleClass="menu-button, clickable"/>
         </VBox>
     </left>

@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.StackPane;
 
 import java.io.IOException;
@@ -15,10 +16,14 @@ import java.util.prefs.Preferences;
 
 public class MainController implements Localizable {
     public static Preferences prefs;
+    ResourceBundle bundle;
     @FXML private StackPane contentArea;
-    @FXML private Button manuallyButton;
+    @FXML private Button scriptsButton;
     @FXML private Button clearButton;
-    @FXML private Button seleniumButton;
+    @FXML private Button driverButton;
+    @FXML private Button homeButton;
+    @FXML private Button imagesButton;
+    @FXML private Button settingsButton;
 
     public MainController() {
         LanguageManager.registerForUpdates(this::updateUI);
@@ -29,14 +34,18 @@ public class MainController implements Localizable {
         prefs = Preferences.userNodeForPackage(getClass());
         loadSavedLanguage();
 
-        manuallyButton.setOnAction(event -> {
+        setButtonActions();
+    }
+
+    private void setButtonActions() {
+        scriptsButton.setOnAction(event -> {
             loadManuallyContent();
-            setActiveButton(manuallyButton);
+            setActiveButton(scriptsButton);
         });
 
-        seleniumButton.setOnAction(event -> {
+        driverButton.setOnAction(event -> {
             loadSeleniumContent();
-            setActiveButton(seleniumButton);
+            setActiveButton(driverButton);
         });
 
         clearButton.setOnAction(event -> {
@@ -60,10 +69,22 @@ public class MainController implements Localizable {
 
     @Override
     public void updateUI() {
-        ResourceBundle bundle = LanguageManager.getResourceBundle();
-        manuallyButton.setText(bundle.getString("scriptsMenu"));
-        seleniumButton.setText(bundle.getString("driverMenu"));
-        clearButton.setText(bundle.getString("clearMenu"));
+        bundle = LanguageManager.getResourceBundle();
+        scriptsButton.setText(getTranslate("scriptsMenu"));
+        driverButton.setText(getTranslate("driverMenu"));
+        clearButton.setText(getTranslate("clearMenu"));
+
+        setTooltips();
+    }
+
+    private void setTooltips() {
+        Tooltip.install(scriptsButton, new Tooltip(getTranslate("scriptsMenuHint")));
+        Tooltip.install(driverButton, new Tooltip(getTranslate("driverMenuHint")));
+        Tooltip.install(clearButton, new Tooltip(getTranslate("clearMenuHint")));
+
+        Tooltip.install(homeButton, new Tooltip(getTranslate("homeButtonHint")));
+        Tooltip.install(imagesButton, new Tooltip(getTranslate("imagesButtonHint")));
+        Tooltip.install(settingsButton, new Tooltip(getTranslate("settingsButtonHint")));
     }
 
     private void loadClearContent() {
@@ -97,8 +118,8 @@ public class MainController implements Localizable {
     }
 
     private void setActiveButton(Button activeButton) {
-        manuallyButton.getStyleClass().remove("active-button");
-        seleniumButton.getStyleClass().remove("active-button");
+        scriptsButton.getStyleClass().remove("active-button");
+        driverButton.getStyleClass().remove("active-button");
         clearButton.getStyleClass().remove("active-button");
 
         activeButton.getStyleClass().add("active-button");
@@ -128,5 +149,9 @@ public class MainController implements Localizable {
     @FXML
     private void returnHome() {
         contentArea.getChildren().clear();
+    }
+
+    private String getTranslate(String key) {
+        return bundle.getString(key);
     }
 }

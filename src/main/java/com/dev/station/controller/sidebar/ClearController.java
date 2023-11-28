@@ -93,6 +93,15 @@ public class ClearController implements Localizable {
     public void updateUI() {
         toggleMoveFiles.setText(getTranslate("toggleMoveFiles"));
         toggleMoveFiles2.setText(getTranslate("toggleMoveFiles"));
+
+        setTooltips();
+    }
+
+    private void setTooltips() {
+        Tooltip.install(toggleReturnFiles, new Tooltip(getTranslate("toggleReturnFilesHint")));
+        Tooltip.install(toggleReturnFiles2, new Tooltip(getTranslate("toggleReturnFilesHint")));
+        Tooltip.install(toggleClearRecycleBin, new Tooltip(getTranslate("toggleClearRecycleBinHint")));
+        Tooltip.install(toggleClearRecycleBin2, new Tooltip(getTranslate("toggleClearRecycleBinHint")));
     }
 
     private void defineRecycleBin() {
