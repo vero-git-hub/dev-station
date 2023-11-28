@@ -1,5 +1,6 @@
 package com.dev.station.controller.sidebar;
 
+import com.dev.station.Localizable;
 import com.dev.station.controller.MainController;
 import com.dev.station.entity.ProcessHolder;
 import com.dev.station.entity.driver.FileDownloader;
@@ -7,6 +8,7 @@ import com.dev.station.entity.driver.UpdateFinder;
 import com.dev.station.entity.driver.ZipExtractor;
 import com.dev.station.entity.driver.version.VersionExtractor;
 import com.dev.station.manager.DriverManager;
+import com.dev.station.manager.LanguageManager;
 import com.dev.station.manager.LaunchManager;
 import com.dev.station.manager.NotificationManager;
 import javafx.animation.KeyFrame;
@@ -24,35 +26,55 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
 
-public class DriverController {
+public class DriverController implements Localizable {
     private final Preferences prefs = MainController.prefs;
     private Process seleniumProcess;
-    @FXML
-    private ToggleButton toggleSelenium;
-    @FXML
-    private Label versionStatusLabel = new Label();
-    @FXML
-    private Button updateButton;
-    @FXML private VBox mainLayout;
-    @FXML private StackPane notificationPane;
     ResourceBundle bundle;
     NotificationManager notificationManager;
     DriverManager driverManager;
     LaunchManager launchManager;
+    @FXML private ToggleButton toggleSelenium;
+    @FXML private Label versionStatusLabel = new Label();
+    @FXML private Button updateButton;
+    @FXML private VBox mainLayout;
+    @FXML private StackPane notificationPane;
+
+    public DriverController() {
+        LanguageManager.registerForUpdates(this::updateUI);
+    }
 
     @FXML
     private void initialize() {
-        Locale locale = Locale.getDefault();
-        //locale = new Locale("en");
-        bundle = ResourceBundle.getBundle("messages", locale);
+        bundle = LanguageManager.getResourceBundle();
+
         notificationManager = new NotificationManager(bundle);
+        LanguageManager.registerNotificationManager(notificationManager);
+
+        loadSavedLanguage();
+
         driverManager = new DriverManager(notificationManager);
         launchManager = new LaunchManager(notificationManager);
 
-        updateButton.setText(bundle.getString("updateButton"));
-        toggleSelenium.setText(bundle.getString("toggleSelenium"));
-
         compareDriverVersions();
+    }
+
+    @Override
+    public void loadSavedLanguage() {
+        String savedLanguage = prefs.get("selectedLanguage", "English");
+        Locale locale = LanguageManager.getLocale(savedLanguage);
+        LanguageManager.switchLanguage(locale);
+    }
+
+    @Override
+    public void switchLanguage(Locale newLocale) {
+        LanguageManager.switchLanguage(newLocale);
+        updateUI();
+    }
+
+    @Override
+    public void updateUI() {
+        updateButton.setText(getTranslate("updateButton"));
+        toggleSelenium.setText(getTranslate("toggleSelenium"));
     }
 
     public void compareDriverVersions() {
@@ -64,15 +86,14 @@ public class DriverController {
 
         String versionStatus;
         if(currentVersion.equals(websiteVersion)) {
-            versionStatus = bundle.getString("versionSame");
+            versionStatus = getTranslate("versionSame");
             updateVersionStatus(versionStatus + " " + currentVersion);
-
         } else {
-            versionStatus = bundle.getString("versionVary");
+            versionStatus = getTranslate("versionVary");
             updateVersionStatus(versionStatus);
             updateButtonVisibility(true);
         }
-        showTemporaryNotification(bundle.getString("driverVersionsComparisonSuccess"));
+        showTemporaryNotification(getTranslate("driverVersionsComparisonSuccess"));
     }
 
     private void showTemporaryNotification(String message) {
@@ -134,5 +155,9 @@ public class DriverController {
                 launchManager.launchJarApplication("seleniumJARPath", "C:\\Program Files\\Selenium\\selenium.jar", new ProcessHolder(seleniumProcess, isSeleniumRunning));
             }
         }
+    }
+
+    private String getTranslate(String key) {
+        return bundle.getString(key);
     }
 }

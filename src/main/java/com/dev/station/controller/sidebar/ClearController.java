@@ -1,9 +1,11 @@
 package com.dev.station.controller.sidebar;
 
+import com.dev.station.Localizable;
 import com.dev.station.controller.MainController;
 import com.dev.station.entity.RecoveryContext;
 import com.dev.station.entity.RecycleBin;
 import com.dev.station.manager.FileManager;
+import com.dev.station.manager.LanguageManager;
 import com.dev.station.manager.NotificationManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -22,13 +24,15 @@ import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
 import java.util.stream.Stream;
 
-public class ClearController {
+public class ClearController implements Localizable {
     private final Preferences prefs = MainController.prefs;
     private boolean isRestorationPerformed = false;
     private boolean isRestorationPerformed2 = false;
     private RecycleBin recycleBin;
     private RecycleBin recycleBin2;
     ResourceBundle bundle;
+    private MenuItem renameItem;
+    private MenuItem setDefaultItem;
     private NotificationManager notificationManager;
     @FXML private ToggleButton toggleMoveFiles;
     @FXML private ToggleButton toggleReturnFiles;
@@ -38,15 +42,18 @@ public class ClearController {
     @FXML private ToggleButton toggleClearRecycleBin2;
     @FXML private TabPane tabPane;
 
+    public ClearController() {
+        LanguageManager.registerForUpdates(this::updateUI);
+    }
+
     @FXML
     private void initialize() {
-        Locale locale = Locale.getDefault();
-        //locale = new Locale("en");
-        bundle = ResourceBundle.getBundle("messages", locale);
-        this.notificationManager = new NotificationManager(bundle);
+        bundle = LanguageManager.getResourceBundle();
 
-        toggleMoveFiles.setText(bundle.getString("toggleMoveFiles"));
-        toggleMoveFiles2.setText(bundle.getString("toggleMoveFiles"));
+        notificationManager = new NotificationManager(bundle);
+        LanguageManager.registerNotificationManager(notificationManager);
+
+        loadSavedLanguage();
 
         defineRecycleBin();
         defineRecycleBin2();
@@ -67,6 +74,25 @@ public class ClearController {
                 tab.setText(prefs.get(tabId, tab.getText()));
             }
         });
+    }
+
+    @Override
+    public void loadSavedLanguage() {
+        String savedLanguage = prefs.get("selectedLanguage", "English");
+        Locale locale = LanguageManager.getLocale(savedLanguage);
+        LanguageManager.switchLanguage(locale);
+    }
+
+    @Override
+    public void switchLanguage(Locale newLocale) {
+        LanguageManager.switchLanguage(newLocale);
+        updateUI();
+    }
+
+    @Override
+    public void updateUI() {
+        toggleMoveFiles.setText(getTranslate("toggleMoveFiles"));
+        toggleMoveFiles2.setText(getTranslate("toggleMoveFiles"));
     }
 
     private void defineRecycleBin() {
