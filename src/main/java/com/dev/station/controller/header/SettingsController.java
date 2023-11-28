@@ -1,6 +1,7 @@
 package com.dev.station.controller.header;
 
 import com.dev.station.controller.MainController;
+import com.dev.station.manager.LanguageManager;
 import com.dev.station.manager.NotificationManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -57,9 +58,20 @@ public class SettingsController {
     @FXML public Label imagesFolderPathLabel;
     @FXML public Label imageWidthLabel;
     @FXML public Label imageHeightLabel;
+    @FXML
+    private ComboBox<String> languageComboBox;
 
     @FXML
     public void initialize() {
+        String savedLanguage = prefs.get("selectedLanguage", "English");
+        languageComboBox.setValue(savedLanguage);
+
+        languageComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null && !newVal.equals(oldVal)) {
+                switchLanguage(newVal);
+            }
+        });
+
         localize();
 
         phpStormPathField.setText(prefs.get("phpStormPath", ""));
@@ -83,10 +95,15 @@ public class SettingsController {
         driverExeNameField.setText(prefs.get("driverExeName", ""));
     }
 
+    private void switchLanguage(String language) {
+        Locale locale = LanguageManager.getLocale(language);
+        prefs.put("selectedLanguage", language);
+        LanguageManager.switchLanguage(locale);
+    }
+
     private void localize() {
-        Locale locale = Locale.getDefault();
-        //locale = new Locale("en");
-        ResourceBundle bundle = ResourceBundle.getBundle("messages", locale);
+        ResourceBundle bundle = LanguageManager.getResourceBundle();
+
         this.notificationManager = new NotificationManager(bundle);
 
         generalTab.setText(bundle.getString("settingsTabGeneral"));

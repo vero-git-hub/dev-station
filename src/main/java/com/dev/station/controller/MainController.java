@@ -1,6 +1,6 @@
 package com.dev.station.controller;
 
-import com.dev.station.manager.NotificationManager;
+import com.dev.station.manager.LanguageManager;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -19,11 +19,15 @@ public class MainController {
     @FXML private Button clearButton;
     @FXML private Button seleniumButton;
 
+    public MainController() {
+        LanguageManager.registerForUpdates(this::updateUI);
+    }
+
     @FXML
     public void initialize() {
-        localize();
-
         prefs = Preferences.userNodeForPackage(getClass());
+
+        localize();
 
         manuallyButton.setOnAction(event -> {
             loadManuallyContent();
@@ -42,9 +46,13 @@ public class MainController {
     }
 
     private void localize() {
-        Locale locale = Locale.getDefault();
-        //locale = new Locale("en");
-        ResourceBundle bundle = ResourceBundle.getBundle("messages", locale);
+        String savedLanguage = prefs.get("selectedLanguage", "English");
+        Locale locale = LanguageManager.getLocale(savedLanguage);
+        LanguageManager.switchLanguage(locale);
+    }
+
+    private void updateUI() {
+        ResourceBundle bundle = LanguageManager.getResourceBundle();
         manuallyButton.setText(bundle.getString("scriptsMenu"));
         seleniumButton.setText(bundle.getString("driverMenu"));
         clearButton.setText(bundle.getString("clearMenu"));
@@ -59,6 +67,7 @@ public class MainController {
             e.printStackTrace();
         }
     }
+
     private void loadSeleniumContent() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/sidebar/SeleniumLayout.fxml"));

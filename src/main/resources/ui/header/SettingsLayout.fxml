@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.collections.FXCollections?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.image.Image?>
+<?import java.lang.String?>
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.dev.station.controller.header.SettingsController">
@@ -16,15 +16,14 @@
                     <padding>
                         <Insets top="10" right="10" bottom="10" left="10"/>
                     </padding>
-
-<!--                    <ComboBox fx:id="startupTabComboBox">-->
-<!--                        <items>-->
-<!--                            <FXCollections fx:factory="observableArrayList">-->
-<!--                                <String fx:value="Program management 1"/>-->
-<!--                                <String fx:value="Program management 2"/>-->
-<!--                            </FXCollections>-->
-<!--                        </items>-->
-<!--                    </ComboBox>-->
+                    <ComboBox fx:id="languageComboBox">
+                        <items>
+                            <FXCollections fx:factory="observableArrayList">
+                                <String fx:value="English"/>
+                                <String fx:value="Русский"/>
+                            </FXCollections>
+                        </items>
+                    </ComboBox>
                 </VBox>
             </ScrollPane>
         </Tab>
