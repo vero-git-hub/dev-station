@@ -14,15 +14,15 @@
     </padding>
 
     <GridPane hgap="10" vgap="10">
-        <Label text="Program Name:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <Label fx:id="programNameLabel" text="Program Name:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
         <TextField fx:id="programNameField" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
 
-        <Label text="Path to Executable:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <Label fx:id="pathToExecutableLabel" text="Path to Executable:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
         <TextField fx:id="programPathField" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
     </GridPane>
 
     <HBox spacing="10" alignment="center">
-        <Button text="Save" fx:id="saveButton" onAction="#handleSave"/>
-        <Button text="Cancel" onAction="#handleCancel"/>
+        <Button fx:id="saveButton" text="Save" onAction="#handleSave"/>
+        <Button fx:id="cancelButton" text="Cancel" onAction="#handleCancel"/>
     </HBox>
 </VBox>
