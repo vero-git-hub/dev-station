@@ -10,4 +10,7 @@
         <Insets top="10" right="10" bottom="10" left="10"/>
     </padding>
     <Button fx:id="addProgramButton" text="+" onAction="#handleAddProgram" styleClass="clickable"/>
+    <VBox fx:id="programsContainer" spacing="10" styleClass="tab-container">
+
+    </VBox>
 </VBox>

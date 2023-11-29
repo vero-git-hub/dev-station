@@ -8,6 +8,7 @@ module com.dev.station {
     requires org.kordamp.bootstrapfx.core;
     requires java.prefs;
     requires org.jsoup;
+    requires org.json;
 
 
     opens com.dev.station to javafx.fxml;
