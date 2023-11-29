@@ -134,8 +134,16 @@ public class ClearController implements Localizable {
 
     @Override
     public void updateUI() {
+        ResourceBundle bundle = LanguageManager.getResourceBundle();
+
+        notificationManager.updateResourceBundle(bundle);
+
         toggleMoveFiles.setText(getTranslate("toggleMoveFiles"));
         toggleMoveFiles2.setText(getTranslate("toggleMoveFiles"));
+
+        nameColumn.setText(bundle.getString("nameColumn"));
+        pathColumn.setText(bundle.getString("pathColumn"));
+        exclusionsColumn.setText(bundle.getString("exclusionsColumn"));
 
         setTooltips();
     }

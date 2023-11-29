@@ -53,10 +53,10 @@
 
                     <TableView fx:id="pathsTable">
                         <columns>
-                            <TableColumn fx:id="numberColumn" text="#"/>
-                            <TableColumn fx:id="nameColumn" text="Path Name"/>
-                            <TableColumn fx:id="pathColumn" text="Path"/>
-                            <TableColumn fx:id="exclusionsColumn" text="Exclusions"/>
+                            <TableColumn fx:id="numberColumn" text="№"/>
+                            <TableColumn fx:id="nameColumn"/>
+                            <TableColumn fx:id="pathColumn"/>
+                            <TableColumn fx:id="exclusionsColumn"/>
                         </columns>
                     </TableView>
                 </VBox>
