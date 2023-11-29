@@ -2,9 +2,8 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.image.Image?>
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.dev.station.controller.sidebar.ClearController">
@@ -38,8 +37,28 @@
                     </HBox>
 
                     <Separator orientation="HORIZONTAL"/>
-                    <Label fx:id="settingsDir" text="Settings dir"/>
-                    <Button text="+" onAction="#handleAddPath"/>
+                    <HBox alignment="CENTER">
+                        <Label fx:id="settingsDir" text="Settings dir"/>
+
+                        <Region HBox.hgrow="ALWAYS"/>
+
+                        <Button text="+" onAction="#handleAddPath">
+                            <graphic>
+                                <ImageView fitWidth="25" fitHeight="25" preserveRatio="true">
+                                    <Image url="@../../images/folder-96.png"/>
+                                </ImageView>
+                            </graphic>
+                        </Button>
+                    </HBox>
+
+                    <TableView fx:id="pathsTable">
+                        <columns>
+                            <TableColumn fx:id="numberColumn" text="#"/>
+                            <TableColumn fx:id="nameColumn" text="Path Name"/>
+                            <TableColumn fx:id="pathColumn" text="Path"/>
+                            <TableColumn fx:id="exclusionsColumn" text="Exclusions"/>
+                        </columns>
+                    </TableView>
                 </VBox>
             </ScrollPane>
         </Tab>

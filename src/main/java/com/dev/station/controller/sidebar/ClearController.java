@@ -2,7 +2,7 @@ package com.dev.station.controller.sidebar;
 
 import com.dev.station.Localizable;
 import com.dev.station.controller.MainController;
-import com.dev.station.controller.forms.AddProgramFormController;
+import com.dev.station.entity.PathData;
 import com.dev.station.entity.RecoveryContext;
 import com.dev.station.entity.RecycleBin;
 import com.dev.station.manager.FileManager;
@@ -14,6 +14,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -47,6 +48,11 @@ public class ClearController implements Localizable {
     @FXML private ToggleButton toggleReturnFiles2;
     @FXML private ToggleButton toggleClearRecycleBin2;
     @FXML private TabPane tabPane;
+    @FXML private TableView<PathData> pathsTable;
+    @FXML private TableColumn<PathData, Number> numberColumn;
+    @FXML private TableColumn<PathData, String> nameColumn;
+    @FXML private TableColumn<PathData, String> pathColumn;
+    @FXML private TableColumn<PathData, String> exclusionsColumn;
 
     public ClearController() {
         LanguageManager.registerForUpdates(this::updateUI);
@@ -55,12 +61,16 @@ public class ClearController implements Localizable {
     @FXML
     private void initialize() {
         bundle = LanguageManager.getResourceBundle();
-
         notificationManager = new NotificationManager(bundle);
         LanguageManager.registerNotificationManager(notificationManager);
 
         loadSavedLanguage();
+        setupTabPane();
+        setupTable();
+        loadPaths();
+    }
 
+    private void setupTabPane() {
         defineRecycleBin();
         defineRecycleBin2();
 
@@ -80,6 +90,33 @@ public class ClearController implements Localizable {
                 tab.setText(prefs.get(tabId, tab.getText()));
             }
         });
+    }
+
+    private void setupTable() {
+        numberColumn.setCellFactory(col -> new TableCell<PathData, Number>() {
+            @Override
+            protected void updateItem(Number item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setText(null);
+                } else {
+                    setText(String.valueOf(getIndex() + 1));
+                }
+            }
+        });
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        pathColumn.setCellValueFactory(new PropertyValueFactory<>("path"));
+        exclusionsColumn.setCellValueFactory(new PropertyValueFactory<>("exclusions"));
+
+        double numberColumnWidth = pathsTable.widthProperty().multiply(0.05).doubleValue();
+        numberColumn.prefWidthProperty().bind(pathsTable.widthProperty().multiply(0.05));
+        nameColumn.prefWidthProperty().bind(pathsTable.widthProperty().subtract(numberColumnWidth).divide(3));
+        pathColumn.prefWidthProperty().bind(pathsTable.widthProperty().subtract(numberColumnWidth).divide(3));
+        exclusionsColumn.prefWidthProperty().bind(pathsTable.widthProperty().subtract(numberColumnWidth).divide(3));
+    }
+
+    private void loadPaths() {
+
     }
 
     @Override
@@ -320,7 +357,7 @@ public class ClearController implements Localizable {
         return bundle.getString(key);
     }
 
-    public void handleAddPath(ActionEvent actionEvent) {
+    @FXML public void handleAddPath(ActionEvent actionEvent) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/forms/AddPathForm.fxml"));
             loader.setResources(bundle);
