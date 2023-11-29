@@ -2,12 +2,15 @@ package com.dev.station.controller.sidebar;
 
 import com.dev.station.Localizable;
 import com.dev.station.controller.MainController;
+import com.dev.station.controller.forms.AddPathFormController;
 import com.dev.station.entity.PathData;
 import com.dev.station.entity.RecoveryContext;
 import com.dev.station.entity.RecycleBin;
 import com.dev.station.manager.FileManager;
 import com.dev.station.manager.LanguageManager;
 import com.dev.station.manager.NotificationManager;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -17,6 +20,8 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
@@ -116,7 +121,22 @@ public class ClearController implements Localizable {
     }
 
     private void loadPaths() {
+        String savedPathsJson = prefs.get("savedPaths", "[]");
+        JSONArray pathsArray = new JSONArray(savedPathsJson);
 
+        ObservableList<PathData> pathsList = FXCollections.observableArrayList();
+
+        for (int i = 0; i < pathsArray.length(); i++) {
+            JSONObject pathJson = pathsArray.getJSONObject(i);
+            String name = pathJson.getString("name");
+            String path = pathJson.getString("path");
+            String exclusions = pathJson.getString("exclusions");
+
+            PathData pathData = new PathData(name, path, exclusions);
+            pathsList.add(pathData);
+        }
+
+        pathsTable.setItems(pathsList);
     }
 
     @Override
@@ -365,11 +385,18 @@ public class ClearController implements Localizable {
         return bundle.getString(key);
     }
 
+    private void updateTable() {
+        loadPaths();
+    }
+
     @FXML public void handleAddPath(ActionEvent actionEvent) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/forms/AddPathForm.fxml"));
             loader.setResources(bundle);
             Parent root = loader.load();
+
+            AddPathFormController addPathFormController = loader.getController();
+            addPathFormController.setDataSavedListener(this::updateTable);
 
             Stage stage = new Stage();
             stage.setTitle(getTranslate("addPathFormTitle"));

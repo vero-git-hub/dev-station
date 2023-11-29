@@ -48,8 +48,4 @@ public class PathData {
     public void setExclusions(String exclusions) {
         this.exclusions.set(exclusions);
     }
-
-    // Геттеры и сеттеры
-    // ...
 }
-

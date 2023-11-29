@@ -17,4 +17,5 @@ module com.dev.station {
     opens com.dev.station.controller.header to javafx.fxml;
     opens com.dev.station.controller.sidebar to javafx.fxml;
     opens com.dev.station.controller.forms to javafx.fxml;
+    opens com.dev.station.entity to javafx.base;
 }
