@@ -2,6 +2,7 @@ package com.dev.station.controller.sidebar;
 
 import com.dev.station.Localizable;
 import com.dev.station.controller.MainController;
+import com.dev.station.controller.forms.AddProgramFormController;
 import com.dev.station.entity.RecoveryContext;
 import com.dev.station.entity.RecycleBin;
 import com.dev.station.manager.FileManager;
@@ -9,7 +10,12 @@ import com.dev.station.manager.LanguageManager;
 import com.dev.station.manager.NotificationManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
@@ -312,5 +318,22 @@ public class ClearController implements Localizable {
 
     private String getTranslate(String key) {
         return bundle.getString(key);
+    }
+
+    public void handleAddPath(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/forms/AddPathForm.fxml"));
+            loader.setResources(bundle);
+            Parent root = loader.load();
+
+            Stage stage = new Stage();
+            stage.setTitle(getTranslate("addPathFormTitle"));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setScene(new Scene(root));
+
+            stage.showAndWait();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

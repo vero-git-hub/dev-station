@@ -28,8 +28,8 @@ public class AddProgramFormController {
         bundle = LanguageManager.getResourceBundle();
         programNameLabel.setText(getTranslate("scriptsProgramNameLabel"));
         pathToExecutableLabel.setText(getTranslate("scriptsPathToExecutableLabel"));
-        saveButton.setText(getTranslate("scriptsSaveButton"));
-        cancelButton.setText(getTranslate("scriptsCancelButton"));
+        saveButton.setText(getTranslate("saveButton"));
+        cancelButton.setText(getTranslate("cancelButton"));
         categoryComboBoxLabel.setText(getTranslate("scriptsCategoryComboBoxLabel"));
 
         categoryComboBox.getItems().addAll("EXE", "JAR");

@@ -36,6 +36,10 @@
                             </graphic>
                         </ToggleButton>
                     </HBox>
+
+                    <Separator orientation="HORIZONTAL"/>
+                    <Label fx:id="settingsDir" text="Settings dir"/>
+                    <Button text="+" onAction="#handleAddPath"/>
                 </VBox>
             </ScrollPane>
         </Tab>
