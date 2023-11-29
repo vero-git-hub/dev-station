@@ -2,8 +2,11 @@ package com.dev.station.controller.sidebar;
 
 import com.dev.station.controller.MainController;
 import com.dev.station.controller.forms.AddProgramFormController;
+import com.dev.station.entity.ProcessHolder;
 import com.dev.station.entity.ProgramData;
 import com.dev.station.manager.LanguageManager;
+import com.dev.station.manager.LaunchManager;
+import com.dev.station.manager.NotificationManager;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -13,6 +16,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
 
@@ -21,6 +26,9 @@ import org.json.JSONArray;
 
 public class ScriptsController {
     private final Preferences prefs = MainController.prefs;
+    private final LaunchManager launchManager = new LaunchManager(new NotificationManager(LanguageManager.getResourceBundle()));
+    private final Map<String, ProcessHolder> processHolders = new HashMap<>();
+
     @FXML private VBox programsContainer;
     @FXML public Button addProgramButton;
     ResourceBundle bundle;
@@ -94,10 +102,12 @@ public class ScriptsController {
         String path = programData.getProgramPath();
         String category = programData.getCategory();
 
+        ProcessHolder processHolder = processHolders.computeIfAbsent(path, k -> new ProcessHolder());
+
         if ("EXE".equals(category)) {
-
+            launchManager.launchApplication(path, path, processHolder);
         } else if ("JAR".equals(category)) {
-
+            launchManager.launchJarApplication(path, path, processHolder);
         }
     }
 
