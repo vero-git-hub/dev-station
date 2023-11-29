@@ -4,6 +4,7 @@ import com.dev.station.manager.LanguageManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
@@ -14,8 +15,10 @@ public class AddProgramFormController {
     @FXML public Label pathToExecutableLabel;
     @FXML public Button saveButton;
     @FXML public Button cancelButton;
+    public Label categoryComboBoxLabel;
     @FXML private TextField programNameField;
     @FXML private TextField programPathField;
+    @FXML private ComboBox<String> categoryComboBox;
     ResourceBundle bundle;
 
     @FXML private void initialize() {
@@ -24,6 +27,10 @@ public class AddProgramFormController {
         pathToExecutableLabel.setText(getTranslate("scriptsPathToExecutableLabel"));
         saveButton.setText(getTranslate("scriptsSaveButton"));
         cancelButton.setText(getTranslate("scriptsCancelButton"));
+        categoryComboBoxLabel.setText(getTranslate("scriptsCategoryComboBoxLabel"));
+
+        categoryComboBox.getItems().addAll("EXE", "JAR");
+        categoryComboBox.setValue("EXE");
     }
 
     @FXML private void handleSave(ActionEvent event) {
