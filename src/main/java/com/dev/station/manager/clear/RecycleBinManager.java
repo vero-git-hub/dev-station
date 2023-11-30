@@ -1,7 +1,7 @@
 package com.dev.station.manager.clear;
 
 import com.dev.station.controller.MainController;
-import com.dev.station.controller.sidebar.ClearController;
+import com.dev.station.controller.tab.TabController;
 import com.dev.station.entity.PathData;
 import com.dev.station.entity.RecoveryContext;
 import com.dev.station.entity.RecycleBin;
@@ -25,51 +25,39 @@ import java.util.stream.Stream;
 
 public class RecycleBinManager {
     private RecycleBin recycleBin;
-    private RecycleBin recycleBin2;
     private final Preferences prefs = MainController.prefs;
-    private final ClearController clearController;
+    private final TabController tabController;
     private final NotificationManager notificationManager;
     private ToggleButton toggleReturnFiles;
-    private ToggleButton toggleReturnFiles2;
 
-    public RecycleBinManager(ClearController clearController, NotificationManager notificationManager, ToggleButton toggleReturnFiles, ToggleButton toggleReturnFiles2) {
-        this.clearController = clearController;
+    public RecycleBinManager(TabController tabController, NotificationManager notificationManager, ToggleButton toggleReturnFiles) {
+        this.tabController = tabController;
         this.notificationManager = notificationManager;
         this.toggleReturnFiles = toggleReturnFiles;
-        this.toggleReturnFiles2 = toggleReturnFiles2;
     }
 
-    public void defineRecycleBins() {
-        defineRecycleBin();
-        defineRecycleBin2();
-    }
+//    public void defineRecycleBins() {
+//        defineRecycleBin();
+//    }
 
-    private void defineRecycleBin() {
-        String recycleBinPath = prefs.get("firstRecycleBin", "C:\\Default\\RecycleBinPath");
-        this.recycleBin = new RecycleBin(recycleBinPath);
-    }
+//    private void defineRecycleBin() {
+//        String recycleBinPath = prefs.get("firstRecycleBin", "C:\\Default\\RecycleBinPath");
+//        this.recycleBin = new RecycleBin(recycleBinPath);
+//    }
 
-    private void defineRecycleBin2() {
-        String recycleBinPath = prefs.get("secondRecycleBin", "C:\\Default\\RecycleBinPath");
-        this.recycleBin2 = new RecycleBin(recycleBinPath);
-    }
-
-    public void moveFilesToRecycleBin(ActionEvent event, ToggleButton toggleMoveFiles, ToggleButton toggleMoveFiles2) {
+    public void moveFilesToRecycleBin(ActionEvent event, ToggleButton toggleMoveFiles) {
         Object source = event.getSource();
         RecycleBin currentRecycleBin;
 
         if (source == toggleMoveFiles) {
             currentRecycleBin = recycleBin;
-            clearController.setRestorationPerformed(false);
-        } else if (source == toggleMoveFiles2) {
-            currentRecycleBin = recycleBin2;
-            clearController.setRestorationPerformed2(false);
+            tabController.setRestorationPerformed(false);
         } else {
             notificationManager.showErrorAlert("moveFilesToRecycleBinMethodError");
             return;
         }
 
-        PathManager pathManager = clearController.getPathManager();
+        PathManager pathManager = tabController.getPathManager();
         pathManager.loadPaths();
         clearRecycleBinContents(recycleBin);
         for (PathData pathData : pathManager.getPathsList()) {
@@ -98,9 +86,7 @@ public class RecycleBinManager {
     private RecoveryContext getRecoveryContext(ActionEvent event) {
         Object source = event.getSource();
         if (source == toggleReturnFiles) {
-            return new RecoveryContext(recycleBin, clearController.isRestorationPerformed(), "fieldClearFirstFolder", source);
-        } else if (source == toggleReturnFiles2) {
-            return new RecoveryContext(recycleBin2, clearController.isRestorationPerformed2(), "fieldClearSecondFolder", source);
+            return new RecoveryContext(recycleBin, tabController.isRestorationPerformed(), "fieldClearFirstFolder", source);
         } else {
             notificationManager.showErrorAlert("returnFromRecycleBinMethodError");
             return null;
@@ -134,9 +120,7 @@ public class RecycleBinManager {
             context.currentRecycleBin.clearMetadata();
             notificationManager.showInformationAlert("returnFromRecycleBinSuccess");
             if (context.source == toggleReturnFiles) {
-                clearController.setRestorationPerformed(true);
-            } else if (context.source == toggleReturnFiles2) {
-                clearController.setRestorationPerformed2(true);
+                tabController.setRestorationPerformed(true);
             }
         } catch (IOException e) {
             notificationManager.showErrorAlert("returnFromRecycleBinError");
@@ -177,13 +161,10 @@ public class RecycleBinManager {
         }
     }
 
-    public void clearRecycleBin(ActionEvent event, ToggleButton toggleClearRecycleBin, ToggleButton toggleClearRecycleBin2) {
+    public void clearRecycleBin(ActionEvent event, ToggleButton toggleClearRecycleBin) {
         Object source = event.getSource();
-
         if (source == toggleClearRecycleBin) {
             handleClearRecycleBin(recycleBin, "firstRecycleBin");
-        } else if (source == toggleClearRecycleBin2) {
-            handleClearRecycleBin(recycleBin2, "secondRecycleBin");
         }
     }
 

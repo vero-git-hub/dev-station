@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
+
+<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" spacing="10" styleClass="tab-container" fx:controller="com.dev.station.controller.tab.TabController">
+    <padding>
+        <Insets top="10" right="10" bottom="10" left="10"/>
+    </padding>
+    <HBox spacing="10">
+        <ToggleButton fx:id="toggleMoveFiles" onAction="#moveFilesToRecycleBin" styleClass="clickable"/>
+        <ToggleButton fx:id="toggleReturnFiles" onAction="#returnFromRecycleBin" styleClass="clickable"/>
+        <ToggleButton fx:id="toggleClearRecycleBin" onAction="#clearRecycleBin" styleClass="clickable"/>
+    </HBox>
+    <Separator orientation="HORIZONTAL"/>
+    <HBox alignment="CENTER">
+        <Label fx:id="settingsDir"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="+" onAction="#handleAddPath" styleClass="clickable"/>
+    </HBox>
+    <TableView fx:id="pathsTable">
+        <columns>
+            <TableColumn fx:id="numberColumn" text="№"/>
+            <TableColumn fx:id="nameColumn"/>
+            <TableColumn fx:id="pathColumn"/>
+            <TableColumn fx:id="exclusionsColumn"/>
+        </columns>
+    </TableView>
+</VBox>
+

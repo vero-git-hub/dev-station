@@ -1,95 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.layout.*?>
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.dev.station.controller.sidebar.ClearController">
     <TabPane fx:id="tabPane" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"
              tabClosingPolicy="UNAVAILABLE">
-
-        <Tab fx:id="uniqueTabId1" text="Program Manager 1" styleClass="tab, clickable">
-            <ScrollPane fitToWidth="true">
-                <VBox spacing="10" styleClass="tab-container">
-                    <padding>
-                        <Insets top="10" right="10" bottom="10" left="10"/>
-                    </padding>
-                    <HBox spacing="10">
-                        <ToggleButton fx:id="toggleMoveFiles" onAction="#moveFilesToRecycleBin" styleClass="clickable"/>
-
-                        <ToggleButton fx:id="toggleReturnFiles" onAction="#returnFromRecycleBin" styleClass="clickable">
-                            <graphic>
-                                <ImageView fitWidth="25" fitHeight="25" preserveRatio="true">
-                                    <Image url="@../../images/return-30.png"/>
-                                </ImageView>
-                            </graphic>
-                        </ToggleButton>
-
-                        <ToggleButton fx:id="toggleClearRecycleBin" onAction="#clearRecycleBin" styleClass="clickable">
-                            <graphic>
-                                <ImageView fitWidth="25" fitHeight="25" preserveRatio="true">
-                                    <Image url="@../../images/recycle-bin-30.png"/>
-                                </ImageView>
-                            </graphic>
-                        </ToggleButton>
-                    </HBox>
-
-                    <Separator orientation="HORIZONTAL"/>
-                    <HBox alignment="CENTER">
-                        <Label fx:id="settingsDir"/>
-
-                        <Region HBox.hgrow="ALWAYS"/>
-
-                        <Button text="+" onAction="#handleAddPath" styleClass="clickable">
-                            <graphic>
-                                <ImageView fitWidth="25" fitHeight="25" preserveRatio="true">
-                                    <Image url="@../../images/folder-96.png"/>
-                                </ImageView>
-                            </graphic>
-                        </Button>
-                    </HBox>
-
-                    <TableView fx:id="pathsTable">
-                        <columns>
-                            <TableColumn fx:id="numberColumn" text="№"/>
-                            <TableColumn fx:id="nameColumn"/>
-                            <TableColumn fx:id="pathColumn"/>
-                            <TableColumn fx:id="exclusionsColumn"/>
-                        </columns>
-                    </TableView>
-                </VBox>
-            </ScrollPane>
+        <Tab fx:id="addTabButton" styleClass="tab, clickable">
+            <graphic>
+                <Label fx:id="addTabLabel" text="+" />
+            </graphic>
         </Tab>
 
-        <Tab fx:id="uniqueTabId2" text="Program Manager 2" styleClass="tab, clickable">
-            <ScrollPane fitToWidth="true">
-                <VBox spacing="10" styleClass="tab-container">
-                    <padding>
-                        <Insets top="10" right="10" bottom="10" left="10"/>
-                    </padding>
-                    <HBox spacing="10">
-                        <ToggleButton fx:id="toggleMoveFiles2" onAction="#moveFilesToRecycleBin" styleClass="clickable"/>
-
-                        <ToggleButton fx:id="toggleReturnFiles2" onAction="#returnFromRecycleBin" styleClass="clickable">
-                            <graphic>
-                                <ImageView fitWidth="25" fitHeight="25" preserveRatio="true">
-                                    <Image url="@../../images/return-30.png"/>
-                                </ImageView>
-                            </graphic>
-                        </ToggleButton>
-
-                        <ToggleButton fx:id="toggleClearRecycleBin2" onAction="#clearRecycleBin" styleClass="clickable">
-                            <graphic>
-                                <ImageView fitWidth="25" fitHeight="25" preserveRatio="true">
-                                    <Image url="@../../images/recycle-bin-30.png"/>
-                                </ImageView>
-                            </graphic>
-                        </ToggleButton>
-                    </HBox>
-                </VBox>
-            </ScrollPane>
-        </Tab>
     </TabPane>
 </AnchorPane>
