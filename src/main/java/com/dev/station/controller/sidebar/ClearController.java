@@ -30,7 +30,6 @@ public class ClearController implements Localizable {
     private NotificationManager notificationManager;
     private PathManager pathManager;
     private TableManager tableManager;
-    private DialogManager dialogManager;
     private RecycleBinManager recycleBinManager;
     private TabManager tabManager;
 
@@ -86,7 +85,6 @@ public class ClearController implements Localizable {
     private void definitionManagers() {
         pathManager = new PathManager(prefs, this, notificationManager);
         tableManager = new TableManager();
-        dialogManager = new DialogManager();
         recycleBinManager = new RecycleBinManager(this, notificationManager, toggleReturnFiles, toggleReturnFiles2);
         tabManager = new TabManager(this);
     }
@@ -164,6 +162,8 @@ public class ClearController implements Localizable {
             Parent root = loader.load();
 
             AddPathFormController addPathFormController = loader.getController();
+            addPathFormController.setPathManager(pathManager);
+
             addPathFormController.setDataSavedListener(this::updateTable);
 
             Stage stage = new Stage();

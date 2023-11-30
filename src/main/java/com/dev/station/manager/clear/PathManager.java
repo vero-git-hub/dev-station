@@ -5,6 +5,7 @@ import com.dev.station.entity.PathData;
 import com.dev.station.manager.NotificationManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.TextField;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -40,7 +41,17 @@ public class PathManager {
         }
     }
 
-    public void savePath(PathData pathData) {
+    public void savePath(TextField pathNameField, TextField directoryPathField, TextField exclusionsField) {
+        String pathName = pathNameField.getText().trim();
+        String directoryPath = directoryPathField.getText().trim();
+        String exclusions = exclusionsField.getText().trim();
+
+        if (pathName.isEmpty() || directoryPath.isEmpty()) {
+            return;
+        }
+
+        PathData pathData = new PathData(pathName, directoryPath, exclusions);
+
         JSONObject pathJson = new JSONObject();
         pathJson.put("name", pathData.getName());
         pathJson.put("path", pathData.getPath());
@@ -50,6 +61,7 @@ public class PathManager {
         JSONArray pathsArray = new JSONArray(savedPathsJson);
 
         pathsArray.put(pathJson);
+
         prefs.put("savedPaths", pathsArray.toString());
     }
 

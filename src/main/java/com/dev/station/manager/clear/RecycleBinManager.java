@@ -20,10 +20,8 @@ import java.util.prefs.Preferences;
 import java.util.stream.Stream;
 
 public class RecycleBinManager {
-
     private RecycleBin recycleBin;
     private RecycleBin recycleBin2;
-
     private final Preferences prefs = MainController.prefs;
     private final ClearController clearController;
     private final NotificationManager notificationManager;
@@ -89,61 +87,6 @@ public class RecycleBinManager {
                 notificationManager.showErrorAlert("moveFilesToRecycleBinError");
                 e.printStackTrace();
             }
-        }
-    }
-
-    private void clearRecycleBinContents(RecycleBin recycleBin) {
-        try {
-            if (Files.exists(recycleBin.getRecycleBinPath()) && Files.isDirectory(recycleBin.getRecycleBinPath())) {
-                try (Stream<Path> paths = Files.walk(recycleBin.getRecycleBinPath())) {
-                    paths.filter(p -> !p.equals(recycleBin.getRecycleBinPath()))
-                            .sorted(Comparator.reverseOrder())
-                            .map(Path::toFile)
-                            .forEach(File::delete);
-                }
-                recycleBin.clearMetadata();
-            }
-        } catch (IOException e) {
-            notificationManager.showErrorAlert("clearRecycleBinContentsError");
-            e.printStackTrace();
-        }
-    }
-
-    public void clearRecycleBin(ActionEvent event, ToggleButton toggleClearRecycleBin, ToggleButton toggleClearRecycleBin2) {
-        Object source = event.getSource();
-
-        if (source == toggleClearRecycleBin) {
-            handleClearRecycleBin(recycleBin, "firstRecycleBin");
-        } else if (source == toggleClearRecycleBin2) {
-            handleClearRecycleBin(recycleBin2, "secondRecycleBin");
-        }
-    }
-
-    private void handleClearRecycleBin(RecycleBin recycleBin, String keyRecycleBin) {
-        if (recycleBin.getRecycleBinPath() == null || !Files.exists(recycleBin.getRecycleBinPath())) {
-            notificationManager.showErrorAlert("handleClearRecycleBinNotExist");
-            return;
-        }
-
-        String recycleBinPathString = prefs.get(keyRecycleBin, "C:\\Default\\RecycleBinPath");
-        Path recycleBinPath = Paths.get(recycleBinPathString);
-
-        try {
-            if (Files.exists(recycleBinPath) && Files.isDirectory(recycleBinPath)) {
-                try (Stream<Path> paths = Files.walk(recycleBinPath)) {
-                    paths.filter(p -> !p.equals(recycleBinPath))
-                            .sorted(Comparator.reverseOrder())
-                            .map(Path::toFile)
-                            .forEach(File::delete);
-                }
-                recycleBin.clearMetadata();
-                notificationManager.showInformationAlert("handleClearRecycleBinSuccess");
-            } else {
-                notificationManager.showErrorAlert("handleClearRecycleBinPathError");
-            }
-        } catch (IOException e) {
-            notificationManager.showErrorAlert("handleClearRecycleBinError");
-            e.printStackTrace();
         }
     }
 
@@ -215,6 +158,61 @@ public class RecycleBinManager {
             notificationManager.showInformationAlert("deleteFilesBeforeRecoverySuccess");
         } catch (IOException e) {
             notificationManager.showErrorAlert("deleteFilesBeforeRecoveryError");
+            e.printStackTrace();
+        }
+    }
+
+    private void clearRecycleBinContents(RecycleBin recycleBin) {
+        try {
+            if (Files.exists(recycleBin.getRecycleBinPath()) && Files.isDirectory(recycleBin.getRecycleBinPath())) {
+                try (Stream<Path> paths = Files.walk(recycleBin.getRecycleBinPath())) {
+                    paths.filter(p -> !p.equals(recycleBin.getRecycleBinPath()))
+                            .sorted(Comparator.reverseOrder())
+                            .map(Path::toFile)
+                            .forEach(File::delete);
+                }
+                recycleBin.clearMetadata();
+            }
+        } catch (IOException e) {
+            notificationManager.showErrorAlert("clearRecycleBinContentsError");
+            e.printStackTrace();
+        }
+    }
+
+    public void clearRecycleBin(ActionEvent event, ToggleButton toggleClearRecycleBin, ToggleButton toggleClearRecycleBin2) {
+        Object source = event.getSource();
+
+        if (source == toggleClearRecycleBin) {
+            handleClearRecycleBin(recycleBin, "firstRecycleBin");
+        } else if (source == toggleClearRecycleBin2) {
+            handleClearRecycleBin(recycleBin2, "secondRecycleBin");
+        }
+    }
+
+    private void handleClearRecycleBin(RecycleBin recycleBin, String keyRecycleBin) {
+        if (recycleBin.getRecycleBinPath() == null || !Files.exists(recycleBin.getRecycleBinPath())) {
+            notificationManager.showErrorAlert("handleClearRecycleBinNotExist");
+            return;
+        }
+
+        String recycleBinPathString = prefs.get(keyRecycleBin, "C:\\Default\\RecycleBinPath");
+        Path recycleBinPath = Paths.get(recycleBinPathString);
+
+        try {
+            if (Files.exists(recycleBinPath) && Files.isDirectory(recycleBinPath)) {
+                try (Stream<Path> paths = Files.walk(recycleBinPath)) {
+                    paths.filter(p -> !p.equals(recycleBinPath))
+                            .sorted(Comparator.reverseOrder())
+                            .map(Path::toFile)
+                            .forEach(File::delete);
+                }
+                recycleBin.clearMetadata();
+                notificationManager.showInformationAlert("handleClearRecycleBinSuccess");
+            } else {
+                notificationManager.showErrorAlert("handleClearRecycleBinPathError");
+            }
+        } catch (IOException e) {
+            notificationManager.showErrorAlert("handleClearRecycleBinError");
             e.printStackTrace();
         }
     }
