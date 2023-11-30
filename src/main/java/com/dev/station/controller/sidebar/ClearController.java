@@ -67,6 +67,10 @@ public class ClearController implements Localizable {
         isRestorationPerformed2 = restorationPerformed2;
     }
 
+    public PathManager getPathManager() {
+        return pathManager;
+    }
+
     @FXML
     private void initialize() {
         bundle = LanguageManager.getResourceBundle();

@@ -2,6 +2,7 @@ package com.dev.station.manager.clear;
 
 import com.dev.station.controller.MainController;
 import com.dev.station.controller.sidebar.ClearController;
+import com.dev.station.entity.PathData;
 import com.dev.station.entity.RecoveryContext;
 import com.dev.station.entity.RecycleBin;
 import com.dev.station.manager.FileManager;
@@ -15,7 +16,10 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.prefs.Preferences;
 import java.util.stream.Stream;
 
@@ -52,41 +56,35 @@ public class RecycleBinManager {
 
     public void moveFilesToRecycleBin(ActionEvent event, ToggleButton toggleMoveFiles, ToggleButton toggleMoveFiles2) {
         Object source = event.getSource();
-        String rootFolderPath;
         RecycleBin currentRecycleBin;
 
         if (source == toggleMoveFiles) {
-            rootFolderPath = prefs.get("fieldClearFirstFolder", "C:\\Default\\Path");
             currentRecycleBin = recycleBin;
-            moveToCart(source, rootFolderPath, currentRecycleBin);
             clearController.setRestorationPerformed(false);
         } else if (source == toggleMoveFiles2) {
-            rootFolderPath = prefs.get("fieldClearSecondFolder", "C:\\Default\\Path");
             currentRecycleBin = recycleBin2;
-            moveToCart(source, rootFolderPath, currentRecycleBin);
             clearController.setRestorationPerformed2(false);
         } else {
             notificationManager.showErrorAlert("moveFilesToRecycleBinMethodError");
+            return;
+        }
+
+        PathManager pathManager = clearController.getPathManager();
+        pathManager.loadPaths();
+        clearRecycleBinContents(recycleBin);
+        for (PathData pathData : pathManager.getPathsList()) {
+            moveToCart(pathData, currentRecycleBin);
         }
     }
 
-    public void moveToCart(Object source, String rootFolderPath, RecycleBin recycleBin) {
-        ToggleButton toggleButton = (ToggleButton) source;
-        if (toggleButton.isSelected()) {
-
-            clearRecycleBinContents(recycleBin);
-
-            try {
-                FileManager.clearFolderContents(rootFolderPath, "cache", recycleBin);
-                FileManager.clearFolderContents(rootFolderPath, "log", recycleBin);
-                FileManager.clearFolderContents(rootFolderPath, "tmp", recycleBin);
-                FileManager.clearVarFolderContents(Paths.get(rootFolderPath, "var").toString(), recycleBin);
-
-                notificationManager.showInformationAlert("moveFilesToRecycleBinSuccess");
-            } catch (IOException e) {
-                notificationManager.showErrorAlert("moveFilesToRecycleBinError");
-                e.printStackTrace();
-            }
+    private void moveToCart(PathData pathData, RecycleBin recycleBin) {
+        try {
+            Set<String> exclusions = new HashSet<>(Arrays.asList(pathData.getExclusions().split(",")));
+            FileManager.clearFolderContents(pathData.getPath(), recycleBin, exclusions);
+            notificationManager.showInformationAlert("moveFilesToRecycleBinSuccess");
+        } catch (IOException e) {
+            notificationManager.showErrorAlert("moveFilesToRecycleBinError");
+            e.printStackTrace();
         }
     }
 

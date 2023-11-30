@@ -7,35 +7,28 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Set;
 
 public class FileManager {
 
-    public static void clearFolderContents(String rootFolderPath, String folderName, RecycleBin recycleBin) throws IOException {
-        Path folderPath = Paths.get(rootFolderPath, folderName);
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream(folderPath)) {
-            for (Path path : stream) {
-                if (Files.isDirectory(path)) {
-                    clearFolderContents(path.toString(), "", recycleBin);
-                    recycleBin.moveToRecycleBin(path);
-                } else {
-                    recycleBin.moveToRecycleBin(path);
-                }
-            }
-        }
-    }
+    public static void clearFolderContents(String directoryPath, RecycleBin recycleBin, Set<String> exclusions) throws IOException {
+        Path dirPath = Paths.get(directoryPath);
 
-    public static void clearVarFolderContents(String varFolderPath, RecycleBin recycleBin) throws IOException {
-        Path varPath = Paths.get(varFolderPath);
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream(varPath)) {
+        if (!Files.exists(dirPath) || !Files.isDirectory(dirPath)) {
+            return;
+        }
+
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(dirPath)) {
             for (Path path : stream) {
-                if (Files.isDirectory(path)) {
-                    if (!path.getFileName().toString().equals("selenium".toLowerCase())) {
-                        clearFolderContents(path.toString(), "", recycleBin);
-                        recycleBin.moveToRecycleBin(path);
-                    }
-                } else {
-                    recycleBin.moveToRecycleBin(path);
+                if (exclusions.contains(path.getFileName().toString())) {
+                    continue;
                 }
+
+                if (Files.isDirectory(path)) {
+                    clearFolderContents(path.toString(), recycleBin, exclusions);
+                }
+
+                recycleBin.moveToRecycleBin(path);
             }
         }
     }
