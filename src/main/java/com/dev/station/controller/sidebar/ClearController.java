@@ -58,6 +58,7 @@ public class ClearController implements Localizable {
     @FXML private TableColumn<PathData, String> nameColumn;
     @FXML private TableColumn<PathData, String> pathColumn;
     @FXML private TableColumn<PathData, String> exclusionsColumn;
+    @FXML private Label settingsDir;
 
     public ClearController() {
         LanguageManager.registerForUpdates(this::updateUI);
@@ -164,7 +165,7 @@ public class ClearController implements Localizable {
         nameColumn.setText(bundle.getString("nameColumn"));
         pathColumn.setText(bundle.getString("pathColumn"));
         exclusionsColumn.setText(bundle.getString("exclusionsColumn"));
-
+        settingsDir.setText(getTranslate("settingsDir"));
         setTooltips();
     }
 

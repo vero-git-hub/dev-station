@@ -38,11 +38,11 @@
 
                     <Separator orientation="HORIZONTAL"/>
                     <HBox alignment="CENTER">
-                        <Label fx:id="settingsDir" text="Settings dir"/>
+                        <Label fx:id="settingsDir"/>
 
                         <Region HBox.hgrow="ALWAYS"/>
 
-                        <Button text="+" onAction="#handleAddPath">
+                        <Button text="+" onAction="#handleAddPath" styleClass="clickable">
                             <graphic>
                                 <ImageView fitWidth="25" fitHeight="25" preserveRatio="true">
                                     <Image url="@../../images/folder-96.png"/>
