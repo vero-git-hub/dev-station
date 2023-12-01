@@ -4,7 +4,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class TabData {
     private String id;
@@ -48,18 +51,18 @@ public class TabData {
     }
 
     public JSONObject toJson() {
-        JSONObject tabJson = new JSONObject();
-        tabJson.put("id", id);
-        tabJson.put("name", name);
-        tabJson.put("recycleBinPath", recycleBinPath);
+        Map<String, Object> orderedJsonMap = new LinkedHashMap<>();
+        orderedJsonMap.put("id", id);
+        orderedJsonMap.put("name", name);
+        orderedJsonMap.put("recycleBinPath", recycleBinPath);
 
         JSONArray pathsArray = new JSONArray();
         for (PathData path : paths) {
             pathsArray.put(path.toJson());
         }
-        tabJson.put("paths", pathsArray);
+        orderedJsonMap.put("paths", pathsArray);
 
-        return tabJson;
+        return new JSONObject(orderedJsonMap);
     }
 
     public static TabData fromJson(JSONObject jsonObject) {

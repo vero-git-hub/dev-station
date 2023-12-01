@@ -1,1 +1,35 @@
-[{"recycleBinPath":"","paths":[],"name":"New tab","id":"98665b50-5395-4516-9edc-93cdccaae020"},{"recycleBinPath":"","paths":[],"name":"New tab","id":"f2dc8c2f-e4bd-421f-b601-7abdc0ee9b1e"},{"recycleBinPath":"","paths":[],"name":"New tab","id":"b24180fe-8986-436b-92bc-d5db54652102"}]
+[
+    {
+        "name": "New tab",
+        "recycleBinPath": "",
+        "id": "1585d9c4-fc29-4fcf-9f7d-5082742849c6",
+        "paths": []
+    },
+    {
+        "name": "New tab",
+        "recycleBinPath": "C:\\Users\\sf\\Desktop\\recycleBin",
+        "id": "791f3c30-16dd-4c5f-b127-8a8ee6076518",
+        "paths": [
+            {
+                "path": "w",
+                "name": "q",
+                "exclusions": ["e"]
+            },
+            {
+                "path": "s",
+                "name": "a",
+                "exclusions": ["d"]
+            }
+        ]
+    },
+    {
+        "name": "New tab",
+        "recycleBinPath": "C:\\Users\\sf\\Desktop\\recycleBin2",
+        "id": "e42c4c0b-f2ba-433b-856b-b4e3f81e7273",
+        "paths": [{
+            "path": "x",
+            "name": "v",
+            "exclusions": ["c"]
+        }]
+    }
+]

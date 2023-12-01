@@ -141,6 +141,7 @@ public class TabController implements Localizable {
 
             AddPathFormController addPathFormController = loader.getController();
             addPathFormController.setPathManager(pathManager);
+            addPathFormController.setTabId(myTab.getId());
 
             addPathFormController.setDataSavedListener(this::updateTable);
 
