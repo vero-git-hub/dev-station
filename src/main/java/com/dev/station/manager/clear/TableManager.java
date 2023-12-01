@@ -1,6 +1,7 @@
 package com.dev.station.manager.clear;
 
-import com.dev.station.entity.PathData;
+import com.dev.station.file.PathData;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -22,7 +23,7 @@ public class TableManager {
         });
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         pathColumn.setCellValueFactory(new PropertyValueFactory<>("path"));
-        exclusionsColumn.setCellValueFactory(new PropertyValueFactory<>("exclusions"));
+        exclusionsColumn.setCellValueFactory(cellData -> new SimpleStringProperty(String.join(", ", cellData.getValue().getExclusions())));
 
         double numberColumnWidth = pathsTable.widthProperty().multiply(0.05).doubleValue();
         numberColumn.prefWidthProperty().bind(pathsTable.widthProperty().multiply(0.05));

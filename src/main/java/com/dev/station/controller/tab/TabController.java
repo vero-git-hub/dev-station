@@ -11,6 +11,7 @@ import com.dev.station.manager.NotificationManager;
 import com.dev.station.manager.clear.PathManager;
 import com.dev.station.manager.clear.RecycleBinManager;
 import com.dev.station.manager.clear.TableManager;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -19,6 +20,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -222,7 +224,13 @@ public class TabController implements Localizable {
     public void loadData(TabData tabData) {
         recycleBinPathField.setText(tabData.getRecycleBinPath());
 
+        setupTableColumns();
+
         ObservableList<PathData> paths = FXCollections.observableArrayList(tabData.getPaths());
         pathsTable.setItems(paths);
+    }
+
+    private void setupTableColumns() {
+        tableManager.setupTable(numberColumn, nameColumn, pathColumn, exclusionsColumn, pathsTable);
     }
 }

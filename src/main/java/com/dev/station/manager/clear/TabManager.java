@@ -166,11 +166,13 @@ public class TabManager {
 
             Node content = loader.load();
             TabController tabController = loader.getController();
-            tabController.loadData(tabData);
 
             Tab tab = new Tab(tabData.getName());
             tab.setContent(content);
             tab.setId(tabData.getId());
+
+            tabController.setMyTab(tab);
+            tabController.loadData(tabData);
 
             setupTabContextMenu(tab);
 
