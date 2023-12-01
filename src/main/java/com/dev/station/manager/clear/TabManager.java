@@ -130,7 +130,18 @@ public class TabManager {
         Optional<String> result = dialog.showAndWait();
         result.ifPresent(name -> {
             tab.setText(name);
-            prefs.put(tab.getId(), name);
+
+            JsonTabsManager jsonTabsManager = new JsonTabsManager();
+            List<TabData> tabs = jsonTabsManager.loadTabs();
+
+            for (TabData tabData : tabs) {
+                if (tabData.getId().equals(tab.getId())) {
+                    tabData.setName(name);
+                    break;
+                }
+            }
+
+            jsonTabsManager.saveTabs(tabs);
         });
     }
 
