@@ -1,7 +1,9 @@
 package com.dev.station.controller.forms;
 
 import com.dev.station.controller.MainController;
-import com.dev.station.entity.PathData;
+import com.dev.station.file.JsonTabsManager;
+import com.dev.station.file.TabData;
+import com.dev.station.file.PathData;
 import com.dev.station.manager.LanguageManager;
 import com.dev.station.manager.clear.PathManager;
 import javafx.fxml.FXML;
@@ -12,6 +14,8 @@ import javafx.stage.Stage;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
 
@@ -29,9 +33,14 @@ public class AddPathFormController {
     private final Preferences prefs = MainController.prefs;
     private DataSavedListener dataSavedListener;
     private PathManager pathManager;
+    private String tabId;
 
     public void setPathManager(PathManager pathManager) {
         this.pathManager = pathManager;
+    }
+
+    public void setTabId(String tabId) {
+        this.tabId = tabId;
     }
 
     @FXML private void initialize() {
@@ -43,8 +52,28 @@ public class AddPathFormController {
         cancelButton.setText(getTranslate("cancelButton"));
     }
 
-    @FXML private void handleSave() {
-        pathManager.savePath(pathNameField, directoryPathField, exclusionsField);
+    @FXML
+    private void handleSave() {
+        String pathName = pathNameField.getText().trim();
+        String directoryPath = directoryPathField.getText().trim();
+        String exclusionsString = exclusionsField.getText().trim();
+
+        if (!pathName.isEmpty() && !directoryPath.isEmpty()) {
+            List<String> exclusions = Arrays.asList(exclusionsString.split("\\s*,\\s*"));
+            PathData newPath = new PathData(pathName, directoryPath, exclusions);
+
+            JsonTabsManager jsonTabsManager = new JsonTabsManager();
+            List<TabData> tabs = jsonTabsManager.loadTabs();
+
+            for (TabData tab : tabs) {
+                if (tab.getId().equals(this.tabId)) {
+                    tab.getPaths().add(newPath);
+                    break;
+                }
+            }
+
+            jsonTabsManager.saveTabs(tabs);
+        }
 
         if (dataSavedListener != null) {
             dataSavedListener.onDataSaved();
@@ -56,6 +85,7 @@ public class AddPathFormController {
             onSave.run();
         }
     }
+
 
     @FXML private void handleCancel() {
         closeStage();

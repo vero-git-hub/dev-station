@@ -14,6 +14,12 @@ public class PathData {
     public PathData() {
     }
 
+    public PathData(String name, String path, List<String> exclusions) {
+        this.name = name;
+        this.path = path;
+        this.exclusions = exclusions;
+    }
+
     public String getName() {
         return name;
     }

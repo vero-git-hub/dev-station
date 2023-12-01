@@ -5,6 +5,7 @@ import org.json.JSONArray;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,8 +37,8 @@ public class JsonTabsManager {
             for (TabData tab : tabs) {
                 tabsArray.put(tab.toJson());
             }
-
-            Files.write(new File(FILE_PATH).toPath(), tabsArray.toString().getBytes());
+            String jsonString = tabsArray.toString(4);
+            Files.write(Paths.get(FILE_PATH), jsonString.getBytes());
         } catch (IOException e) {
             e.printStackTrace();
         }
