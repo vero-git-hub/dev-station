@@ -3,15 +3,18 @@ package com.dev.station.manager.clear;
 import com.dev.station.controller.MainController;
 import com.dev.station.controller.sidebar.ClearController;
 import com.dev.station.controller.tab.TabController;
+import com.dev.station.file.JsonTabsManager;
+import com.dev.station.file.TabData;
 import com.dev.station.manager.LanguageManager;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.prefs.Preferences;
 
 public class TabManager {
@@ -76,10 +79,24 @@ public class TabManager {
             Node content = loader.load();
             TabController tabController = loader.getController();
 
-            Tab newTab = new Tab("New");
-            newTab.setContent(content);
+            String tabId = UUID.randomUUID().toString();
 
-            newTab.setId(generateTabId());
+            Tab newTab = new Tab("New tab");
+            newTab.setContent(content);
+            newTab.setId(tabId);
+            tabController.setMyTab(newTab);
+
+            JsonTabsManager jsonTabsManager = new JsonTabsManager();
+            List<TabData> currentTabs = jsonTabsManager.loadTabs();
+
+            TabData newTabData = new TabData();
+            newTabData.setId(tabId);
+            newTabData.setName(newTab.getText());
+            newTabData.setRecycleBinPath("");
+            newTabData.setPaths(new ArrayList<>());
+
+            currentTabs.add(newTabData);
+            jsonTabsManager.saveTabs(currentTabs);
 
             setupTabContextMenu(newTab);
 
@@ -88,24 +105,6 @@ public class TabManager {
             e.printStackTrace();
             return null;
         }
-    }
-
-    private String generateTabId() {
-        return "tab-" + System.currentTimeMillis();
-    }
-
-    private void saveTabsToPrefs() {
-        JSONArray tabsJson = new JSONArray();
-        for (Tab tab : tabPane.getTabs()) {
-            if (tab == addTabButton) continue;
-
-            JSONObject tabJson = new JSONObject();
-            tabJson.put("title", tab.getText());
-
-            tabsJson.put(tabJson);
-        }
-
-        prefs.put("savedTabs", tabsJson.toString());
     }
 
     private void setupTabContextMenu(Tab tab) {
