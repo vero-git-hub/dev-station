@@ -7,7 +7,6 @@ import com.dev.station.manager.LanguageManager;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.layout.VBox;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -80,11 +79,19 @@ public class TabManager {
             Tab newTab = new Tab("New");
             newTab.setContent(content);
 
+            newTab.setId(generateTabId());
+
+            setupTabContextMenu(newTab);
+
             return newTab;
         } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
+    }
+
+    private String generateTabId() {
+        return "tab-" + System.currentTimeMillis();
     }
 
     private void saveTabsToPrefs() {
@@ -105,6 +112,10 @@ public class TabManager {
         ContextMenu contextMenu = new ContextMenu();
         MenuItem renameItem = new MenuItem(clearController.getTranslate("renameItem"));
         MenuItem setDefaultItem = new MenuItem(clearController.getTranslate("setDefaultItem"));
+
+        renameItem.getStyleClass().add("clickable");
+        setDefaultItem.getStyleClass().add("clickable");
+
         contextMenu.getItems().addAll(renameItem, setDefaultItem);
 
         renameItem.setOnAction(e -> handleRenameTab(tab));
