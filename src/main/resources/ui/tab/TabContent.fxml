@@ -10,14 +10,32 @@
     </padding>
     <HBox spacing="10">
         <ToggleButton fx:id="toggleMoveFiles" onAction="#moveFilesToRecycleBin" styleClass="clickable"/>
-        <ToggleButton fx:id="toggleReturnFiles" onAction="#returnFromRecycleBin" styleClass="clickable"/>
-        <ToggleButton fx:id="toggleClearRecycleBin" onAction="#clearRecycleBin" styleClass="clickable"/>
+        <ToggleButton fx:id="toggleReturnFiles" onAction="#returnFromRecycleBin" styleClass="clickable">
+            <graphic>
+                <ImageView fitWidth="25" fitHeight="25" preserveRatio="true">
+                    <Image url="@../../images/return-30.png"/>
+                </ImageView>
+            </graphic>
+        </ToggleButton>
+        <ToggleButton fx:id="toggleClearRecycleBin" onAction="#clearRecycleBin" styleClass="clickable">
+            <graphic>
+                <ImageView fitWidth="25" fitHeight="25" preserveRatio="true">
+                    <Image url="@../../images/recycle-bin-30.png"/>
+                </ImageView>
+            </graphic>
+        </ToggleButton>
     </HBox>
     <Separator orientation="HORIZONTAL"/>
     <HBox alignment="CENTER">
         <Label fx:id="settingsDir"/>
         <Region HBox.hgrow="ALWAYS"/>
-        <Button text="+" onAction="#handleAddPath" styleClass="clickable"/>
+        <Button fx:id="addNewPath" text="+" onAction="#handleAddPath" styleClass="clickable">
+            <graphic>
+                <ImageView fitWidth="25" fitHeight="25" preserveRatio="true">
+                    <Image url="@../../images/folder-96.png"/>
+                </ImageView>
+            </graphic>
+        </Button>
     </HBox>
     <TableView fx:id="pathsTable">
         <columns>

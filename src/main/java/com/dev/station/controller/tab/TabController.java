@@ -1,5 +1,6 @@
 package com.dev.station.controller.tab;
 
+import com.dev.station.Localizable;
 import com.dev.station.controller.MainController;
 import com.dev.station.controller.forms.AddPathFormController;
 import com.dev.station.entity.PathData;
@@ -17,10 +18,11 @@ import javafx.scene.control.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
 
-public class TabController {
+public class TabController implements Localizable {
     private final Preferences prefs = MainController.prefs;
     @FXML
     private ToggleButton toggleMoveFiles;
@@ -32,6 +34,7 @@ public class TabController {
     @FXML private TableColumn<PathData, String> pathColumn;
     @FXML private TableColumn<PathData, String> exclusionsColumn;
     @FXML private Label settingsDir;
+    @FXML private Button addNewPath;
     private MenuItem renameItem;
     private MenuItem setDefaultItem;
     private boolean isRestorationPerformed = false;
@@ -40,6 +43,10 @@ public class TabController {
     private PathManager pathManager;
     private TableManager tableManager;
     private RecycleBinManager recycleBinManager;
+
+    public TabController() {
+        LanguageManager.registerForUpdates(this::updateUI);
+    }
 
     public boolean isRestorationPerformed() {
         return isRestorationPerformed;
@@ -55,7 +62,7 @@ public class TabController {
 
     @FXML public void initialize() {
         setMultilingual();
-        //loadSavedLanguage();
+        loadSavedLanguage();
         definitionManagers();
         //recycleBinManager.defineRecycleBins();
         setupTable();
@@ -90,11 +97,6 @@ public class TabController {
         exclusionsColumn.setText(bundle.getString("exclusionsColumn"));
         settingsDir.setText(getTranslate("settingsDir"));
         setTooltips();
-    }
-
-    private void setTooltips() {
-        Tooltip.install(toggleReturnFiles, new Tooltip(getTranslate("toggleReturnFilesHint")));
-        Tooltip.install(toggleClearRecycleBin, new Tooltip(getTranslate("toggleClearRecycleBinHint")));
     }
 
     @FXML
@@ -146,5 +148,37 @@ public class TabController {
 
     private void updateTable() {
         pathManager.loadPaths();
+    }
+
+    @Override
+    public void loadSavedLanguage() {
+        String savedLanguage = prefs.get("selectedLanguage", "English");
+        Locale locale = LanguageManager.getLocale(savedLanguage);
+        LanguageManager.switchLanguage(locale);
+    }
+
+    @Override
+    public void switchLanguage(Locale newLocale) {
+        LanguageManager.switchLanguage(newLocale);
+        updateUI();
+    }
+
+    @Override
+    public void updateUI() {
+        notificationManager.updateResourceBundle(bundle);
+
+        toggleMoveFiles.setText(getTranslate("toggleMoveFiles"));
+
+        nameColumn.setText(bundle.getString("nameColumn"));
+        pathColumn.setText(bundle.getString("pathColumn"));
+        exclusionsColumn.setText(bundle.getString("exclusionsColumn"));
+        settingsDir.setText(getTranslate("settingsDir"));
+        setTooltips();
+    }
+
+    private void setTooltips() {
+        Tooltip.install(toggleReturnFiles, new Tooltip(getTranslate("toggleReturnFilesHint")));
+        Tooltip.install(toggleClearRecycleBin, new Tooltip(getTranslate("toggleClearRecycleBinHint")));
+        Tooltip.install(addNewPath, new Tooltip());
     }
 }
