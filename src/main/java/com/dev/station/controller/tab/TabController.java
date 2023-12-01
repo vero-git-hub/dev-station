@@ -3,7 +3,7 @@ package com.dev.station.controller.tab;
 import com.dev.station.Localizable;
 import com.dev.station.controller.MainController;
 import com.dev.station.controller.forms.AddPathFormController;
-import com.dev.station.entity.PathData;
+import com.dev.station.file.PathData;
 import com.dev.station.file.JsonTabsManager;
 import com.dev.station.file.TabData;
 import com.dev.station.manager.LanguageManager;
@@ -11,6 +11,8 @@ import com.dev.station.manager.NotificationManager;
 import com.dev.station.manager.clear.PathManager;
 import com.dev.station.manager.clear.RecycleBinManager;
 import com.dev.station.manager.clear.TableManager;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -80,12 +82,12 @@ public class TabController implements Localizable {
         definitionManagers();
         setupTable();
 
-        pathManager.loadPaths();
-        pathsTable.setItems(pathManager.getPathsList());
+        //pathManager.loadPaths();
+        //pathsTable.setItems(pathManager.getPathsList());
     }
 
     private void setupTable() {
-        tableManager.setupTable(numberColumn, nameColumn, pathColumn, exclusionsColumn, pathsTable);
+        //tableManager.setupTable(numberColumn, nameColumn, pathColumn, exclusionsColumn, pathsTable);
     }
 
     private void definitionManagers() {
@@ -215,5 +217,12 @@ public class TabController implements Localizable {
         Tooltip.install(toggleReturnFiles, new Tooltip(getTranslate("toggleReturnFilesHint")));
         Tooltip.install(toggleClearRecycleBin, new Tooltip(getTranslate("toggleClearRecycleBinHint")));
         Tooltip.install(addNewPath, new Tooltip());
+    }
+
+    public void loadData(TabData tabData) {
+        recycleBinPathField.setText(tabData.getRecycleBinPath());
+
+        ObservableList<PathData> paths = FXCollections.observableArrayList(tabData.getPaths());
+        pathsTable.setItems(paths);
     }
 }

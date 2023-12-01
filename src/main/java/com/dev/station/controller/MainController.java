@@ -90,8 +90,8 @@ public class MainController implements Localizable {
     private void loadClearContent() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/sidebar/ClearLayout.fxml"));
-            Node seleniumLayout = loader.load();
-            contentArea.getChildren().setAll(seleniumLayout);
+            Node layout = loader.load();
+            contentArea.getChildren().setAll(layout);
         } catch (IOException e) {
             e.printStackTrace();
         }

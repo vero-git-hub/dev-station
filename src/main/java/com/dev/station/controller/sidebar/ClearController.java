@@ -31,10 +31,10 @@ public class ClearController implements Localizable {
     @FXML
     private void initialize() {
         setMultilingual();
-
         loadSavedLanguage();
         definitionManagers();
         setupTabPane();
+        tabManager.loadTabsFromJson();
     }
 
     private void setMultilingual() {

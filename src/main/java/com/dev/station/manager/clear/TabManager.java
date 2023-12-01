@@ -148,4 +148,36 @@ public class TabManager {
     private void handleSetDefaultTab(Tab tab) {
         prefs.put("defaultTabId", tab.getId());
     }
+
+    public void loadTabsFromJson() {
+        JsonTabsManager jsonTabsManager = new JsonTabsManager();
+        List<TabData> tabs = jsonTabsManager.loadTabs();
+
+        for (TabData tabData : tabs) {
+            Tab tab = createTabFromData(tabData);
+            tabPane.getTabs().add(tabPane.getTabs().size() - 1, tab);
+        }
+    }
+
+    private Tab createTabFromData(TabData tabData) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/tab/TabContent.fxml"));
+            loader.setResources(LanguageManager.getResourceBundle());
+
+            Node content = loader.load();
+            TabController tabController = loader.getController();
+            tabController.loadData(tabData);
+
+            Tab tab = new Tab(tabData.getName());
+            tab.setContent(content);
+            tab.setId(tabData.getId());
+
+            setupTabContextMenu(tab);
+
+            return tab;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }
