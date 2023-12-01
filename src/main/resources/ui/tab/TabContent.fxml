@@ -29,6 +29,16 @@
     <HBox alignment="CENTER">
         <Label fx:id="settingsDir"/>
         <Region HBox.hgrow="ALWAYS"/>
+        <TextField fx:id="recycleBinPathField"/>
+        <Button onAction="#handleSaveRecycleBinPath" styleClass="clickable">
+            <graphic>
+                <ImageView fitWidth="25" fitHeight="25" preserveRatio="true">
+                    <Image url="@../../images/save-30.png"/>
+                </ImageView>
+            </graphic>
+        </Button>
+        <Region HBox.hgrow="ALWAYS"/>
+
         <Button fx:id="addNewPath" text="+" onAction="#handleAddPath" styleClass="clickable">
             <graphic>
                 <ImageView fitWidth="25" fitHeight="25" preserveRatio="true">
@@ -46,4 +56,3 @@
         </columns>
     </TableView>
 </VBox>
-

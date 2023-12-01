@@ -4,6 +4,8 @@ import com.dev.station.Localizable;
 import com.dev.station.controller.MainController;
 import com.dev.station.controller.forms.AddPathFormController;
 import com.dev.station.entity.PathData;
+import com.dev.station.file.JsonTabsManager;
+import com.dev.station.file.TabData;
 import com.dev.station.manager.LanguageManager;
 import com.dev.station.manager.NotificationManager;
 import com.dev.station.manager.clear.PathManager;
@@ -18,6 +20,7 @@ import javafx.scene.control.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
@@ -35,6 +38,7 @@ public class TabController implements Localizable {
     @FXML private TableColumn<PathData, String> exclusionsColumn;
     @FXML private Label settingsDir;
     @FXML private Button addNewPath;
+    @FXML private TextField recycleBinPathField;
     private MenuItem renameItem;
     private MenuItem setDefaultItem;
     private boolean isRestorationPerformed = false;
@@ -43,6 +47,8 @@ public class TabController implements Localizable {
     private PathManager pathManager;
     private TableManager tableManager;
     private RecycleBinManager recycleBinManager;
+    private String tabId;
+    private Tab myTab;
 
     public TabController() {
         LanguageManager.registerForUpdates(this::updateUI);
@@ -60,11 +66,18 @@ public class TabController implements Localizable {
         return pathManager;
     }
 
+    public void setTabId(String tabId) {
+        this.tabId = tabId;
+    }
+
+    public void setMyTab(Tab myTab) {
+        this.myTab = myTab;
+    }
+
     @FXML public void initialize() {
         setMultilingual();
         loadSavedLanguage();
         definitionManagers();
-        //recycleBinManager.defineRecycleBins();
         setupTable();
 
         pathManager.loadPaths();
@@ -142,6 +155,26 @@ public class TabController implements Localizable {
         }
     }
 
+    @FXML
+    private void handleSaveRecycleBinPath() {
+        String recycleBinPath = recycleBinPathField.getText().trim();
+
+        if (!recycleBinPath.isEmpty()) {
+            JsonTabsManager jsonTabsManager = new JsonTabsManager();
+
+            List<TabData> tabs = jsonTabsManager.loadTabs();
+
+            for (TabData tab : tabs) {
+                if (tab.getId().equals(myTab.getId())) {
+                    tab.setRecycleBinPath(recycleBinPath);
+                    break;
+                }
+            }
+
+            jsonTabsManager.saveTabs(tabs);
+        }
+    }
+
     public String getTranslate(String key) {
         return bundle.getString(key);
     }
@@ -173,6 +206,7 @@ public class TabController implements Localizable {
         pathColumn.setText(bundle.getString("pathColumn"));
         exclusionsColumn.setText(bundle.getString("exclusionsColumn"));
         settingsDir.setText(getTranslate("settingsDir"));
+        recycleBinPathField.setPromptText(getTranslate("recycleBinPathField"));
         setTooltips();
     }
 
