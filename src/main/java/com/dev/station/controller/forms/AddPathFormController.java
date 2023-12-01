@@ -1,6 +1,7 @@
 package com.dev.station.controller.forms;
 
 import com.dev.station.controller.MainController;
+import com.dev.station.controller.tab.TabController;
 import com.dev.station.file.JsonTabsManager;
 import com.dev.station.file.TabData;
 import com.dev.station.file.PathData;
@@ -34,6 +35,7 @@ public class AddPathFormController {
     private DataSavedListener dataSavedListener;
     private PathManager pathManager;
     private String tabId;
+    private TabController tabController;
 
     public void setPathManager(PathManager pathManager) {
         this.pathManager = pathManager;
@@ -41,6 +43,10 @@ public class AddPathFormController {
 
     public void setTabId(String tabId) {
         this.tabId = tabId;
+    }
+
+    public void setTabController(TabController tabController) {
+        this.tabController = tabController;
     }
 
     @FXML private void initialize() {
@@ -77,6 +83,10 @@ public class AddPathFormController {
 
         if (dataSavedListener != null) {
             dataSavedListener.onDataSaved();
+        }
+
+        if (tabController != null) {
+            tabController.updatePathsTable();
         }
 
         closeStage();

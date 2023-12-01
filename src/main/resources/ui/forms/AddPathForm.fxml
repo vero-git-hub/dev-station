@@ -23,7 +23,7 @@
     </GridPane>
 
     <HBox spacing="10" alignment="center">
-        <Button fx:id="saveButton" text="Save" onAction="#handleSave" styleClass="button"/>
-        <Button fx:id="cancelButton" text="Cancel" onAction="#handleCancel" styleClass="button"/>
+        <Button fx:id="saveButton" text="Save" onAction="#handleSave" styleClass="clickable"/>
+        <Button fx:id="cancelButton" text="Cancel" onAction="#handleCancel" styleClass="clickable"/>
     </HBox>
 </VBox>

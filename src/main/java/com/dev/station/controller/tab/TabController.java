@@ -146,6 +146,7 @@ public class TabController implements Localizable {
             AddPathFormController addPathFormController = loader.getController();
             addPathFormController.setPathManager(pathManager);
             addPathFormController.setTabId(myTab.getId());
+            addPathFormController.setTabController(this);
 
             addPathFormController.setDataSavedListener(this::updateTable);
 
@@ -230,7 +231,24 @@ public class TabController implements Localizable {
         pathsTable.setItems(paths);
     }
 
-    private void setupTableColumns() {
+    public void setupTableColumns() {
         tableManager.setupTable(numberColumn, nameColumn, pathColumn, exclusionsColumn, pathsTable);
     }
+
+    public void updatePathsTable() {
+        JsonTabsManager jsonTabsManager = new JsonTabsManager();
+        List<TabData> tabs = jsonTabsManager.loadTabs();
+
+        for (TabData tab : tabs) {
+            if (tab.getId().equals(this.myTab.getId())) {
+                ObservableList<PathData> paths = FXCollections.observableArrayList(tab.getPaths());
+                pathsTable.setItems(paths);
+                break;
+            }
+        }
+
+        pathsTable.refresh();
+
+    }
+
 }

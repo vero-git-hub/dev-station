@@ -80,11 +80,11 @@ public class TabManager {
             TabController tabController = loader.getController();
 
             String tabId = UUID.randomUUID().toString();
-
             Tab newTab = new Tab("New tab");
             newTab.setContent(content);
             newTab.setId(tabId);
             tabController.setMyTab(newTab);
+            tabController.setupTableColumns();
 
             JsonTabsManager jsonTabsManager = new JsonTabsManager();
             List<TabData> currentTabs = jsonTabsManager.loadTabs();
