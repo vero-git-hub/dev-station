@@ -28,9 +28,8 @@ import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
 
 public class TabController implements Localizable {
-    private final Preferences prefs = MainController.prefs;
-    @FXML
-    private ToggleButton toggleMoveFiles;
+
+    @FXML private ToggleButton toggleMoveFiles;
     @FXML private ToggleButton toggleReturnFiles;
     @FXML private ToggleButton toggleClearRecycleBin;
     @FXML private TableView<PathData> pathsTable;
@@ -41,15 +40,13 @@ public class TabController implements Localizable {
     @FXML private Label settingsDir;
     @FXML private Button addNewPath;
     @FXML private TextField recycleBinPathField;
-    private MenuItem renameItem;
-    private MenuItem setDefaultItem;
+    private final Preferences prefs = MainController.prefs;
     private boolean isRestorationPerformed = false;
     ResourceBundle bundle;
     private NotificationManager notificationManager;
     private PathManager pathManager;
     private TableManager tableManager;
     private RecycleBinManager recycleBinManager;
-    private String tabId;
     private Tab myTab;
 
     public TabController() {
@@ -64,14 +61,6 @@ public class TabController implements Localizable {
         isRestorationPerformed = restorationPerformed;
     }
 
-    public PathManager getPathManager() {
-        return pathManager;
-    }
-
-    public void setTabId(String tabId) {
-        this.tabId = tabId;
-    }
-
     public Tab getMyTab() {
         return myTab;
     }
@@ -84,11 +73,6 @@ public class TabController implements Localizable {
         setMultilingual();
         loadSavedLanguage();
         definitionManagers();
-        setupTable();
-    }
-
-    private void setupTable() {
-        //tableManager.setupTable(numberColumn, nameColumn, pathColumn, exclusionsColumn, pathsTable);
     }
 
     private void definitionManagers() {
