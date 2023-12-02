@@ -114,7 +114,7 @@ public class TabController implements Localizable {
     @FXML
     private void moveFilesToRecycleBin(ActionEvent event) {
         if(toggleMoveFiles.isSelected()) {
-            recycleBinManager.moveFilesToRecycleBin(event, toggleMoveFiles);
+            recycleBinManager.moveFilesToRecycleBin(event, toggleMoveFiles, myTab.getId());
         }
     }
 

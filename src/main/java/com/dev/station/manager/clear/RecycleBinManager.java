@@ -2,7 +2,7 @@ package com.dev.station.manager.clear;
 
 import com.dev.station.controller.MainController;
 import com.dev.station.controller.tab.TabController;
-import com.dev.station.entity.PathData;
+import com.dev.station.file.PathData;
 import com.dev.station.entity.RecoveryContext;
 import com.dev.station.entity.RecycleBin;
 import com.dev.station.file.JsonTabsManager;
@@ -35,29 +35,38 @@ public class RecycleBinManager {
         this.toggleReturnFiles = toggleReturnFiles;
     }
 
-    public void moveFilesToRecycleBin(ActionEvent event, ToggleButton toggleMoveFiles) {
+    public void moveFilesToRecycleBin(ActionEvent event, ToggleButton toggleMoveFiles, String tabId) {
         Object source = event.getSource();
-        RecycleBin currentRecycleBin;
-
         if (source == toggleMoveFiles) {
-            currentRecycleBin = recycleBin;
-            tabController.setRestorationPerformed(false);
+            JsonTabsManager jsonTabsManager = new JsonTabsManager();
+            List<TabData> tabs = jsonTabsManager.loadTabs();
+            TabData currentTabData = null;
+
+            for (TabData tab : tabs) {
+                if (tab.getId().equals(tabId)) {
+                    currentTabData = tab;
+                    break;
+                }
+            }
+
+            if (currentTabData == null) {
+                notificationManager.showErrorAlert("moveFilesToRecycleBinMethodError");
+                return;
+            }
+
+            RecycleBin currentRecycleBin = new RecycleBin(currentTabData.getRecycleBinPath());
+            clearRecycleBinContents(currentRecycleBin);
+            for (PathData pathData : currentTabData.getPaths()) {
+                moveToCart(pathData, currentRecycleBin);
+            }
         } else {
             notificationManager.showErrorAlert("moveFilesToRecycleBinMethodError");
-            return;
-        }
-
-        PathManager pathManager = tabController.getPathManager();
-        pathManager.loadPaths();
-        clearRecycleBinContents(recycleBin);
-        for (PathData pathData : pathManager.getPathsList()) {
-            moveToCart(pathData, currentRecycleBin);
         }
     }
 
     private void moveToCart(PathData pathData, RecycleBin recycleBin) {
         try {
-            Set<String> exclusions = new HashSet<>(Arrays.asList(pathData.getExclusions().split(",")));
+            Set<String> exclusions = new HashSet<>(pathData.getExclusions());
             FileManager.clearFolderContents(pathData.getPath(), recycleBin, exclusions);
             notificationManager.showInformationAlert("moveFilesToRecycleBinSuccess");
         } catch (IOException e) {
