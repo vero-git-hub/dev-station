@@ -33,8 +33,9 @@ public class ClearController implements Localizable {
         setMultilingual();
         loadSavedLanguage();
         definitionManagers();
-        setupTabPane();
+
         tabManager.loadTabsFromJson();
+        setupTabPane();
     }
 
     private void setMultilingual() {

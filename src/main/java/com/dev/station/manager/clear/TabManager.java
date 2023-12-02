@@ -43,12 +43,21 @@ public class TabManager {
     }
 
     private void selectDefaultTab() {
-        String defaultTabId = prefs.get("defaultTabId", null);
-        if (defaultTabId != null) {
+        JsonTabsManager jsonTabsManager = new JsonTabsManager();
+        List<TabData> tabs = jsonTabsManager.loadTabs();
+
+        TabData defaultTabData = tabs.stream()
+                .filter(TabData::isDefault)
+                .findFirst()
+                .orElse(null);
+
+        if (defaultTabData != null) {
             tabPane.getTabs().stream()
-                    .filter(tab -> tab.getId().equals(defaultTabId))
+                    .filter(tab -> tab.getId().equals(defaultTabData.getId()))
                     .findFirst()
-                    .ifPresent(tabPane.getSelectionModel()::select);
+                    .ifPresent(tab -> tabPane.getSelectionModel().select(tab));
+        } else {
+            System.out.println("No default tab set");
         }
     }
 
@@ -147,7 +156,17 @@ public class TabManager {
     }
 
     private void handleSetDefaultTab(Tab tab) {
-        prefs.put("defaultTabId", tab.getId());
+        JsonTabsManager jsonTabsManager = new JsonTabsManager();
+        List<TabData> tabs = jsonTabsManager.loadTabs();
+
+        tabs.forEach(t -> t.setDefault(false));
+
+        tabs.stream()
+                .filter(t -> t.getId().equals(tab.getId()))
+                .findFirst()
+                .ifPresent(t -> t.setDefault(true));
+
+        jsonTabsManager.saveTabs(tabs);
     }
 
     public void loadTabsFromJson() {

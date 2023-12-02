@@ -14,6 +14,7 @@ public class TabData {
     private String name;
     private String recycleBinPath;
     private List<PathData> paths;
+    private boolean isDefault;
 
     public TabData() {
     }
@@ -50,6 +51,14 @@ public class TabData {
         this.paths = paths;
     }
 
+    public boolean isDefault() {
+        return isDefault;
+    }
+
+    public void setDefault(boolean aDefault) {
+        isDefault = aDefault;
+    }
+
     public JSONObject toJson() {
         Map<String, Object> orderedJsonMap = new LinkedHashMap<>();
         orderedJsonMap.put("id", id);
@@ -61,6 +70,7 @@ public class TabData {
             pathsArray.put(path.toJson());
         }
         orderedJsonMap.put("paths", pathsArray);
+        orderedJsonMap.put("isDefault", isDefault);
 
         return new JSONObject(orderedJsonMap);
     }
@@ -77,6 +87,7 @@ public class TabData {
             paths.add(PathData.fromJson(pathsArray.getJSONObject(i)));
         }
         tab.setPaths(paths);
+        tab.setDefault(jsonObject.optBoolean("isDefault", false));
 
         return tab;
     }
