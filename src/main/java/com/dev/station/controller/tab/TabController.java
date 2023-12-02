@@ -3,15 +3,14 @@ package com.dev.station.controller.tab;
 import com.dev.station.Localizable;
 import com.dev.station.controller.MainController;
 import com.dev.station.controller.forms.AddPathFormController;
-import com.dev.station.file.PathData;
 import com.dev.station.file.JsonTabsManager;
+import com.dev.station.file.PathData;
 import com.dev.station.file.TabData;
 import com.dev.station.manager.LanguageManager;
 import com.dev.station.manager.NotificationManager;
 import com.dev.station.manager.clear.PathManager;
 import com.dev.station.manager.clear.RecycleBinManager;
 import com.dev.station.manager.clear.TableManager;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -20,7 +19,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -83,9 +81,6 @@ public class TabController implements Localizable {
         loadSavedLanguage();
         definitionManagers();
         setupTable();
-
-        //pathManager.loadPaths();
-        //pathsTable.setItems(pathManager.getPathsList());
     }
 
     private void setupTable() {
@@ -131,13 +126,13 @@ public class TabController implements Localizable {
     }
 
     @FXML
-    private void clearRecycleBin(ActionEvent event) {
+    private void clearRecycleBin() {
         if(toggleClearRecycleBin.isSelected()) {
-            recycleBinManager.clearRecycleBin(event, toggleClearRecycleBin);
+            recycleBinManager.clearRecycleBin(myTab.getId());
         }
     }
 
-    @FXML public void handleAddPath(ActionEvent actionEvent) {
+    @FXML public void handleAddPath() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/forms/AddPathForm.fxml"));
             loader.setResources(bundle);
@@ -248,7 +243,5 @@ public class TabController implements Localizable {
         }
 
         pathsTable.refresh();
-
     }
-
 }

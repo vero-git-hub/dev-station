@@ -5,6 +5,8 @@ import com.dev.station.controller.tab.TabController;
 import com.dev.station.entity.PathData;
 import com.dev.station.entity.RecoveryContext;
 import com.dev.station.entity.RecycleBin;
+import com.dev.station.file.JsonTabsManager;
+import com.dev.station.file.TabData;
 import com.dev.station.manager.FileManager;
 import com.dev.station.manager.NotificationManager;
 import javafx.event.ActionEvent;
@@ -16,10 +18,7 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.prefs.Preferences;
 import java.util.stream.Stream;
 
@@ -35,15 +34,6 @@ public class RecycleBinManager {
         this.notificationManager = notificationManager;
         this.toggleReturnFiles = toggleReturnFiles;
     }
-
-//    public void defineRecycleBins() {
-//        defineRecycleBin();
-//    }
-
-//    private void defineRecycleBin() {
-//        String recycleBinPath = prefs.get("firstRecycleBin", "C:\\Default\\RecycleBinPath");
-//        this.recycleBin = new RecycleBin(recycleBinPath);
-//    }
 
     public void moveFilesToRecycleBin(ActionEvent event, ToggleButton toggleMoveFiles) {
         Object source = event.getSource();
@@ -161,20 +151,23 @@ public class RecycleBinManager {
         }
     }
 
-    public void clearRecycleBin(ActionEvent event, ToggleButton toggleClearRecycleBin) {
-        Object source = event.getSource();
-        if (source == toggleClearRecycleBin) {
-            handleClearRecycleBin(recycleBin, "firstRecycleBin");
-        }
-    }
+    public void clearRecycleBin(String tabId) {
+        JsonTabsManager jsonTabsManager = new JsonTabsManager();
+        List<TabData> tabs = jsonTabsManager.loadTabs();
+        String recycleBinPathString = null;
 
-    private void handleClearRecycleBin(RecycleBin recycleBin, String keyRecycleBin) {
-        if (recycleBin.getRecycleBinPath() == null || !Files.exists(recycleBin.getRecycleBinPath())) {
+        for (TabData tab : tabs) {
+            if (tab.getId().equals(tabId)) {
+                recycleBinPathString = tab.getRecycleBinPath();
+                break;
+            }
+        }
+
+        if (recycleBinPathString == null || recycleBinPathString.isEmpty()) {
             notificationManager.showErrorAlert("handleClearRecycleBinNotExist");
             return;
         }
 
-        String recycleBinPathString = prefs.get(keyRecycleBin, "C:\\Default\\RecycleBinPath");
         Path recycleBinPath = Paths.get(recycleBinPathString);
 
         try {
@@ -185,7 +178,6 @@ public class RecycleBinManager {
                             .map(Path::toFile)
                             .forEach(File::delete);
                 }
-                recycleBin.clearMetadata();
                 notificationManager.showInformationAlert("handleClearRecycleBinSuccess");
             } else {
                 notificationManager.showErrorAlert("handleClearRecycleBinPathError");
