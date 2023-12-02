@@ -33,31 +33,17 @@ public class FileManager {
         }
     }
 
-    public static void deleteFolderContents(String rootFolderPath, String folderName) throws IOException {
-        Path folderPath = Paths.get(rootFolderPath, folderName);
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream(folderPath)) {
-            for (Path path : stream) {
-                if (Files.isDirectory(path)) {
-                    deleteFolderContents(path.toString(), "");
-                    Files.delete(path);
-                } else {
-                    Files.delete(path);
-                }
-            }
-        }
-    }
-
-    public static void deleteVarFolderContents(String varFolderPath) throws IOException {
-        Path varPath = Paths.get(varFolderPath);
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream(varPath)) {
-            for (Path path : stream) {
-                if (Files.isDirectory(path)) {
-                    if (!path.getFileName().toString().equalsIgnoreCase("selenium")) {
-                        deleteFolderContents(path.toString(), "");
+    public static void deleteFolderContents(String folderPathString) throws IOException {
+        Path folderPath = Paths.get(folderPathString);
+        if (Files.exists(folderPath) && Files.isDirectory(folderPath)) {
+            try (DirectoryStream<Path> stream = Files.newDirectoryStream(folderPath)) {
+                for (Path path : stream) {
+                    if (Files.isDirectory(path)) {
+                        deleteFolderContents(path.toString());
+                        Files.delete(path);
+                    } else {
                         Files.delete(path);
                     }
-                } else {
-                    Files.delete(path);
                 }
             }
         }

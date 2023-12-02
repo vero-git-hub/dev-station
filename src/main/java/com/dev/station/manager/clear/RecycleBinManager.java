@@ -59,6 +59,7 @@ public class RecycleBinManager {
             for (PathData pathData : currentTabData.getPaths()) {
                 moveToCart(pathData, currentRecycleBin);
             }
+            notificationManager.showInformationAlert("moveFilesToRecycleBinSuccess");
         } else {
             notificationManager.showErrorAlert("moveFilesToRecycleBinMethodError");
         }
@@ -68,7 +69,7 @@ public class RecycleBinManager {
         try {
             Set<String> exclusions = new HashSet<>(pathData.getExclusions());
             FileManager.clearFolderContents(pathData.getPath(), recycleBin, exclusions);
-            notificationManager.showInformationAlert("moveFilesToRecycleBinSuccess");
+
         } catch (IOException e) {
             notificationManager.showErrorAlert("moveFilesToRecycleBinError");
             e.printStackTrace();
@@ -84,12 +85,22 @@ public class RecycleBinManager {
 
     private RecoveryContext getRecoveryContext(ActionEvent event) {
         Object source = event.getSource();
+
         if (source == toggleReturnFiles) {
-            return new RecoveryContext(recycleBin, tabController.isRestorationPerformed(), "fieldClearFirstFolder", source);
-        } else {
-            notificationManager.showErrorAlert("returnFromRecycleBinMethodError");
-            return null;
+            JsonTabsManager jsonTabsManager = new JsonTabsManager();
+            List<TabData> tabs = jsonTabsManager.loadTabs();
+            String currentTabId = tabController.getMyTab().getId();
+
+            TabData currentTab = tabs.stream().filter(tab -> tab.getId().equals(currentTabId)).findFirst().orElse(null);
+
+            if (currentTab != null) {
+                String recycleBinPath = currentTab.getRecycleBinPath();
+                RecycleBin recycleBin = new RecycleBin(recycleBinPath);
+                return new RecoveryContext(recycleBin, tabController.isRestorationPerformed(), currentTabId, source);
+            }
         }
+        notificationManager.showErrorAlert("returnFromRecycleBinMethodError");
+        return null;
     }
 
     private boolean preRecoveryChecks(RecoveryContext context) {
@@ -127,21 +138,33 @@ public class RecycleBinManager {
         }
     }
 
-    private void deleteFilesBeforeRecovery(String keyFieldClearFolder) {
-        String rootFolderPath = prefs.get(keyFieldClearFolder, "C:\\Default\\Path");
+    private void deleteFilesBeforeRecovery(String tabId) {
+        JsonTabsManager jsonTabsManager = new JsonTabsManager();
+        List<TabData> tabs = jsonTabsManager.loadTabs();
 
-        try {
-            FileManager.deleteFolderContents(rootFolderPath, "cache");
-            FileManager.deleteFolderContents(rootFolderPath, "log");
-            FileManager.deleteFolderContents(rootFolderPath, "tmp");
-            FileManager.deleteVarFolderContents(Paths.get(rootFolderPath, "var").toString());
+        TabData currentTab = tabs.stream()
+                .filter(tab -> tab.getId().equals(tabId))
+                .findFirst()
+                .orElse(null);
 
+        if (currentTab != null) {
+            for (PathData pathData : currentTab.getPaths()) {
+                try {
+                    String path = pathData.getPath();
+                    if (Files.exists(Paths.get(path)) && Files.isDirectory(Paths.get(path))) {
+                        FileManager.deleteFolderContents(path);
+                    }
+                } catch (IOException e) {
+                    notificationManager.showErrorAlert("deleteFilesBeforeRecoveryError: " + pathData.getPath());
+                    e.printStackTrace();
+                }
+            }
             notificationManager.showInformationAlert("deleteFilesBeforeRecoverySuccess");
-        } catch (IOException e) {
-            notificationManager.showErrorAlert("deleteFilesBeforeRecoveryError");
-            e.printStackTrace();
+        } else {
+            notificationManager.showErrorAlert("Tab not found");
         }
     }
+
 
     private void clearRecycleBinContents(RecycleBin recycleBin) {
         try {
