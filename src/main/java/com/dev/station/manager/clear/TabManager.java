@@ -85,6 +85,7 @@ public class TabManager {
             newTab.setId(tabId);
             tabController.setMyTab(newTab);
             tabController.setupTableColumns();
+            newTab.getStyleClass().add("clickable");
 
             JsonTabsManager jsonTabsManager = new JsonTabsManager();
             List<TabData> currentTabs = jsonTabsManager.loadTabs();
@@ -170,6 +171,7 @@ public class TabManager {
             Tab tab = new Tab(tabData.getName());
             tab.setContent(content);
             tab.setId(tabData.getId());
+            tab.getStyleClass().add("clickable");
 
             tabController.setMyTab(tab);
             tabController.loadData(tabData);
