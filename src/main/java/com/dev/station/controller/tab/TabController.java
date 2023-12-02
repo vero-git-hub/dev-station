@@ -72,6 +72,10 @@ public class TabController implements Localizable {
         this.tabId = tabId;
     }
 
+    public Tab getMyTab() {
+        return myTab;
+    }
+
     public void setMyTab(Tab myTab) {
         this.myTab = myTab;
     }
@@ -88,9 +92,9 @@ public class TabController implements Localizable {
     }
 
     private void definitionManagers() {
-        pathManager = new PathManager(prefs, this, notificationManager);
+        pathManager = new PathManager(prefs, notificationManager);
         tableManager = new TableManager();
-        recycleBinManager = new RecycleBinManager(this, notificationManager, toggleMoveFiles);
+        recycleBinManager = new RecycleBinManager(this, notificationManager, toggleReturnFiles);
     }
 
     private void setMultilingual() {
