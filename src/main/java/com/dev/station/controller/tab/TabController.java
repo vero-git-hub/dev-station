@@ -122,7 +122,7 @@ public class TabController implements Localizable {
 
     @FXML public void handleAddPath() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/forms/AddPathForm.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/dev/station/ui/forms/AddPathForm.fxml"));
             loader.setResources(bundle);
             Parent root = loader.load();
 

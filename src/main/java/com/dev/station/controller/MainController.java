@@ -89,7 +89,7 @@ public class MainController implements Localizable {
 
     private void loadClearContent() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/sidebar/ClearLayout.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/dev/station/ui/sidebar/ClearLayout.fxml"));
             Node layout = loader.load();
             contentArea.getChildren().setAll(layout);
         } catch (IOException e) {
@@ -99,7 +99,7 @@ public class MainController implements Localizable {
 
     private void loadSeleniumContent() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/sidebar/DriverLayout.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/dev/station/ui/sidebar/DriverLayout.fxml"));
             Node seleniumLayout = loader.load();
             contentArea.getChildren().setAll(seleniumLayout);
         } catch (IOException e) {
@@ -109,7 +109,7 @@ public class MainController implements Localizable {
 
     private void loadManuallyContent() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/sidebar/ScriptsLayout.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/dev/station/ui/sidebar/ScriptsLayout.fxml"));
             Node programLayout = loader.load();
             contentArea.getChildren().setAll(programLayout);
         } catch (IOException e) {
@@ -128,7 +128,7 @@ public class MainController implements Localizable {
     @FXML
     private void handleImagesButtonAction() {
         try {
-            Node imagesContent = FXMLLoader.load(getClass().getResource("/ui/header/ImagesLayout.fxml"));
+            Node imagesContent = FXMLLoader.load(getClass().getResource("/com/dev/station/ui/header/ImagesLayout.fxml"));
             contentArea.getChildren().setAll(imagesContent);
         } catch (IOException e) {
             e.printStackTrace();
@@ -138,7 +138,7 @@ public class MainController implements Localizable {
     @FXML
     private void handleSettingsButtonAction() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/header/SettingsLayout.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/dev/station/ui/header/SettingsLayout.fxml"));
             Node settings = loader.load();
             contentArea.getChildren().setAll(settings);
         } catch (IOException e) {

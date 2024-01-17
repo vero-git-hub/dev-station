@@ -57,7 +57,7 @@ public class ScriptsController {
 
     @FXML private void handleAddProgram() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/forms/AddProgramForm.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/dev/station/ui/forms/AddProgramForm.fxml"));
             loader.setResources(bundle);
             Parent root = loader.load();
 
