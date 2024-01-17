@@ -7,6 +7,7 @@ import com.dev.station.entity.ProgramData;
 import com.dev.station.manager.LanguageManager;
 import com.dev.station.manager.LaunchManager;
 import com.dev.station.manager.NotificationManager;
+import com.dev.station.model.ScriptsModel;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -15,14 +16,13 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
-
-import org.json.JSONObject;
-import org.json.JSONArray;
 
 public class ScriptsController {
     private final Preferences prefs = MainController.prefs;
@@ -32,6 +32,7 @@ public class ScriptsController {
     @FXML private VBox programsContainer;
     @FXML public Button addProgramButton;
     ResourceBundle bundle;
+    private ScriptsModel scriptsModel = new ScriptsModel();
 
     @FXML private void initialize() {
         bundle = LanguageManager.getResourceBundle();
@@ -85,28 +86,18 @@ public class ScriptsController {
     }
 
     private void saveProgramData(ProgramData programData) {
-        String savedProgramsJson = prefs.get("savedPrograms", "[]");
-        JSONArray programsArray = new JSONArray(savedProgramsJson);
-
-        JSONObject programJson = new JSONObject();
-        programJson.put("name", programData.getProgramName());
-        programJson.put("path", programData.getProgramPath());
-        programJson.put("category", programData.getCategory());
-
-        programsArray.put(programJson);
-
-        prefs.put("savedPrograms", programsArray.toString());
+        scriptsModel.saveProgramData(programData);
     }
 
     private void launchProgram(ProgramData programData) {
         String path = programData.getProgramPath();
-        String category = programData.getCategory();
+        String fileExtension = programData.getProgramExtension();
 
         ProcessHolder processHolder = processHolders.computeIfAbsent(path, k -> new ProcessHolder());
 
-        if ("EXE".equals(category)) {
+        if ("exe".equalsIgnoreCase(fileExtension)) {
             launchManager.launchApplication(path, path, processHolder);
-        } else if ("JAR".equals(category)) {
+        } else if ("jar".equalsIgnoreCase(fileExtension)) {
             launchManager.launchJarApplication(path, path, processHolder);
         }
     }
