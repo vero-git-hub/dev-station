@@ -3,12 +3,12 @@ package com.dev.station.entity;
 public class ProgramData {
     private String programName;
     private String programPath;
-    private String category;
+    private String programExtension;
 
-    public ProgramData(String programName, String programPath, String category) {
+    public ProgramData(String programName, String programPath, String programExtension) {
         this.programName = programName;
         this.programPath = programPath;
-        this.category = category;
+        this.programExtension = programExtension;
     }
 
     public String getProgramName() {
@@ -27,11 +27,11 @@ public class ProgramData {
         this.programPath = programPath;
     }
 
-    public String getCategory() {
-        return category;
+    public String getProgramExtension() {
+        return programExtension;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setProgramExtension(String programExtension) {
+        this.programExtension = programExtension;
     }
 }

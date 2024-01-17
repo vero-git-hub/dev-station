@@ -2,12 +2,15 @@ package com.dev.station.controller.forms;
 
 import com.dev.station.entity.ProgramData;
 import com.dev.station.manager.LanguageManager;
+import com.dev.station.util.AlertUtils;
+import com.dev.station.util.FileUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
@@ -17,10 +20,8 @@ public class AddProgramFormController {
     @FXML public Label pathToExecutableLabel;
     @FXML public Button saveButton;
     @FXML public Button cancelButton;
-    public Label categoryComboBoxLabel;
     @FXML private TextField programNameField;
     @FXML private TextField programPathField;
-    @FXML private ComboBox<String> categoryComboBox;
     ResourceBundle bundle;
     private Consumer<ProgramData> onSave;
 
@@ -30,10 +31,6 @@ public class AddProgramFormController {
         pathToExecutableLabel.setText(getTranslate("scriptsPathToExecutableLabel"));
         saveButton.setText(getTranslate("saveButton"));
         cancelButton.setText(getTranslate("cancelButton"));
-        categoryComboBoxLabel.setText(getTranslate("scriptsCategoryComboBoxLabel"));
-
-        categoryComboBox.getItems().addAll("EXE", "JAR");
-        categoryComboBox.setValue("EXE");
     }
 
     public void setOnSave(Consumer<ProgramData> onSave) {
@@ -41,17 +38,32 @@ public class AddProgramFormController {
     }
 
     @FXML private void handleSave(ActionEvent event) {
-        String programName = programNameField.getText();
-        String programPath = programPathField.getText();
-        String category = categoryComboBox.getValue();
+        String programName = programNameField.getText().trim();
+        String programPath = programPathField.getText().trim();
 
-        ProgramData programData = new ProgramData(programName, programPath, category);
-        if (onSave != null) {
-            onSave.accept(programData);
+        if(!programName.isEmpty() && !programPath.isEmpty()) {
+            String fileExtension = FileUtils.getFileExtension(programPath);
+
+            if(fileExtension.equalsIgnoreCase("exe") || fileExtension.equalsIgnoreCase("jar")) {
+                ProgramData programData = new ProgramData(programName, programPath, fileExtension);
+                if (onSave != null) {
+                    onSave.accept(programData);
+                    closeStage(event);
+                }
+            } else {
+                AlertUtils.showErrorAlert("Error file extension", "Only the extension exe or jar is allowed.");
+            }
         }
     }
 
+    private void closeStage(ActionEvent event) {
+        Node source = (Node) event.getSource();
+        Stage stage = (Stage) source.getScene().getWindow();
+        stage.close();
+    }
+
     @FXML private void handleCancel(ActionEvent event) {
+        closeStage(event);
     }
 
     private String getTranslate(String key) {
