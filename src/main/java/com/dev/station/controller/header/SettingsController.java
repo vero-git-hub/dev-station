@@ -197,7 +197,7 @@ public class SettingsController implements Localizable {
 
         if (isValidPath(seleniumJARPath) && seleniumJARPath.endsWith(".jar") && new File(seleniumJARPath).exists()) {
             prefs.put("seleniumJARPath", seleniumJARPath);
-            notificationManager.showErrorAlert("successUpdateSeleniumJarPath");
+            notificationManager.showInformationAlert("successUpdateSeleniumJarPath");
         } else {
             notificationManager.showErrorAlert("errorUpdateSeleniumJarPath");
         }

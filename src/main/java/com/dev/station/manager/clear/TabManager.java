@@ -82,7 +82,7 @@ public class TabManager {
 
     private Tab createNewTab() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/tab/TabContent.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/dev/station/ui/tab/TabContent.fxml"));
             loader.setResources(LanguageManager.getResourceBundle());
 
             Node content = loader.load();
@@ -121,16 +121,38 @@ public class TabManager {
         ContextMenu contextMenu = new ContextMenu();
         MenuItem renameItem = new MenuItem(clearController.getTranslate("renameItem"));
         MenuItem setDefaultItem = new MenuItem(clearController.getTranslate("setDefaultItem"));
+        MenuItem deleteItem = new MenuItem(clearController.getTranslate("deleteItem"));
 
         renameItem.getStyleClass().add("clickable");
         setDefaultItem.getStyleClass().add("clickable");
+        deleteItem.getStyleClass().add("clickable");
 
-        contextMenu.getItems().addAll(renameItem, setDefaultItem);
+        contextMenu.getItems().addAll(renameItem, setDefaultItem, deleteItem);
 
         renameItem.setOnAction(e -> handleRenameTab(tab));
         setDefaultItem.setOnAction(e -> handleSetDefaultTab(tab));
+        deleteItem.setOnAction(e -> handleDeleteTab(tab));
 
         tab.setContextMenu(contextMenu);
+    }
+
+    private void handleDeleteTab(Tab tab) {
+        Alert confirmationDialog = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmationDialog.setTitle(clearController.getTranslate("titleDeleteTab"));
+        confirmationDialog.setHeaderText(clearController.getTranslate("headerTextDeleteTab"));
+        confirmationDialog.setContentText(clearController.getTranslate("contentTextDeleteTab"));
+
+        Optional<ButtonType> result = confirmationDialog.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            JsonTabsManager jsonTabsManager = new JsonTabsManager();
+            List<TabData> tabs = jsonTabsManager.loadTabs();
+
+            tabs.removeIf(t -> t.getId().equals(tab.getId()));
+
+            jsonTabsManager.saveTabs(tabs);
+
+            tabPane.getTabs().remove(tab);
+        }
     }
 
     private void handleRenameTab(Tab tab) {
@@ -181,7 +203,7 @@ public class TabManager {
 
     private Tab createTabFromData(TabData tabData) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/tab/TabContent.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/dev/station/ui/tab/TabContent.fxml"));
             loader.setResources(LanguageManager.getResourceBundle());
 
             Node content = loader.load();
