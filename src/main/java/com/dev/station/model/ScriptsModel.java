@@ -4,6 +4,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.dev.station.entity.ProgramData;
 import com.dev.station.util.AlertUtils;
@@ -36,5 +38,29 @@ public class ScriptsModel {
             e.printStackTrace();
             AlertUtils.showErrorAlert("Error", "Save error. Contact the developer.");
         }
+    }
+
+    public List<ProgramData> loadProgramData() {
+        List<ProgramData> programList = new ArrayList<>();
+
+        try {
+            String content = new String(Files.readAllBytes(Paths.get(JSON_FILE_PATH)));
+            JSONArray programsArray = new JSONArray(content);
+
+            for (int i = 0; i < programsArray.length(); i++) {
+                JSONObject programJson = programsArray.getJSONObject(i);
+                String name = programJson.getString("name");
+                String path = programJson.getString("path");
+                String extension = programJson.getString("extension");
+
+                ProgramData programData = new ProgramData(name, path, extension);
+                programList.add(programData);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            AlertUtils.showErrorAlert("Loading error", "Failed to read program file");
+        }
+
+        return programList;
     }
 }

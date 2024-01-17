@@ -20,6 +20,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
@@ -42,16 +43,9 @@ public class ScriptsController {
     private void loadSavedPrograms() {
         programsContainer.getChildren().clear();
 
-        String savedProgramsJson = prefs.get("savedPrograms", "[]");
-        JSONArray programsArray = new JSONArray(savedProgramsJson);
+        List<ProgramData> programDataList = scriptsModel.loadProgramData();
 
-        for (int i = 0; i < programsArray.length(); i++) {
-            JSONObject programJson = programsArray.getJSONObject(i);
-            String name = programJson.getString("name");
-            String path = programJson.getString("path");
-            String category = programJson.getString("category");
-
-            ProgramData programData = new ProgramData(name, path, category);
+        for (ProgramData programData : programDataList) {
             addProgramButton(programData);
         }
     }
