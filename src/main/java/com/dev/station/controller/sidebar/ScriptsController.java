@@ -15,6 +15,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class ScriptsController {
@@ -162,7 +163,20 @@ public class ScriptsController {
 
         Button deleteButton = new Button("Delete");
         deleteButton.setOnAction(event -> {
+            Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
+            confirmationAlert.setTitle("Deletion confirmation");
+            confirmationAlert.setHeaderText("Uninstalling a program");
+            confirmationAlert.setContentText("Are you sure you want to remove this program?");
 
+            Optional<ButtonType> result = confirmationAlert.showAndWait();
+            if (result.isPresent() && result.get() == ButtonType.OK) {
+                int programId = program.getId();
+                int categoryId = program.getCategoryId();
+
+                scriptsModel.deleteProgram(programId, categoryId);
+
+                updateUIAfterDeletion(categoryId);
+            }
         });
 
         HBox buttonsBox = new HBox(10, saveButton, cancelButton, deleteButton);
@@ -178,6 +192,10 @@ public class ScriptsController {
         grid.setVgap(10);
         grid.setPadding(new Insets(10));
         return grid;
+    }
+
+    private void updateUIAfterDeletion(int categoryId) {
+        loadCategories();
     }
 
 }
