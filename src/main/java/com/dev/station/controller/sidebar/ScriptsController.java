@@ -9,6 +9,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
@@ -34,7 +35,6 @@ public class ScriptsController {
             loadCategories();
             categoryInputField.clear();
         }
-
     }
 
     private void loadCategories() {
@@ -54,12 +54,9 @@ public class ScriptsController {
                 TitledPane programTitledPane = new TitledPane();
                 programTitledPane.setText(program.getProgramName());
 
-                VBox programDetails = new VBox();
+                VBox programDetailsBox = createProgramDetails(program);
+                programTitledPane.setContent(programDetailsBox);
 
-                programDetails.getChildren().add(new Label("Path: " + program.getProgramPath()));
-                programDetails.getChildren().add(new Label("Extension: " + program.getProgramExtension()));
-
-                programTitledPane.setContent(programDetails);
                 programsAccordion.getPanes().add(programTitledPane);
             }
 
@@ -99,4 +96,64 @@ public class ScriptsController {
 
         return header;
     }
+
+
+    /**
+     * Create program form in the category
+     * @param program
+     * @return
+     */
+    private VBox createProgramDetails(ProgramData program) {
+        GridPane grid = createGridPane();
+
+        Label nameLabel = new Label("Program name:");
+        TextField nameField = new TextField(program.getProgramName());
+
+        Label actionLabel = new Label("Action:");
+        ComboBox<String> actionComboBox = new ComboBox<>();
+        actionComboBox.getItems().addAll("run", "other action");
+        actionComboBox.setValue("run");
+
+        Label descriptionLabel = new Label("Description:");
+        TextField descriptionField = new TextField("open " + program.getProgramName());
+
+        Label pathLabel = new Label("Path name (exe/jar):");
+        TextField pathField = new TextField(program.getProgramPath());
+
+        grid.add(nameLabel, 0, 0);
+        grid.add(nameField, 1, 0);
+        grid.add(descriptionLabel, 0, 1);
+        grid.add(descriptionField, 1, 1);
+        grid.add(actionLabel, 0, 2);
+        grid.add(actionComboBox, 1, 2);
+        grid.add(pathLabel, 0, 3);
+        grid.add(pathField, 1, 3);
+
+        Button saveButton = new Button("Save");
+        saveButton.setOnAction(event -> {
+
+        });
+
+        Button cancelButton = new Button("Cancel");
+
+        Button deleteButton = new Button("Delete");
+        deleteButton.setOnAction(event -> {
+
+        });
+
+        HBox buttonsBox = new HBox(10, saveButton, cancelButton, deleteButton);
+        grid.add(buttonsBox, 1, 4);
+
+        VBox contentBox = new VBox(grid);
+        return contentBox;
+    }
+
+    private GridPane createGridPane() {
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(10));
+        return grid;
+    }
+
 }
