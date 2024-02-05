@@ -4,6 +4,7 @@ import com.dev.station.entity.CategoryData;
 import com.dev.station.entity.ProgramData;
 import com.dev.station.manager.LanguageManager;
 import com.dev.station.model.ScriptsModel;
+import com.dev.station.util.FileUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -54,7 +55,7 @@ public class ScriptsController {
                 TitledPane programTitledPane = new TitledPane();
                 programTitledPane.setText(program.getProgramName());
 
-                VBox programDetailsBox = createProgramDetails(program);
+                VBox programDetailsBox = createProgramDetails(program, programTitledPane);
                 programTitledPane.setContent(programDetailsBox);
 
                 programsAccordion.getPanes().add(programTitledPane);
@@ -103,7 +104,7 @@ public class ScriptsController {
      * @param program
      * @return
      */
-    private VBox createProgramDetails(ProgramData program) {
+    private VBox createProgramDetails(ProgramData program, TitledPane programTitledPane) {
         GridPane grid = createGridPane();
 
         Label nameLabel = new Label("Program name:");
@@ -131,10 +132,33 @@ public class ScriptsController {
 
         Button saveButton = new Button("Save");
         saveButton.setOnAction(event -> {
+            String programName = nameField.getText();
+            String programPath = pathField.getText();
 
+            String description = descriptionField.getText();
+            String action = actionComboBox.getValue();
+
+            String programExtension = "";
+            if (action.equals("run")) {
+                programExtension = FileUtils.getFileExtension(programPath);
+            }
+
+            int programId = program.getId();
+            int categoryId = program.getCategoryId();
+
+            ProgramData updatedProgram = new ProgramData(programId, programName, programPath, programExtension, description, action, categoryId);
+
+            scriptsModel.saveProgramData(updatedProgram, categoryId);
+
+            programTitledPane.setExpanded(false);
         });
 
         Button cancelButton = new Button("Cancel");
+        cancelButton.setOnAction(event -> {
+            if (programTitledPane != null) {
+                programTitledPane.setExpanded(false);
+            }
+        });
 
         Button deleteButton = new Button("Delete");
         deleteButton.setOnAction(event -> {
