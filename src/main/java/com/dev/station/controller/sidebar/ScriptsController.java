@@ -79,26 +79,37 @@ public class ScriptsController {
         Label nameLabel = new Label(category.getName());
         nameLabel.setPadding(new Insets(5, 10, 5, 0));
 
-        Button editButton = new Button("Edit");
+        Button editButton = new Button("Rename");
         editButton.setOnAction(event -> {
-            // TODO: logic for editing a program
+            TextInputDialog dialog = new TextInputDialog(category.getName());
+            dialog.setTitle("Renaming a category");
+            dialog.setHeaderText("Changing the category name");
+            dialog.setContentText("Enter a new name:");
+
+            Optional<String> result = dialog.showAndWait();
+            result.ifPresent(newName -> {
+                if (!newName.trim().isEmpty()) {
+                    scriptsModel.renameCategory(category.getId(), newName);
+
+                    nameLabel.setText(newName);
+                }
+            });
         });
 
         Button deleteButton = new Button("Delete");
         deleteButton.setOnAction(event -> {
-            // TODO: logic for deleting a program
+            // TODO: logic for deleting a script
         });
 
-        Button addButton = new Button("Add program");
+        Button addButton = new Button("Add script");
         addButton.setOnAction(event -> {
-            // TODO: logic for adding a program
+            // TODO: logic for adding a script
         });
 
         header.getChildren().addAll(orderLabel, nameLabel, editButton, deleteButton, addButton);
 
         return header;
     }
-
 
     /**
      * Create program form in the category
@@ -108,7 +119,7 @@ public class ScriptsController {
     private VBox createProgramDetails(ProgramData program, TitledPane programTitledPane) {
         GridPane grid = createGridPane();
 
-        Label nameLabel = new Label("Program name:");
+        Label nameLabel = new Label("Script name:");
         TextField nameField = new TextField(program.getProgramName());
 
         Label actionLabel = new Label("Action:");
@@ -165,8 +176,8 @@ public class ScriptsController {
         deleteButton.setOnAction(event -> {
             Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
             confirmationAlert.setTitle("Deletion confirmation");
-            confirmationAlert.setHeaderText("Uninstalling a program");
-            confirmationAlert.setContentText("Are you sure you want to remove this program?");
+            confirmationAlert.setHeaderText("Deleting a script");
+            confirmationAlert.setContentText("Are you sure you want to remove this script?");
 
             Optional<ButtonType> result = confirmationAlert.showAndWait();
             if (result.isPresent() && result.get() == ButtonType.OK) {
