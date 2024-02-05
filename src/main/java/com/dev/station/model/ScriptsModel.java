@@ -102,7 +102,7 @@ public class ScriptsModel {
                 maxId = categoryId;
             }
         }
-        return maxId + 1; // Возвращаем следующий доступный id
+        return maxId + 1;
     }
 
     /**
@@ -121,7 +121,20 @@ public class ScriptsModel {
                 String categoryName = categoryJson.getString("categoryName");
                 int categoryId = categoryJson.getInt("categoryId");
 
-                CategoryData categoryData = new CategoryData(categoryName, categoryId);
+                List<ProgramData> programList = new ArrayList<>();
+                JSONArray programsArray = categoryJson.getJSONArray("programs");
+                for (int j = 0; j < programsArray.length(); j++) {
+                    JSONObject programJson = programsArray.getJSONObject(j);
+                    String programName = programJson.getString("name");
+                    String programPath = programJson.getString("path");
+                    String programExtension = programJson.getString("extension");
+
+                    ProgramData program = new ProgramData(programName, programPath, programExtension);
+                    programList.add(program);
+                }
+
+
+                CategoryData categoryData = new CategoryData(categoryName, categoryId, programList);
                 categoryList.add(categoryData);
             }
         } catch (IOException e) {
