@@ -90,7 +90,6 @@ public class ScriptsModel {
         return id + 1;
     }
 
-
     public void handleSaveCategory(ActionEvent event, String categoryName) {
         if (!categoryName.isEmpty()) {
             try {
@@ -168,4 +167,37 @@ public class ScriptsModel {
 
         return categoryList;
     }
+
+    /**
+     * Deleting program from json
+     * @param programId
+     * @param categoryId
+     */
+    public void deleteProgram(int programId, int categoryId) {
+        try {
+            String content = new String(Files.readAllBytes(Paths.get(JSON_FILE_PATH)));
+            JSONArray categoriesArray = new JSONArray(content);
+
+            for (int i = 0; i < categoriesArray.length(); i++) {
+                JSONObject category = categoriesArray.getJSONObject(i);
+                if (category.getInt("categoryId") == categoryId) {
+                    JSONArray programsArray = category.getJSONArray("programs");
+                    for (int j = 0; j < programsArray.length(); j++) {
+                        JSONObject program = programsArray.getJSONObject(j);
+                        if (program.getInt("id") == programId) {
+                            programsArray.remove(j);
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+
+            Files.write(Paths.get(JSON_FILE_PATH), categoriesArray.toString(4).getBytes(), StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE);
+        } catch (IOException e) {
+            e.printStackTrace();
+            AlertUtils.showErrorAlert("Error", "Delete error. Contact the developer.");
+        }
+    }
+
 }
