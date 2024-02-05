@@ -43,11 +43,14 @@ public class ScriptsController {
         Accordion mainAccordion = new Accordion();
 
         List<CategoryData> categories = scriptsModel.loadCategoryData();
-        for (CategoryData category : categories) {
+
+        for (int i = 0; i < categories.size(); i++) {
+            CategoryData category = categories.get(i);
+
             TitledPane categoryTitledPane = new TitledPane();
             categoryTitledPane.setText("");
 
-            HBox header = createCategoryHeader(category);
+            HBox header = createCategoryHeader(category, i + 1);
             categoryTitledPane.setGraphic(header);
 
             Accordion programsAccordion = new Accordion();
@@ -69,11 +72,11 @@ public class ScriptsController {
         categoryContainer.getChildren().setAll(mainAccordion);
     }
 
-    private HBox createCategoryHeader(CategoryData category) {
+    private HBox createCategoryHeader(CategoryData category, int orderNumber) {
         HBox header = new HBox(10);
         header.setAlignment(Pos.CENTER_LEFT);
 
-        Label orderLabel = new Label(String.valueOf(category.getId()));
+        Label orderLabel = new Label(String.valueOf(orderNumber));
         orderLabel.setPadding(new Insets(5, 10, 5, 0));
 
         Label nameLabel = new Label(category.getName());
@@ -98,7 +101,16 @@ public class ScriptsController {
 
         Button deleteButton = new Button("Delete");
         deleteButton.setOnAction(event -> {
-            // TODO: logic for deleting a script
+            Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
+            confirmationAlert.setTitle("Deletion confirmation");
+            confirmationAlert.setHeaderText("Delete a category");
+            confirmationAlert.setContentText("Are you sure you want to delete this category?");
+
+            Optional<ButtonType> result = confirmationAlert.showAndWait();
+            if (result.isPresent() && result.get() == ButtonType.OK) {
+                scriptsModel.checkAndDeleteCategory(category);
+                loadCategories();
+            }
         });
 
         Button addButton = new Button("Add script");
@@ -186,7 +198,7 @@ public class ScriptsController {
 
                 scriptsModel.deleteProgram(programId, categoryId);
 
-                updateUIAfterDeletion(categoryId);
+                updateUIAfterDeletion();
             }
         });
 
@@ -205,7 +217,7 @@ public class ScriptsController {
         return grid;
     }
 
-    private void updateUIAfterDeletion(int categoryId) {
+    private void updateUIAfterDeletion() {
         loadCategories();
     }
 

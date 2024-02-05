@@ -225,5 +225,31 @@ public class ScriptsModel {
         }
     }
 
+    public void checkAndDeleteCategory(CategoryData category) {
+        JSONArray categoriesArray;
+        try {
+            String content = new String(Files.readAllBytes(Paths.get(JSON_FILE_PATH)));
+            categoriesArray = new JSONArray(content);
 
+            for (int i = 0; i < categoriesArray.length(); i++) {
+                JSONObject currentCategory = categoriesArray.getJSONObject(i);
+                if (currentCategory.getInt("categoryId") == category.getId()) {
+                    JSONArray programsArray = currentCategory.getJSONArray("programs");
+                    if (programsArray.length() > 0) {
+                        AlertUtils.showErrorAlert("Error", "First, remove all programs in the category.");
+                        return;
+                    } else {
+                        categoriesArray.remove(i);
+                        break;
+                    }
+                }
+            }
+
+            Files.write(Paths.get(JSON_FILE_PATH), categoriesArray.toString(4).getBytes(), StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            AlertUtils.showErrorAlert("Error", "Error when deleting a category.");
+        }
+    }
 }
