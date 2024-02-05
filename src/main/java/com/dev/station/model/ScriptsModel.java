@@ -17,25 +17,57 @@ import java.util.List;
 public class ScriptsModel {
     private static final String JSON_FILE_PATH = "programs.json";
 
-    public void saveProgramData(ProgramData programData) {
-        JSONArray programsArray;
+    public void saveProgramData(ProgramData programData, int categoryId) {
+        JSONArray rootArray;
 
         try {
             String content = new String(Files.readAllBytes(Paths.get(JSON_FILE_PATH)));
-            programsArray = new JSONArray(content);
+            rootArray = new JSONArray(content);
         } catch (IOException e) {
-            programsArray = new JSONArray();
+            rootArray = new JSONArray();
+        }
+
+        JSONObject categoryJson = null;
+        for (int i = 0; i < rootArray.length(); i++) {
+            JSONObject currentCategory = rootArray.getJSONObject(i);
+            if (currentCategory.getInt("categoryId") == categoryId) {
+                categoryJson = currentCategory;
+                break;
+            }
+        }
+
+        if (categoryJson == null) {
+            AlertUtils.showErrorAlert("Error", "Category not found.");
+            return;
+        }
+
+        JSONArray programsArray = categoryJson.getJSONArray("programs");
+        int indexToUpdate = -1;
+        for (int i = 0; i < programsArray.length(); i++) {
+            JSONObject existingProgram = programsArray.getJSONObject(i);
+            if (existingProgram.getInt("id") == programData.getId()) {
+                indexToUpdate = i;
+                break;
+            }
         }
 
         JSONObject programJson = new JSONObject();
         programJson.put("name", programData.getProgramName());
         programJson.put("path", programData.getProgramPath());
         programJson.put("extension", programData.getProgramExtension());
+        programJson.put("description", programData.getDescription());
+        programJson.put("action", programData.getAction());
+        programJson.put("id", programData.getId());
 
-        programsArray.put(programJson);
+        if (indexToUpdate >= 0) {
+            programsArray.put(indexToUpdate, programJson);
+        } else {
+            programJson.put("id", generateUniqueId(programsArray));
+            programsArray.put(programJson);
+        }
 
         try {
-            Files.write(Paths.get(JSON_FILE_PATH), programsArray.toString(4).getBytes(), StandardOpenOption.CREATE, StandardOpenOption.WRITE);
+            Files.write(Paths.get(JSON_FILE_PATH), rootArray.toString(4).getBytes(), StandardOpenOption.CREATE, StandardOpenOption.WRITE);
         } catch (IOException e) {
             e.printStackTrace();
             AlertUtils.showErrorAlert("Error", "Save error. Contact the developer.");
@@ -43,32 +75,21 @@ public class ScriptsModel {
     }
 
     /**
-     * Loading programs from json
+     * Generating a unique ID for a new program
+     * @param programsArray
      * @return
      */
-    public List<ProgramData> loadProgramData() {
-        List<ProgramData> programList = new ArrayList<>();
-
-        try {
-            String content = new String(Files.readAllBytes(Paths.get(JSON_FILE_PATH)));
-            JSONArray programsArray = new JSONArray(content);
-
-            for (int i = 0; i < programsArray.length(); i++) {
-                JSONObject programJson = programsArray.getJSONObject(i);
-                String name = programJson.getString("name");
-                String path = programJson.getString("path");
-                String extension = programJson.getString("extension");
-
-                ProgramData programData = new ProgramData(name, path, extension);
-                programList.add(programData);
+    private int generateUniqueId(JSONArray programsArray) {
+        int id = 0;
+        for (int i = 0; i < programsArray.length(); i++) {
+            JSONObject program = programsArray.getJSONObject(i);
+            if (program.getInt("id") > id) {
+                id = program.getInt("id");
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-            AlertUtils.showErrorAlert("Loading error", "Failed to read program file");
         }
-
-        return programList;
+        return id + 1;
     }
+
 
     public void handleSaveCategory(ActionEvent event, String categoryName) {
         if (!categoryName.isEmpty()) {
@@ -125,11 +146,14 @@ public class ScriptsModel {
                 JSONArray programsArray = categoryJson.getJSONArray("programs");
                 for (int j = 0; j < programsArray.length(); j++) {
                     JSONObject programJson = programsArray.getJSONObject(j);
+                    int id = programJson.getInt("id");
                     String programName = programJson.getString("name");
                     String programPath = programJson.getString("path");
                     String programExtension = programJson.getString("extension");
+                    String description = programJson.optString("description", "");
+                    String action = programJson.optString("action", "");
 
-                    ProgramData program = new ProgramData(programName, programPath, programExtension);
+                    ProgramData program = new ProgramData(id, programName, programPath, programExtension, description, action, categoryId);
                     programList.add(program);
                 }
 

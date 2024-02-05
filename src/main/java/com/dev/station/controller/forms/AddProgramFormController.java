@@ -38,22 +38,22 @@ public class AddProgramFormController {
     }
 
     @FXML private void handleSave(ActionEvent event) {
-        String programName = programNameField.getText().trim();
-        String programPath = programPathField.getText().trim();
-
-        if(!programName.isEmpty() && !programPath.isEmpty()) {
-            String fileExtension = FileUtils.getFileExtension(programPath);
-
-            if(fileExtension.equalsIgnoreCase("exe") || fileExtension.equalsIgnoreCase("jar")) {
-                ProgramData programData = new ProgramData(programName, programPath, fileExtension);
-                if (onSave != null) {
-                    onSave.accept(programData);
-                    closeStage(event);
-                }
-            } else {
-                AlertUtils.showErrorAlert("Error file extension", "Only the extension exe or jar is allowed.");
-            }
-        }
+//        String programName = programNameField.getText().trim();
+//        String programPath = programPathField.getText().trim();
+//
+//        if(!programName.isEmpty() && !programPath.isEmpty()) {
+//            String fileExtension = FileUtils.getFileExtension(programPath);
+//
+//            if(fileExtension.equalsIgnoreCase("exe") || fileExtension.equalsIgnoreCase("jar")) {
+//                ProgramData programData = new ProgramData(programName, programPath, fileExtension);
+//                if (onSave != null) {
+//                    onSave.accept(programData);
+//                    closeStage(event);
+//                }
+//            } else {
+//                AlertUtils.showErrorAlert("Error file extension", "Only the extension exe or jar is allowed.");
+//            }
+//        }
     }
 
     private void closeStage(ActionEvent event) {
