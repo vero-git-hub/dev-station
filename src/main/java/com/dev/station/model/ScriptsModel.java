@@ -55,7 +55,8 @@ public class ScriptsModel {
         int indexToUpdate = -1;
         for (int i = 0; i < programsArray.length(); i++) {
             JSONObject existingProgram = programsArray.getJSONObject(i);
-            if (existingProgram.getInt("id") == programData.getId()) {
+            int existingProgramId = existingProgram.optInt("id", -1);
+            if (existingProgramId != -1 && existingProgramId == programData.getId()) {
                 indexToUpdate = i;
                 break;
             }
@@ -93,8 +94,9 @@ public class ScriptsModel {
         int id = 0;
         for (int i = 0; i < programsArray.length(); i++) {
             JSONObject program = programsArray.getJSONObject(i);
-            if (program.getInt("id") > id) {
-                id = program.getInt("id");
+            int currentId = program.optInt("id", 0);
+            if (currentId > id) {
+                id = currentId;
             }
         }
         return id + 1;
@@ -155,17 +157,17 @@ public class ScriptsModel {
                 JSONArray programsArray = categoryJson.getJSONArray("programs");
                 for (int j = 0; j < programsArray.length(); j++) {
                     JSONObject programJson = programsArray.getJSONObject(j);
-                    int id = programJson.getInt("id");
-                    String programName = programJson.getString("name");
-                    String programPath = programJson.getString("path");
-                    String programExtension = programJson.getString("extension");
+
+                    int id = programJson.optInt("id", -1);
+                    String programName = programJson.optString("name", "Unnamed");
+                    String programPath = programJson.optString("path", "");
+                    String programExtension = programJson.optString("extension", "");
                     String description = programJson.optString("description", "");
-                    String action = programJson.optString("action", "");
+                    String action = programJson.optString("action", "run");
 
                     ProgramData program = new ProgramData(id, programName, programPath, programExtension, description, action, categoryId);
                     programList.add(program);
                 }
-
 
                 CategoryData categoryData = new CategoryData(categoryName, categoryId, programList);
                 categoryList.add(categoryData);
