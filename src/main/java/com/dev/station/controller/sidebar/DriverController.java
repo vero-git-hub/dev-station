@@ -78,11 +78,9 @@ public class DriverController implements Localizable {
     }
 
     public void compareDriverVersions() {
-        String currentVersion = driverManager.getCurrentVersion(prefs);
+        //TODO: get paths from json
+        String currentVersion = driverManager.getCurrentVersion();
         String websiteVersion = driverManager.getWebsiteVersion(prefs);
-
-        currentVersion = VersionExtractor.extractVersion(currentVersion);
-        websiteVersion = VersionExtractor.extractVersion(websiteVersion);
 
         String versionStatus;
         if(currentVersion.equals(websiteVersion)) {
