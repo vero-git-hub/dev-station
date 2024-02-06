@@ -17,14 +17,11 @@ public class DriverManager {
         this.notificationManager = notificationManager;
     }
 
-    public String getWebsiteVersion(Preferences prefs) {
-        return new WebParser().parseWebsiteForVersion(prefs, notificationManager);
+    public String getWebsiteVersion(String url) {
+        return new WebParser().parseWebsiteForVersion(url, notificationManager);
     }
 
-    public String getCurrentVersion() {
-        // TODO: to get path to chrome driver from json
-        String pathToChromeDriver = "C:\\Users\\driver.exe";
-
+    public String getCurrentVersion(String pathToChromeDriver) {
         String version = getChromeDriverVersion(pathToChromeDriver);
         version = VersionExtractor.extractVersionNumber(version);
 

@@ -2,8 +2,12 @@ package com.dev.station.controller.header;
 
 import com.dev.station.Localizable;
 import com.dev.station.controller.MainController;
+import com.dev.station.entity.DriverSettings;
 import com.dev.station.manager.LanguageManager;
 import com.dev.station.manager.NotificationManager;
+import com.dev.station.model.ScriptsModel;
+import com.dev.station.model.SettingsModel;
+import com.dev.station.util.ValidUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
@@ -21,8 +25,8 @@ import java.util.prefs.Preferences;
 public class SettingsController implements Localizable {
     private final Preferences prefs = MainController.prefs;
     private NotificationManager notificationManager;
-    @FXML private ComboBox<String> startupTabComboBox;
-    @FXML private TextField phpStormPathField;
+    private SettingsModel settingsModel;
+
     @FXML private TextField seleniumPathField;
     @FXML private TextField seleniumJARPathField;
     @FXML private TextField fieldClearFirstFolder;
@@ -33,20 +37,16 @@ public class SettingsController implements Localizable {
     @FXML private TextField imageWidthField;
     @FXML private TextField imageHeightField;
     @FXML private CheckBox useOriginalSizeCheckbox;
-    @FXML private TextField registryKey;
     @FXML private TextField websiteUrl;
     @FXML private TextField driverFolderPathField;
-    @FXML private TextField driverExeNameField;
     @FXML private Tab generalTab;
     @FXML private Tab driverTab;
     @FXML private Tab clearTab;
     @FXML private Tab imagesTab;
     @FXML private TitledPane driverSettingsAccordion;
     @FXML private TitledPane seleniumSettingsAccordion;
-    @FXML public Label registryKeyLabel;
     @FXML public Label websiteUrlLabel;
     @FXML public Label driverFolderPathFieldLabel;
-    @FXML public Label driverExeNameFieldLabel;
     @FXML public Label seleniumPathFieldLabel;
     @FXML public Label seleniumJARPathFieldLabel;
     @FXML public Label firstFolderLabel;
@@ -64,6 +64,7 @@ public class SettingsController implements Localizable {
 
     public SettingsController() {
         LanguageManager.registerForUpdates(this::updateUI);
+        settingsModel = new SettingsModel();
     }
 
     @FXML
@@ -76,7 +77,6 @@ public class SettingsController implements Localizable {
     }
 
     private void downloadUserValues() {
-        phpStormPathField.setText(prefs.get("phpStormPath", ""));
         seleniumPathField.setText(prefs.get("seleniumPath", ""));
         seleniumJARPathField.setText(prefs.get("seleniumJARPath", ""));
 
@@ -91,10 +91,9 @@ public class SettingsController implements Localizable {
         imageHeightField.setText(prefs.get("imageHeightField", ""));
         useOriginalSizeCheckbox.setSelected(prefs.getBoolean("useOriginalSizeCheckbox", false));
 
-        registryKey.setText(prefs.get("registryKey", ""));
-        websiteUrl.setText(prefs.get("websiteUrl", ""));
-        driverFolderPathField.setText(prefs.get("driverFolderPath", ""));
-        driverExeNameField.setText(prefs.get("driverExeName", ""));
+        DriverSettings driverSettings = settingsModel.readDriverSettings();
+        websiteUrl.setText(driverSettings.getWebsiteUrl());
+        driverFolderPathField.setText(driverSettings.getPath());
     }
 
     @Override
@@ -144,10 +143,8 @@ public class SettingsController implements Localizable {
         driverSettingsAccordion.setText(bundle.getString("driverSettingsAccordion"));
         seleniumSettingsAccordion.setText(bundle.getString("seleniumSettingsAccordion"));
 
-        registryKeyLabel.setText(bundle.getString("registryKeyLabel"));
         websiteUrlLabel.setText(bundle.getString("websiteUrlLabel"));
         driverFolderPathFieldLabel.setText(bundle.getString("driverFolderPathFieldLabel"));
-        driverExeNameFieldLabel.setText(bundle.getString("driverExeNameFieldLabel"));
         seleniumPathFieldLabel.setText(bundle.getString("seleniumPathFieldLabel"));
         seleniumJARPathFieldLabel.setText(bundle.getString("seleniumJARPathFieldLabel"));
 
@@ -167,22 +164,10 @@ public class SettingsController implements Localizable {
     }
 
     @FXML
-    private void savePhpStormSettings() {
-//        String path = phpStormPathField.getText();
-//
-//        if (isValidPath(path) && path.endsWith("exe") && new File(path).exists()) {
-//            prefs.put("phpStormPath", path);
-//            AlertUtils.showInformationAlert("Success", "Path to PhpStorm updated successfully.");
-//        } else {
-//            AlertUtils.showErrorAlert("Invalid Path", "The entered path is not valid. Please enter a correct path to PhpStorm (ends with \".exe\").");
-//        }
-    }
-
-    @FXML
     private void saveSeleniumSettings() {
         String seleniumPath = seleniumPathField.getText();
 
-        if (isValidPath(seleniumPath) && seleniumPath.endsWith(".exe") && new File(seleniumPath).exists()) {
+        if (ValidUtils.isValidPath(seleniumPath) && seleniumPath.endsWith(".exe") && new File(seleniumPath).exists()) {
             prefs.put("seleniumPath", seleniumPath);
             notificationManager.showInformationAlert("successUpdateSeleniumPath");
         } else {
@@ -195,7 +180,7 @@ public class SettingsController implements Localizable {
     private void saveSeleniumJARSettings() {
         String seleniumJARPath = seleniumJARPathField.getText();
 
-        if (isValidPath(seleniumJARPath) && seleniumJARPath.endsWith(".jar") && new File(seleniumJARPath).exists()) {
+        if (ValidUtils.isValidPath(seleniumJARPath) && seleniumJARPath.endsWith(".jar") && new File(seleniumJARPath).exists()) {
             prefs.put("seleniumJARPath", seleniumJARPath);
             notificationManager.showInformationAlert("successUpdateSeleniumJarPath");
         } else {
@@ -205,10 +190,10 @@ public class SettingsController implements Localizable {
 
     @FXML
     private void saveClearTabSettings() {
-        if (isValidDirectoryPath(fieldClearFirstFolder.getText()) &&
-                isValidDirectoryPath(fieldClearSecondFolder.getText()) &&
-                isValidDirectoryPath(firstRecycleBinFolderField.getText()) &&
-                isValidDirectoryPath(secondRecycleBinFolderField.getText())) {
+        if (ValidUtils.isValidDirectoryPath(fieldClearFirstFolder.getText()) &&
+                ValidUtils.isValidDirectoryPath(fieldClearSecondFolder.getText()) &&
+                ValidUtils.isValidDirectoryPath(firstRecycleBinFolderField.getText()) &&
+                ValidUtils.isValidDirectoryPath(secondRecycleBinFolderField.getText())) {
 
             prefs.put("fieldClearFirstFolder", fieldClearFirstFolder.getText());
             prefs.put("fieldClearSecondFolder", fieldClearSecondFolder.getText());
@@ -218,14 +203,6 @@ public class SettingsController implements Localizable {
             notificationManager.showInformationAlert("successSaveSettings");
         } else {
             notificationManager.showErrorAlert("errorSaveSettings");
-        }
-    }
-
-    private boolean isValidDirectoryPath(String path) {
-        try {
-            return Files.isDirectory(Paths.get(path));
-        } catch (InvalidPathException | NullPointerException ex) {
-            return false;
         }
     }
 
@@ -249,15 +226,11 @@ public class SettingsController implements Localizable {
 
     @FXML
     private void saveDriverSettings() {
-        if (isValidRegistryKey(registryKey.getText()) &&
-                isValidURL(websiteUrl.getText()) &&
-                isValidDirectoryPath(driverFolderPathField.getText()) &&
-                isValidFileName(driverExeNameField.getText())) {
+        String websiteUrlText = websiteUrl.getText();
+        String pathFieldText = driverFolderPathField.getText();
 
-            prefs.put("registryKey", registryKey.getText());
-            prefs.put("websiteUrl", websiteUrl.getText());
-            prefs.put("driverFolderPath", driverFolderPathField.getText());
-            prefs.put("driverExeName", driverExeNameField.getText());
+        if (ValidUtils.isValidURL(websiteUrlText) && ValidUtils.isValidExecutablePath(pathFieldText)) {
+            settingsModel.handleSaveDriverSettings(websiteUrlText, pathFieldText);
 
             notificationManager.showInformationAlert("successSaveSettings");
         } else {
@@ -274,31 +247,7 @@ public class SettingsController implements Localizable {
         prefs.remove("tabCount");
     }
 
-    private boolean isValidRegistryKey(String registryKey) {
-        String regex = "^(HKEY_CURRENT_USER|HKEY_LOCAL_MACHINE|HKEY_CLASSES_ROOT|HKEY_USERS|HKEY_CURRENT_CONFIG)\\\\([\\w\\d\\s]+\\\\?)*$";
-        return registryKey.matches(regex);
-    }
-
-    private boolean isValidFileName(String fileName) {
-        String regex = "^[^<>:\"/\\\\|?*]+\\.\\w+$";
-        return fileName.matches(regex);
-    }
-
-    private boolean isValidURL(String url) {
-        try {
-            new URL(url).toURI();
-            return true;
-        } catch (MalformedURLException | URISyntaxException e) {
-            return false;
-        }
-    }
-
-    private boolean isValidPath(String path) {
-        try {
-            Paths.get(path);
-            return true;
-        } catch (InvalidPathException | NullPointerException ex) {
-            return false;
-        }
+    public DriverSettings readDriverSettings() {
+        return settingsModel.readDriverSettings();
     }
 }

@@ -2,6 +2,8 @@ package com.dev.station.controller.sidebar;
 
 import com.dev.station.Localizable;
 import com.dev.station.controller.MainController;
+import com.dev.station.controller.header.SettingsController;
+import com.dev.station.entity.DriverSettings;
 import com.dev.station.entity.ProcessHolder;
 import com.dev.station.entity.driver.FileDownloader;
 import com.dev.station.entity.driver.UpdateFinder;
@@ -33,6 +35,7 @@ public class DriverController implements Localizable {
     NotificationManager notificationManager;
     DriverManager driverManager;
     LaunchManager launchManager;
+    SettingsController settingsController;
     @FXML private ToggleButton toggleSelenium;
     @FXML private Label versionStatusLabel = new Label();
     @FXML private Button updateButton;
@@ -54,6 +57,7 @@ public class DriverController implements Localizable {
 
         driverManager = new DriverManager(notificationManager);
         launchManager = new LaunchManager(notificationManager);
+        settingsController = new SettingsController();
 
         compareDriverVersions();
     }
@@ -78,9 +82,12 @@ public class DriverController implements Localizable {
     }
 
     public void compareDriverVersions() {
-        //TODO: get paths from json
-        String currentVersion = driverManager.getCurrentVersion();
-        String websiteVersion = driverManager.getWebsiteVersion(prefs);
+        DriverSettings driverSettings = settingsController.readDriverSettings();
+        String url = driverSettings.getWebsiteUrl();
+        String path = driverSettings.getPath();
+
+        String currentVersion = driverManager.getCurrentVersion(path);
+        String websiteVersion = driverManager.getWebsiteVersion(url);
 
         String versionStatus;
         if(currentVersion.equals(websiteVersion)) {
