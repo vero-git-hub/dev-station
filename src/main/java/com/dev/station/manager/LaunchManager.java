@@ -2,8 +2,12 @@ package com.dev.station.manager;
 
 import com.dev.station.controller.MainController;
 import com.dev.station.entity.ProcessHolder;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.prefs.Preferences;
 
@@ -48,4 +52,45 @@ public class LaunchManager {
             notificationManager.showErrorAlert("launchJarApplication");
         }
     }
+
+    /**
+     * Launch exe script in the Scripts tab
+     * @param path
+     */
+    public void launchApplication(String path) {
+        try {
+            if (path != null && !path.isEmpty()) {
+                ProcessBuilder pb = new ProcessBuilder(path);
+                pb.start();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Could not start the application: " + e.getMessage(), ButtonType.OK);
+            alert.showAndWait();
+        }
+    }
+
+    /**
+     * Launch jar script in the Scripts tab
+     * @param pathToJar
+     */
+    public void launchJarApplication(String pathToJar) {
+        try {
+            if (pathToJar != null && !pathToJar.isEmpty()) {
+
+                List<String> command = new ArrayList<>();
+                command.add("java");
+                command.add("-jar");
+                command.add(pathToJar);
+
+                ProcessBuilder pb = new ProcessBuilder(command);
+                pb.start();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Could not start the JAR application: " + e.getMessage(), ButtonType.OK);
+            alert.showAndWait();
+        }
+    }
+
 }
