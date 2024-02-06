@@ -1,9 +1,15 @@
 package com.dev.station.controller.sidebar;
 
+import com.dev.station.Localizable;
 import com.dev.station.entity.CategoryData;
+import com.dev.station.entity.ProcessHolder;
 import com.dev.station.entity.ProgramData;
+import com.dev.station.manager.DriverManager;
 import com.dev.station.manager.LanguageManager;
+import com.dev.station.manager.LaunchManager;
+import com.dev.station.manager.NotificationManager;
 import com.dev.station.model.ScriptsModel;
+import com.dev.station.util.AlertUtils;
 import com.dev.station.util.FileUtils;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -15,18 +21,31 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-public class ScriptsController {
+public class ScriptsController implements Localizable {
     ResourceBundle bundle;
-    private ScriptsModel scriptsModel = new ScriptsModel();
+    NotificationManager notificationManager;
+    LaunchManager launchManager;
+    private ScriptsModel scriptsModel;
     @FXML private TextField categoryInputField;
     @FXML private VBox categoryContainer;
 
     @FXML private void initialize() {
         bundle = LanguageManager.getResourceBundle();
+
+        notificationManager = new NotificationManager(bundle);
+        LanguageManager.registerNotificationManager(notificationManager);
+
+        loadSavedLanguage();
+
+        scriptsModel = new ScriptsModel();
+        launchManager = new LaunchManager(notificationManager);
+
         loadCategories();
     }
 
@@ -96,6 +115,8 @@ public class ScriptsController {
                     scriptsModel.renameCategory(category.getId(), newName);
 
                     nameLabel.setText(newName);
+
+                    loadCategories();
                 }
             });
         });
@@ -234,7 +255,25 @@ public class ScriptsController {
             }
         });
 
-        HBox buttonsBox = new HBox(10, saveButton, cancelButton, deleteButton);
+        Button launchButton = new Button("Run");
+        launchButton.setOnAction(event -> {
+            String path = program.getProgramPath();
+            String extension = program.getProgramExtension();
+            String action = program.getAction();
+
+            if("run".equals(action)) {
+                if("exe".toLowerCase().equals(extension)) {
+                    launchManager.launchApplication(path);
+                } else if ("jar".toLowerCase().equals(extension)) {
+                    launchManager.launchJarApplication(path);
+                } else {
+                    AlertUtils.showErrorAlert("Wrong extension", "Check extension, only exe or jar is correct for 'run' action.");
+                }
+            }
+
+        });
+
+        HBox buttonsBox = new HBox(10, saveButton, cancelButton, deleteButton, launchButton);
         grid.add(buttonsBox, 1, 5);
 
         VBox contentBox = new VBox(grid);
@@ -250,7 +289,6 @@ public class ScriptsController {
         return null;
     }
 
-
     private GridPane createGridPane() {
         GridPane grid = new GridPane();
         grid.setHgap(10);
@@ -263,4 +301,18 @@ public class ScriptsController {
         loadCategories();
     }
 
+    @Override
+    public void loadSavedLanguage() {
+
+    }
+
+    @Override
+    public void switchLanguage(Locale newLocale) {
+
+    }
+
+    @Override
+    public void updateUI() {
+
+    }
 }
