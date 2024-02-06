@@ -1,12 +1,28 @@
 package com.dev.station.entity.driver.version;
 
-public class VersionExtractor {
-    public static String extractVersion(String version) {
-        String[] parts = version.split("\\.");
-        if (parts.length < 3) {
-            return version;
-        }
+import com.dev.station.util.AlertUtils;
 
-        return parts[0] + "." + parts[1] + "." + parts[2];
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class VersionExtractor {
+
+    /**
+     * Extract version number from the "ChromeDriver [version_number] (1234)" format
+     * @param versionOutput
+     * @return
+     */
+    public static String extractVersionNumber(String versionOutput) {
+        String versionPattern = "\\d+\\.\\d+\\.\\d+\\.\\d+";
+        Pattern pattern = Pattern.compile(versionPattern);
+        Matcher matcher = pattern.matcher(versionOutput);
+
+        if (matcher.find()) {
+            return matcher.group();
+        } else {
+            AlertUtils.showErrorAlert("Error extract version", "Version number not found.");
+            return "";
+        }
     }
+
 }
