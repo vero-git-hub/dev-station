@@ -11,6 +11,7 @@ import com.dev.station.manager.NotificationManager;
 import com.dev.station.model.ScriptsModel;
 import com.dev.station.util.AlertUtils;
 import com.dev.station.util.FileUtils;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -138,11 +139,67 @@ public class ScriptsController implements Localizable {
         Button addButton = new Button("Add script");
         addButton.setOnAction(event -> {
             // TODO: logic for adding a script
+            showAddScriptDialog(category);
         });
 
         header.getChildren().addAll(orderLabel, nameLabel, editButton, deleteButton, addButton);
 
         return header;
+    }
+
+    private void showAddScriptDialog(CategoryData category) {
+        Dialog<ProgramData> dialog = new Dialog<>();
+        dialog.setTitle("Add New Script");
+        dialog.setHeaderText("Category '" + category.getName() + "'");
+
+        ButtonType saveButtonType = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(saveButtonType, ButtonType.CANCEL);
+
+        GridPane grid = createGridPane();
+
+        TextField nameField = new TextField();
+        TextField pathField = new TextField();
+        TextField descriptionField = new TextField();
+        ComboBox<String> actionComboBox = new ComboBox<>();
+        actionComboBox.getItems().addAll("run", "other action");
+        actionComboBox.setValue("run");
+
+        nameField.setPromptText("Script Name");
+        pathField.setPromptText("Path");
+        descriptionField.setPromptText("Description");
+
+        grid.add(new Label("Name:"), 0, 0);
+        grid.add(nameField, 1, 0);
+
+        grid.add(new Label("Description:"), 0, 1);
+        grid.add(descriptionField, 1, 1);
+
+        grid.add(new Label("Action:"), 0, 2);
+        grid.add(actionComboBox, 1, 2);
+
+        grid.add(new Label("Path (if 'run' -> exe/jar):"), 0, 3);
+        grid.add(pathField, 1, 3);
+
+        dialog.getDialogPane().setContent(grid);
+
+        Platform.runLater(nameField::requestFocus);
+
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == saveButtonType) {
+                String programExtension = FileUtils.getFileExtension(pathField.getText());
+
+                // TODO: Check extension
+                return new ProgramData(-1, nameField.getText(), pathField.getText(), programExtension, descriptionField.getText(), actionComboBox.getValue(), category.getId());
+            }
+            return null;
+        });
+
+        Optional<ProgramData> result = dialog.showAndWait();
+
+        result.ifPresent(newScript -> {
+            scriptsModel.saveProgramData(newScript, -1);
+            loadCategories();
+        });
     }
 
     /**
@@ -167,7 +224,6 @@ public class ScriptsController implements Localizable {
         Label pathLabel = new Label("Path name (exe/jar):");
         TextField pathField = new TextField(program.getProgramPath());
 
-
         Label categoryLabel = new Label("Category:");
         ComboBox<CategoryData> categoryComboBox = new ComboBox<>();
 
@@ -175,7 +231,6 @@ public class ScriptsController implements Localizable {
         categoryComboBox.setItems(FXCollections.observableArrayList(categories));
 
         categoryComboBox.setValue(findCategoryById(categories, program.getCategoryId()));
-
 
         categoryComboBox.setCellFactory(param -> new ListCell<CategoryData>() {
             @Override
@@ -213,6 +268,7 @@ public class ScriptsController implements Localizable {
 
             String programExtension = "";
             if (action.equals("run")) {
+                // TODO: Check extension
                 programExtension = FileUtils.getFileExtension(programPath);
             }
 
