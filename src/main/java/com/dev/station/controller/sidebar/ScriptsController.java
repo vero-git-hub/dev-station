@@ -5,6 +5,7 @@ import com.dev.station.entity.ProgramData;
 import com.dev.station.manager.LanguageManager;
 import com.dev.station.model.ScriptsModel;
 import com.dev.station.util.FileUtils;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -145,6 +146,31 @@ public class ScriptsController {
         Label pathLabel = new Label("Path name (exe/jar):");
         TextField pathField = new TextField(program.getProgramPath());
 
+
+        Label categoryLabel = new Label("Category:");
+        ComboBox<CategoryData> categoryComboBox = new ComboBox<>();
+
+        List<CategoryData> categories = scriptsModel.loadCategoryData();
+        categoryComboBox.setItems(FXCollections.observableArrayList(categories));
+
+        categoryComboBox.setValue(findCategoryById(categories, program.getCategoryId()));
+
+
+        categoryComboBox.setCellFactory(param -> new ListCell<CategoryData>() {
+            @Override
+            protected void updateItem(CategoryData item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty || item == null ? "" : item.getName());
+            }
+        });
+        categoryComboBox.setButtonCell(new ListCell<CategoryData>() {
+            @Override
+            protected void updateItem(CategoryData item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty || item == null ? "" : item.getName());
+            }
+        });
+
         grid.add(nameLabel, 0, 0);
         grid.add(nameField, 1, 0);
         grid.add(descriptionLabel, 0, 1);
@@ -153,14 +179,16 @@ public class ScriptsController {
         grid.add(actionComboBox, 1, 2);
         grid.add(pathLabel, 0, 3);
         grid.add(pathField, 1, 3);
+        grid.add(categoryLabel, 0, 4);
+        grid.add(categoryComboBox, 1, 4);
 
         Button saveButton = new Button("Save");
         saveButton.setOnAction(event -> {
             String programName = nameField.getText();
             String programPath = pathField.getText();
-
             String description = descriptionField.getText();
             String action = actionComboBox.getValue();
+            CategoryData selectedCategory = categoryComboBox.getValue();
 
             String programExtension = "";
             if (action.equals("run")) {
@@ -168,13 +196,17 @@ public class ScriptsController {
             }
 
             int programId = program.getId();
-            int categoryId = program.getCategoryId();
 
-            ProgramData updatedProgram = new ProgramData(programId, programName, programPath, programExtension, description, action, categoryId);
+            int oldCategoryId = program.getCategoryId();
+            int newCategoryId = selectedCategory.getId();
 
-            scriptsModel.saveProgramData(updatedProgram, categoryId);
+            ProgramData updatedProgram = new ProgramData(programId, programName, programPath, programExtension, description, action, newCategoryId);
+
+            scriptsModel.saveProgramData(updatedProgram, oldCategoryId);
 
             programTitledPane.setExpanded(false);
+            loadCategories();
+
         });
 
         Button cancelButton = new Button("Cancel");
@@ -203,11 +235,21 @@ public class ScriptsController {
         });
 
         HBox buttonsBox = new HBox(10, saveButton, cancelButton, deleteButton);
-        grid.add(buttonsBox, 1, 4);
+        grid.add(buttonsBox, 1, 5);
 
         VBox contentBox = new VBox(grid);
         return contentBox;
     }
+
+    private CategoryData findCategoryById(List<CategoryData> categories, int categoryId) {
+        for (CategoryData category : categories) {
+            if (category.getId() == categoryId) {
+                return category;
+            }
+        }
+        return null;
+    }
+
 
     private GridPane createGridPane() {
         GridPane grid = new GridPane();
