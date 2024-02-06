@@ -17,12 +17,21 @@ import java.util.List;
 public class ScriptsModel {
     private static final String JSON_FILE_PATH = "programs.json";
 
-    public void saveProgramData(ProgramData programData, int categoryId) {
+    public void saveProgramData(ProgramData programData, int oldCategoryId) {
         JSONArray rootArray;
+        int newCategoryId = programData.getCategoryId();
 
         try {
             String content = new String(Files.readAllBytes(Paths.get(JSON_FILE_PATH)));
             rootArray = new JSONArray(content);
+
+            if (oldCategoryId != newCategoryId) {
+                removeProgramFromOldCategory(programData.getId(), oldCategoryId);
+
+                content = new String(Files.readAllBytes(Paths.get(JSON_FILE_PATH)));
+                rootArray = new JSONArray(content);
+            }
+
         } catch (IOException e) {
             rootArray = new JSONArray();
         }
@@ -30,7 +39,8 @@ public class ScriptsModel {
         JSONObject categoryJson = null;
         for (int i = 0; i < rootArray.length(); i++) {
             JSONObject currentCategory = rootArray.getJSONObject(i);
-            if (currentCategory.getInt("categoryId") == categoryId) {
+
+            if (currentCategory.getInt("categoryId") == newCategoryId) {
                 categoryJson = currentCategory;
                 break;
             }
@@ -246,10 +256,37 @@ public class ScriptsModel {
             }
 
             Files.write(Paths.get(JSON_FILE_PATH), categoriesArray.toString(4).getBytes(), StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE);
-
         } catch (IOException e) {
             e.printStackTrace();
             AlertUtils.showErrorAlert("Error", "Error when deleting a category.");
         }
     }
+
+    public void removeProgramFromOldCategory(int programId, int oldCategoryId) {
+        try {
+            String content = new String(Files.readAllBytes(Paths.get(JSON_FILE_PATH)));
+            JSONArray categoriesArray = new JSONArray(content);
+
+            for (int i = 0; i < categoriesArray.length(); i++) {
+                JSONObject category = categoriesArray.getJSONObject(i);
+                if (category.getInt("categoryId") == oldCategoryId) {
+                    JSONArray programsArray = category.getJSONArray("programs");
+                    for (int j = 0; j < programsArray.length(); j++) {
+                        JSONObject program = programsArray.getJSONObject(j);
+                        if (program.getInt("id") == programId) {
+                            programsArray.remove(j);
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+
+            Files.write(Paths.get(JSON_FILE_PATH), categoriesArray.toString(4).getBytes(), StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
 }
