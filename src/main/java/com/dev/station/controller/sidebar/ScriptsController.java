@@ -138,7 +138,6 @@ public class ScriptsController implements Localizable {
 
         Button addButton = new Button("Add script");
         addButton.setOnAction(event -> {
-            // TODO: logic for adding a script
             showAddScriptDialog(category);
         });
 
@@ -147,6 +146,10 @@ public class ScriptsController implements Localizable {
         return header;
     }
 
+    /**
+     * Modal for adding a new script
+     * @param category
+     */
     private void showAddScriptDialog(CategoryData category) {
         Dialog<ProgramData> dialog = new Dialog<>();
         dialog.setTitle("Add New Script");
@@ -203,7 +206,7 @@ public class ScriptsController implements Localizable {
     }
 
     /**
-     * Create program form in the category
+     * Script form in the category
      * @param program
      * @return
      */
@@ -216,10 +219,10 @@ public class ScriptsController implements Localizable {
         Label actionLabel = new Label("Action:");
         ComboBox<String> actionComboBox = new ComboBox<>();
         actionComboBox.getItems().addAll("run", "other action");
-        actionComboBox.setValue("run");
+        actionComboBox.setValue(program.getAction());
 
         Label descriptionLabel = new Label("Description:");
-        TextField descriptionField = new TextField("open " + program.getProgramName());
+        TextField descriptionField = new TextField(program.getDescription());
 
         Label pathLabel = new Label("Path name (exe/jar):");
         TextField pathField = new TextField(program.getProgramPath());
@@ -266,10 +269,12 @@ public class ScriptsController implements Localizable {
             String action = actionComboBox.getValue();
             CategoryData selectedCategory = categoryComboBox.getValue();
 
-            String programExtension = "";
-            if (action.equals("run")) {
-                // TODO: Check extension
-                programExtension = FileUtils.getFileExtension(programPath);
+            String programExtension = FileUtils.getFileExtension(programPath);
+
+            if ("run".equals(action) && !("exe".equalsIgnoreCase(programExtension) || "jar".equalsIgnoreCase(programExtension))) {
+                Alert alert = new Alert(Alert.AlertType.WARNING, "For 'run' action, only '.exe' or '.jar' extensions are allowed.", ButtonType.OK);
+                alert.showAndWait();
+                return;
             }
 
             int programId = program.getId();
