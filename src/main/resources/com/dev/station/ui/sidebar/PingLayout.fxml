@@ -4,6 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.TextFlow?>
 <VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" spacing="10"
       fx:controller="com.dev.station.controller.sidebar.PingController" styleClass="tab-container" stylesheets="@../../../../../styles/style.css">
     <padding>
@@ -14,10 +15,11 @@
         <Label text="Enter url without 'https://.../'"/>
         <TextField fx:id="websiteUrlField" promptText="Enter url" />
         <Button fx:id="scanSiteButton" text="Scan" onAction="#handleScanSite" />
+        <ProgressIndicator fx:id="scanProgressIndicator" visible="false"/>
     </HBox>
 
-    <ProgressIndicator fx:id="scanProgressIndicator" visible="false"/>
-
+    <Label text="Terminal:"/>
     <TextArea fx:id="terminalOutputArea" wrapText="true" editable="false" styleClass="text-area"/>
+    <TextFlow fx:id="resultTextFlow" />
 
 </VBox>
