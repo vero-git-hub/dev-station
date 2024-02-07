@@ -41,7 +41,6 @@ public class SettingsController implements Localizable {
     @FXML private TextField driverFolderPathField;
     @FXML private Tab generalTab;
     @FXML private Tab driverTab;
-    @FXML private Tab clearTab;
     @FXML private Tab imagesTab;
     @FXML private TitledPane driverSettingsAccordion;
     @FXML private TitledPane seleniumSettingsAccordion;
@@ -49,13 +48,6 @@ public class SettingsController implements Localizable {
     @FXML public Label driverFolderPathFieldLabel;
     @FXML public Label seleniumPathFieldLabel;
     @FXML public Label seleniumJARPathFieldLabel;
-    @FXML public Label firstFolderLabel;
-    @FXML public Label firstFolderPathLabel;
-    @FXML public Label firstRecycleBinPathLabel;
-    @FXML public Label secondFolderLabel;
-    @FXML public Label secondFolderPathLabel;
-    @FXML public Label secondRecycleBinPathLabel;
-    @FXML public Button removeAllTabsButton;
     @FXML public Label imagesFolderPathLabel;
     @FXML public Label imageWidthLabel;
     @FXML public Label imageHeightLabel;
@@ -80,10 +72,10 @@ public class SettingsController implements Localizable {
         seleniumPathField.setText(prefs.get("seleniumPath", ""));
         seleniumJARPathField.setText(prefs.get("seleniumJARPath", ""));
 
-        fieldClearFirstFolder.setText(prefs.get("fieldClearFirstFolder", ""));
-        fieldClearSecondFolder.setText(prefs.get("fieldClearSecondFolder", ""));
-        firstRecycleBinFolderField.setText(prefs.get("firstRecycleBin", ""));
-        secondRecycleBinFolderField.setText(prefs.get("secondRecycleBin", ""));
+//        fieldClearFirstFolder.setText(prefs.get("fieldClearFirstFolder", ""));
+//        fieldClearSecondFolder.setText(prefs.get("fieldClearSecondFolder", ""));
+//        firstRecycleBinFolderField.setText(prefs.get("firstRecycleBin", ""));
+//        secondRecycleBinFolderField.setText(prefs.get("secondRecycleBin", ""));
 
         imagesFolderPathField.setText(prefs.get("imagesFolderPath", ""));
 
@@ -137,7 +129,7 @@ public class SettingsController implements Localizable {
 
         generalTab.setText(bundle.getString("settingsTabGeneral"));
         driverTab.setText(bundle.getString("settingsTabDriver"));
-        clearTab.setText(bundle.getString("settingsTabClear"));
+        //clearTab.setText(bundle.getString("settingsTabClear"));
         imagesTab.setText(bundle.getString("settingsTabImages"));
 
         driverSettingsAccordion.setText(bundle.getString("driverSettingsAccordion"));
@@ -148,13 +140,13 @@ public class SettingsController implements Localizable {
         seleniumPathFieldLabel.setText(bundle.getString("seleniumPathFieldLabel"));
         seleniumJARPathFieldLabel.setText(bundle.getString("seleniumJARPathFieldLabel"));
 
-        firstFolderLabel.setText(bundle.getString("firstFolderLabel"));
-        firstFolderPathLabel.setText(bundle.getString("firstFolderPathLabel"));
-        firstRecycleBinPathLabel.setText(bundle.getString("firstRecycleBinPathLabel"));
-        secondFolderLabel.setText(bundle.getString("secondFolderLabel"));
-        secondFolderPathLabel.setText(bundle.getString("secondFolderPathLabel"));
-        secondRecycleBinPathLabel.setText(bundle.getString("secondRecycleBinPathLabel"));
-        removeAllTabsButton.setText(bundle.getString("removeAllTabsButton"));
+        //firstFolderLabel.setText(bundle.getString("firstFolderLabel"));
+        //firstFolderPathLabel.setText(bundle.getString("firstFolderPathLabel"));
+//        firstRecycleBinPathLabel.setText(bundle.getString("firstRecycleBinPathLabel"));
+//        secondFolderLabel.setText(bundle.getString("secondFolderLabel"));
+//        secondFolderPathLabel.setText(bundle.getString("secondFolderPathLabel"));
+//        secondRecycleBinPathLabel.setText(bundle.getString("secondRecycleBinPathLabel"));
+//        removeAllTabsButton.setText(bundle.getString("removeAllTabsButton"));
 
         useOriginalSizeCheckbox.setText(bundle.getString("useOriginalSizeCheckbox"));
 
