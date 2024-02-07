@@ -50,6 +50,7 @@
             <Button fx:id="scriptsButton" text="Manually" styleClass="menu-button, clickable"/>
             <Button fx:id="driverButton" text="Selenium" styleClass="menu-button, clickable"/>
             <Button fx:id="clearButton" text="Clear" styleClass="menu-button, clickable"/>
+            <Button fx:id="pingButton" text="Clear" styleClass="menu-button, clickable"/>
         </VBox>
     </left>
 

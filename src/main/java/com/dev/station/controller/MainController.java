@@ -24,6 +24,7 @@ public class MainController implements Localizable {
     @FXML private Button homeButton;
     @FXML private Button imagesButton;
     @FXML private Button settingsButton;
+    @FXML private Button pingButton;
 
     public MainController() {
         LanguageManager.registerForUpdates(this::updateUI);
@@ -52,6 +53,11 @@ public class MainController implements Localizable {
             loadClearContent();
             setActiveButton(clearButton);
         });
+
+        pingButton.setOnAction(event -> {
+            loadPingContent();
+            setActiveButton(pingButton);
+        });
     }
 
     @Override
@@ -73,6 +79,7 @@ public class MainController implements Localizable {
         scriptsButton.setText(getTranslate("scriptsMenu"));
         driverButton.setText(getTranslate("driverMenu"));
         clearButton.setText(getTranslate("clearMenu"));
+        pingButton.setText(getTranslate("pingMenu"));
 
         setTooltips();
     }
@@ -81,6 +88,7 @@ public class MainController implements Localizable {
         Tooltip.install(scriptsButton, new Tooltip(getTranslate("scriptsMenuHint")));
         Tooltip.install(driverButton, new Tooltip(getTranslate("driverMenuHint")));
         Tooltip.install(clearButton, new Tooltip(getTranslate("clearMenuHint")));
+        Tooltip.install(pingButton, new Tooltip(getTranslate("pingMenuHint")));
 
         Tooltip.install(homeButton, new Tooltip(getTranslate("homeButtonHint")));
         Tooltip.install(imagesButton, new Tooltip(getTranslate("imagesButtonHint")));
@@ -117,10 +125,21 @@ public class MainController implements Localizable {
         }
     }
 
+    private void loadPingContent() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/dev/station/ui/sidebar/PingLayout.fxml"));
+            Node programLayout = loader.load();
+            contentArea.getChildren().setAll(programLayout);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void setActiveButton(Button activeButton) {
         scriptsButton.getStyleClass().remove("active-button");
         driverButton.getStyleClass().remove("active-button");
         clearButton.getStyleClass().remove("active-button");
+        pingButton.getStyleClass().remove("active-button");
 
         activeButton.getStyleClass().add("active-button");
     }
