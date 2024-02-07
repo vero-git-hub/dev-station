@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.geometry.Insets?>
+<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" spacing="10"
+      fx:controller="com.dev.station.controller.sidebar.PingController" styleClass="tab-container" stylesheets="@../../../../../styles/style.css">
+    <padding>
+        <Insets top="10" right="10" bottom="10" left="10"/>
+    </padding>
+
+    <HBox spacing="10">
+        <Label text="Enter website url without 'https://.../'"/>
+        <TextField fx:id="websiteUrlField" promptText="Enter url" />
+        <Button fx:id="scanSiteButton" text="Scan" onAction="#handleScanSite" />
+    </HBox>
+
+    <TextArea fx:id="terminalOutputArea" wrapText="true" editable="false" styleClass="text-area"/>
+
+</VBox>
