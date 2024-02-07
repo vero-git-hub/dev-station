@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.collections.FXCollections?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import java.lang.String?>
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.dev.station.controller.header.SettingsController">
+    <TabPane AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"
+             tabClosingPolicy="UNAVAILABLE">
+        <Tab fx:id="generalTab" text="General" styleClass="tab, clickable">
+            <ScrollPane fitToWidth="true">
+                <VBox spacing="10" styleClass="settings-container">
+                    <padding>
+                        <Insets top="10" right="10" bottom="10" left="10"/>
+                    </padding>
+                    <ComboBox fx:id="languageComboBox">
+                        <items>
+                            <FXCollections fx:factory="observableArrayList">
+                                <String fx:value="English"/>
+                                <String fx:value="Русский"/>
+                            </FXCollections>
+                        </items>
+                    </ComboBox>
+                </VBox>
+            </ScrollPane>
+        </Tab>
+
+        <Tab fx:id="driverTab" styleClass="tab, clickable">
+            <content>
+                <ScrollPane fitToWidth="true">
+                    <content>
+                        <VBox spacing="10" styleClass="settings-container">
+                            <padding>
+                                <Insets top="10" right="10" bottom="10" left="10"/>
+                            </padding>
+
+                            <Accordion>
+                                <panes>
+                                    <TitledPane fx:id="driverSettingsAccordion" text="Driver settings">
+                                        <content>
+                                            <VBox spacing="10">
+                                                <Label fx:id="websiteUrlLabel" text=""/>
+                                                <TextField fx:id="websiteUrl"/>
+
+                                                <Label fx:id="driverFolderPathFieldLabel" text=""/>
+                                                <TextField fx:id="driverFolderPathField"/>
+
+                                                <Button onAction="#saveDriverSettings" styleClass="button-save, clickable"/>
+                                            </VBox>
+                                        </content>
+                                    </TitledPane>
+
+                                    <TitledPane fx:id="seleniumSettingsAccordion" text="Selenium settings">
+                                        <content>
+                                            <VBox spacing="10">
+                                                <Label fx:id="seleniumPathFieldLabel" text=""/>
+                                                <TextField fx:id="seleniumPathField"/>
+
+                                                <Label fx:id="seleniumJARPathFieldLabel" text=""/>
+                                                <TextField fx:id="seleniumJARPathField"/>
+
+                                                <Button onAction="#saveSeleniumSettings" styleClass="button-save, clickable"/>
+                                            </VBox>
+                                        </content>
+                                    </TitledPane>
+                                </panes>
+                            </Accordion>
+                        </VBox>
+                    </content>
+                </ScrollPane>
+            </content>
+        </Tab>
+
+        <Tab fx:id="imagesTab" text="Images" styleClass="tab, clickable">
+            <ScrollPane fitToWidth="true">
+                <VBox spacing="10" styleClass="settings-container">
+                    <padding>
+                        <Insets top="10" right="10" bottom="10" left="10"/>
+                    </padding>
+
+                    <Label fx:id="imagesFolderPathLabel" text="Path to images folder:"/>
+                    <TextField fx:id="imagesFolderPathField"/>
+
+                    <Label fx:id="imageWidthLabel" text="Image Width:"/>
+                    <TextField fx:id="imageWidthField"/>
+
+                    <Label fx:id="imageHeightLabel" text="Image Height:"/>
+                    <TextField fx:id="imageHeightField"/>
+
+                    <CheckBox fx:id="useOriginalSizeCheckbox" styleClass="clickable"/>
+
+                    <Button onAction="#saveImagesSettings" styleClass="button-save, clickable"/>
+                </VBox>
+            </ScrollPane>
+        </Tab>
+    </TabPane>
+</AnchorPane>
