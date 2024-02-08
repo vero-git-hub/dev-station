@@ -2,9 +2,7 @@ package com.dev.station.controller.sidebar;
 
 import com.dev.station.Localizable;
 import com.dev.station.entity.CategoryData;
-import com.dev.station.entity.ProcessHolder;
 import com.dev.station.entity.ProgramData;
-import com.dev.station.manager.DriverManager;
 import com.dev.station.manager.LanguageManager;
 import com.dev.station.manager.LaunchManager;
 import com.dev.station.manager.NotificationManager;
@@ -17,12 +15,13 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.control.*;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.*;
+import javafx.scene.shape.Rectangle;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -68,11 +67,51 @@ public class ScriptsController implements Localizable {
         for (int i = 0; i < categories.size(); i++) {
             CategoryData category = categories.get(i);
 
-            TitledPane categoryTitledPane = new TitledPane();
-            categoryTitledPane.setText("");
+            VBox root = new VBox(5);
+            root.setPadding(new Insets(10));
+            root.setAlignment(Pos.CENTER);
 
-            HBox header = createCategoryHeader(category, i + 1);
-            categoryTitledPane.setGraphic(header);
+            TitledPane categoryTitledPane = new TitledPane();
+            categoryTitledPane.setAlignment(Pos.CENTER);
+
+            HBox contentPane = new HBox();
+            contentPane.setAlignment(Pos.CENTER);
+
+            contentPane.setPadding(new Insets(0, 10, 0, 35));
+            contentPane.minWidthProperty().bind(categoryTitledPane.widthProperty());
+
+            HBox region = new HBox();
+            region.setMaxWidth(Double.MAX_VALUE);
+            HBox.setHgrow(region, Priority.ALWAYS);
+
+            HBox leftBox = new HBox(10);
+            Label orderLabel = new Label(String.valueOf(i + 1));
+            orderLabel.setPadding(new Insets(5, 10, 5, 0));
+            orderLabel.getStyleClass().add("category-order-label");
+
+            Label nameLabel = new Label(category.getName().toUpperCase());
+            nameLabel.setPadding(new Insets(5, 10, 5, 0));
+            HBox.setMargin(nameLabel, new Insets(0, 16, 0, 16));
+            nameLabel.getStyleClass().add("category-name-label");
+            leftBox.getChildren().addAll(orderLabel, nameLabel);
+
+            HBox rightBox = new HBox(10);
+            Button editButton = getEditButton(category, nameLabel);
+            Button deleteButton = getDeleteButton(category);
+            Button addButton = new Button("Add script");
+            addButton.setOnAction(event -> {
+                showAddScriptDialog(category);
+            });
+            rightBox.getChildren().addAll(editButton, deleteButton, addButton);
+
+            contentPane.getChildren().addAll(
+                    leftBox,
+                    region,
+                    rightBox
+            );
+
+            categoryTitledPane.setGraphic(contentPane);
+            categoryTitledPane.getStyleClass().add("category-titled-pane");
 
             Accordion programsAccordion = new Accordion();
 
@@ -93,17 +132,45 @@ public class ScriptsController implements Localizable {
         categoryContainer.getChildren().setAll(mainAccordion);
     }
 
-    private HBox createCategoryHeader(CategoryData category, int orderNumber) {
-        HBox header = new HBox(10);
-        header.setAlignment(Pos.CENTER_LEFT);
+    private Button getDeleteButton(CategoryData category) {
+        Image fullImage = new Image(getClass().getResourceAsStream("/images/scripts/rs-reward-board-icon.png"));
+        ImageView imageView = new ImageView(fullImage);
 
-        Label orderLabel = new Label(String.valueOf(orderNumber));
-        orderLabel.setPadding(new Insets(5, 10, 5, 0));
+        Rectangle clip = new Rectangle(0, 0, 16, 34);
+        imageView.setClip(clip);
 
-        Label nameLabel = new Label(category.getName());
-        nameLabel.setPadding(new Insets(5, 10, 5, 0));
+        imageView.setViewport(new Rectangle2D(0, 15, 17, 17));
 
-        Button editButton = new Button("Rename");
+        Button deleteButton = new Button();
+        deleteButton.setGraphic(imageView);
+
+        deleteButton.setOnAction(event -> {
+            Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
+            confirmationAlert.setTitle("Deletion confirmation");
+            confirmationAlert.setHeaderText("Delete a category");
+            confirmationAlert.setContentText("Are you sure you want to delete this category?");
+
+            Optional<ButtonType> result = confirmationAlert.showAndWait();
+            if (result.isPresent() && result.get() == ButtonType.OK) {
+                scriptsModel.checkAndDeleteCategory(category);
+                loadCategories();
+            }
+        });
+        return deleteButton;
+    }
+
+    private Button getEditButton(CategoryData category, Label nameLabel) {
+        Image fullImage = new Image(getClass().getResourceAsStream("/images/scripts/rs-reward-board-icon.png"));
+        ImageView imageView = new ImageView(fullImage);
+
+        Rectangle clip = new Rectangle(0, 0, 16, 34);
+        imageView.setClip(clip);
+
+        imageView.setViewport(new Rectangle2D(0, 31, 17, 17));
+
+        Button editButton = new Button();
+        editButton.setGraphic(imageView);
+
         editButton.setOnAction(event -> {
             TextInputDialog dialog = new TextInputDialog(category.getName());
             dialog.setTitle("Renaming a category");
@@ -121,29 +188,7 @@ public class ScriptsController implements Localizable {
                 }
             });
         });
-
-        Button deleteButton = new Button("Delete");
-        deleteButton.setOnAction(event -> {
-            Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
-            confirmationAlert.setTitle("Deletion confirmation");
-            confirmationAlert.setHeaderText("Delete a category");
-            confirmationAlert.setContentText("Are you sure you want to delete this category?");
-
-            Optional<ButtonType> result = confirmationAlert.showAndWait();
-            if (result.isPresent() && result.get() == ButtonType.OK) {
-                scriptsModel.checkAndDeleteCategory(category);
-                loadCategories();
-            }
-        });
-
-        Button addButton = new Button("Add script");
-        addButton.setOnAction(event -> {
-            showAddScriptDialog(category);
-        });
-
-        header.getChildren().addAll(orderLabel, nameLabel, editButton, deleteButton, addButton);
-
-        return header;
+        return editButton;
     }
 
     /**

@@ -95,9 +95,7 @@
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 10, 0, 0, 5);
 }
 
-/**
-   Sidebar - ping tab
- */
+/* Sidebar - Ping tab */
 .text-area .content {
     -fx-background-color: black;
 }
@@ -106,4 +104,45 @@
     -fx-text-fill: limegreen;
     -fx-font-family: "Consolas", "Monaco", monospace;
     -fx-font-size: 12px;
+}
+
+/* Sidebar - Scripts tab */
+.category-titled-pane > .title {
+    -fx-background-color: #eef2f7;
+}
+
+.category-order-label {
+    -fx-background-color: #4d5557;
+    -fx-text-fill: #ffffff;
+    -fx-padding: 3 5 3 5;
+    -fx-border-radius: 3;
+    -fx-background-radius: 3;
+    -fx-min-width: 30px;
+    -fx-alignment: center;
+}
+
+.category-name-label {
+    -fx-text-fill: #6c757d;
+    -fx-font-family: 'Nunito', sans-serif;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-line-spacing: 22px;
+    -fx-wrap-text: true; /* word-break: break-word; */
+}
+
+/* For debugging */
+.debug-outline {
+    -fx-border-color: red;
+    -fx-border-width: 1px;
+}
+
+.debug-spacer {
+    -fx-background-color: blue;
+}
+.debug-buttons {
+    -fx-background-color: yellow;
+}
+
+.footer-label {
+    -fx-padding: 3 10 3 5;
 }
