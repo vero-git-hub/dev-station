@@ -119,15 +119,13 @@
     -fx-background-radius: 3;
     -fx-min-width: 30px;
     -fx-alignment: center;
+    -fx-font-weight: bold;
 }
 
 .category-name-label {
     -fx-text-fill: #6c757d;
     -fx-font-family: 'Nunito', sans-serif;
-    -fx-font-size: 14px;
     -fx-font-weight: bold;
-    -fx-line-spacing: 22px;
-    -fx-wrap-text: true; /* word-break: break-word; */
 }
 
 /* For debugging */
@@ -145,4 +143,10 @@
 
 .footer-label {
     -fx-padding: 3 10 3 5;
+}
+
+.button-add {
+    -fx-background-color: #d1dfe1;
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
 }

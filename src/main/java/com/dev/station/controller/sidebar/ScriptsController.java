@@ -98,10 +98,8 @@ public class ScriptsController implements Localizable {
             HBox rightBox = new HBox(10);
             Button editButton = getEditButton(category, nameLabel);
             Button deleteButton = getDeleteButton(category);
-            Button addButton = new Button("Add script");
-            addButton.setOnAction(event -> {
-                showAddScriptDialog(category);
-            });
+            Button addButton = getAddButton(category);
+
             rightBox.getChildren().addAll(editButton, deleteButton, addButton);
 
             contentPane.getChildren().addAll(
@@ -130,6 +128,20 @@ public class ScriptsController implements Localizable {
         }
 
         categoryContainer.getChildren().setAll(mainAccordion);
+    }
+
+    private Button getAddButton(CategoryData category) {
+        Image image = new Image(getClass().getResourceAsStream("/images/scripts/rs-class-add-block.png"));
+        ImageView imageView = new ImageView(image);
+        imageView.setFitHeight(16);
+        imageView.setFitWidth(16);
+
+        Button addButton = new Button("Add script".toUpperCase(), imageView);
+        addButton.getStyleClass().add("button-add");
+        addButton.setOnAction(event -> {
+            showAddScriptDialog(category);
+        });
+        return addButton;
     }
 
     private Button getDeleteButton(CategoryData category) {
