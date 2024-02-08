@@ -24,6 +24,8 @@
                             </FXCollections>
                         </items>
                     </ComboBox>
+                    <Button fx:id="toggleThemeButton" text="Toggle Theme" onAction="#handleToggleTheme"/>
+
                 </VBox>
             </ScrollPane>
         </Tab>

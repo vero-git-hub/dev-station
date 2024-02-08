@@ -1,0 +1,24 @@
+.header-hbox, .footer {
+    -fx-background-color: #333 !important;
+}
+
+.menu-button {
+    -fx-background-color: #344C11 !important;
+}
+
+.menu-button:hover {
+    -fx-background-color: #778D45 !important;
+}
+
+.menu-vbox {
+    -fx-background-color: #1A2902 !important;
+}
+
+.footer-label, .menu-button {
+    -fx-text-fill: #f5efed !important;
+}
+
+/* Tab content */
+.root {
+    -fx-background-color: #474747 !important;
+}

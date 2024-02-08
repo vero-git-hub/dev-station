@@ -2,17 +2,16 @@ package com.dev.station.controller.sidebar;
 
 import com.dev.station.Localizable;
 import com.dev.station.controller.MainController;
-import com.dev.station.controller.header.SettingsController;
 import com.dev.station.entity.DriverSettings;
 import com.dev.station.entity.ProcessHolder;
 import com.dev.station.entity.driver.FileDownloader;
 import com.dev.station.entity.driver.UpdateFinder;
 import com.dev.station.entity.driver.ZipExtractor;
-import com.dev.station.entity.driver.version.VersionExtractor;
 import com.dev.station.manager.DriverManager;
 import com.dev.station.manager.LanguageManager;
 import com.dev.station.manager.LaunchManager;
 import com.dev.station.manager.NotificationManager;
+import com.dev.station.model.SettingsModel;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
@@ -20,7 +19,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
 import java.io.IOException;
@@ -35,11 +33,10 @@ public class DriverController implements Localizable {
     NotificationManager notificationManager;
     DriverManager driverManager;
     LaunchManager launchManager;
-    SettingsController settingsController;
+    SettingsModel settingsModel;
     @FXML private ToggleButton toggleSelenium;
     @FXML private Label versionStatusLabel = new Label();
     @FXML private Button updateButton;
-    @FXML private VBox mainLayout;
     @FXML private StackPane notificationPane;
 
     public DriverController() {
@@ -57,7 +54,7 @@ public class DriverController implements Localizable {
 
         driverManager = new DriverManager(notificationManager);
         launchManager = new LaunchManager(notificationManager);
-        settingsController = new SettingsController();
+        settingsModel = new SettingsModel();
 
         compareDriverVersions();
     }
@@ -82,7 +79,7 @@ public class DriverController implements Localizable {
     }
 
     public void compareDriverVersions() {
-        DriverSettings driverSettings = settingsController.readDriverSettings();
+        DriverSettings driverSettings = settingsModel.readDriverSettings();
         String url = driverSettings.getWebsiteUrl();
         String path = driverSettings.getPath();
 

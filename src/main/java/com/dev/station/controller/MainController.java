@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.StackPane;
 
@@ -25,6 +26,7 @@ public class MainController implements Localizable {
     @FXML private Button imagesButton;
     @FXML private Button settingsButton;
     @FXML private Button pingButton;
+    @FXML private Label footerLabel;
 
     public MainController() {
         LanguageManager.registerForUpdates(this::updateUI);
@@ -36,6 +38,7 @@ public class MainController implements Localizable {
         loadSavedLanguage();
 
         setButtonActions();
+        footerLabel.setText("v0.2.21");
     }
 
     private void setButtonActions() {

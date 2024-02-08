@@ -50,7 +50,7 @@
             <Button fx:id="scriptsButton" text="Manually" styleClass="menu-button, clickable"/>
             <Button fx:id="driverButton" text="Selenium" styleClass="menu-button, clickable"/>
             <Button fx:id="clearButton" text="Clear" styleClass="menu-button, clickable"/>
-            <Button fx:id="pingButton" text="Clear" styleClass="menu-button, clickable"/>
+            <Button fx:id="pingButton" text="Ping" styleClass="menu-button, clickable"/>
         </VBox>
     </left>
 
@@ -62,7 +62,7 @@
 
     <bottom>
         <HBox alignment="BOTTOM_RIGHT" styleClass="footer">
-            <Label text="v0.1.9"/>
+            <Label fx:id="footerLabel" styleClass="footer-label"/>
         </HBox>
     </bottom>
 </BorderPane>
