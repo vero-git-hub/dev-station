@@ -5,19 +5,15 @@ import com.dev.station.controller.MainController;
 import com.dev.station.entity.DriverSettings;
 import com.dev.station.manager.LanguageManager;
 import com.dev.station.manager.NotificationManager;
-import com.dev.station.model.ScriptsModel;
 import com.dev.station.model.SettingsModel;
 import com.dev.station.util.ValidUtils;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 
 import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.InvalidPathException;
-import java.nio.file.Paths;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
@@ -29,10 +25,6 @@ public class SettingsController implements Localizable {
 
     @FXML private TextField seleniumPathField;
     @FXML private TextField seleniumJARPathField;
-    @FXML private TextField fieldClearFirstFolder;
-    @FXML private TextField fieldClearSecondFolder;
-    @FXML private TextField firstRecycleBinFolderField;
-    @FXML private TextField secondRecycleBinFolderField;
     @FXML private TextField imagesFolderPathField;
     @FXML private TextField imageWidthField;
     @FXML private TextField imageHeightField;
@@ -51,8 +43,8 @@ public class SettingsController implements Localizable {
     @FXML public Label imagesFolderPathLabel;
     @FXML public Label imageWidthLabel;
     @FXML public Label imageHeightLabel;
-    @FXML
-    private ComboBox<String> languageComboBox;
+    @FXML private ComboBox<String> languageComboBox;
+    @FXML private Button toggleThemeButton;
 
     public SettingsController() {
         LanguageManager.registerForUpdates(this::updateUI);
@@ -71,12 +63,6 @@ public class SettingsController implements Localizable {
     private void downloadUserValues() {
         seleniumPathField.setText(prefs.get("seleniumPath", ""));
         seleniumJARPathField.setText(prefs.get("seleniumJARPath", ""));
-
-//        fieldClearFirstFolder.setText(prefs.get("fieldClearFirstFolder", ""));
-//        fieldClearSecondFolder.setText(prefs.get("fieldClearSecondFolder", ""));
-//        firstRecycleBinFolderField.setText(prefs.get("firstRecycleBin", ""));
-//        secondRecycleBinFolderField.setText(prefs.get("secondRecycleBin", ""));
-
         imagesFolderPathField.setText(prefs.get("imagesFolderPath", ""));
 
         imageWidthField.setText(prefs.get("imageWidthField", ""));
@@ -129,7 +115,6 @@ public class SettingsController implements Localizable {
 
         generalTab.setText(bundle.getString("settingsTabGeneral"));
         driverTab.setText(bundle.getString("settingsTabDriver"));
-        //clearTab.setText(bundle.getString("settingsTabClear"));
         imagesTab.setText(bundle.getString("settingsTabImages"));
 
         driverSettingsAccordion.setText(bundle.getString("driverSettingsAccordion"));
@@ -139,14 +124,6 @@ public class SettingsController implements Localizable {
         driverFolderPathFieldLabel.setText(bundle.getString("driverFolderPathFieldLabel"));
         seleniumPathFieldLabel.setText(bundle.getString("seleniumPathFieldLabel"));
         seleniumJARPathFieldLabel.setText(bundle.getString("seleniumJARPathFieldLabel"));
-
-        //firstFolderLabel.setText(bundle.getString("firstFolderLabel"));
-        //firstFolderPathLabel.setText(bundle.getString("firstFolderPathLabel"));
-//        firstRecycleBinPathLabel.setText(bundle.getString("firstRecycleBinPathLabel"));
-//        secondFolderLabel.setText(bundle.getString("secondFolderLabel"));
-//        secondFolderPathLabel.setText(bundle.getString("secondFolderPathLabel"));
-//        secondRecycleBinPathLabel.setText(bundle.getString("secondRecycleBinPathLabel"));
-//        removeAllTabsButton.setText(bundle.getString("removeAllTabsButton"));
 
         useOriginalSizeCheckbox.setText(bundle.getString("useOriginalSizeCheckbox"));
 
@@ -181,24 +158,6 @@ public class SettingsController implements Localizable {
     }
 
     @FXML
-    private void saveClearTabSettings() {
-        if (ValidUtils.isValidDirectoryPath(fieldClearFirstFolder.getText()) &&
-                ValidUtils.isValidDirectoryPath(fieldClearSecondFolder.getText()) &&
-                ValidUtils.isValidDirectoryPath(firstRecycleBinFolderField.getText()) &&
-                ValidUtils.isValidDirectoryPath(secondRecycleBinFolderField.getText())) {
-
-            prefs.put("fieldClearFirstFolder", fieldClearFirstFolder.getText());
-            prefs.put("fieldClearSecondFolder", fieldClearSecondFolder.getText());
-            prefs.put("firstRecycleBin", firstRecycleBinFolderField.getText());
-            prefs.put("secondRecycleBin", secondRecycleBinFolderField.getText());
-
-            notificationManager.showInformationAlert("successSaveSettings");
-        } else {
-            notificationManager.showErrorAlert("errorSaveSettings");
-        }
-    }
-
-    @FXML
     private void saveImagesSettings() {
         prefs.put("imagesFolderPath", imagesFolderPathField.getText());
         saveImageSizeSettings();
@@ -223,7 +182,6 @@ public class SettingsController implements Localizable {
 
         if (ValidUtils.isValidURL(websiteUrlText) && ValidUtils.isValidExecutablePath(pathFieldText)) {
             settingsModel.handleSaveDriverSettings(websiteUrlText, pathFieldText);
-
             notificationManager.showInformationAlert("successSaveSettings");
         } else {
             notificationManager.showErrorAlert("errorSaveSettings");
@@ -231,15 +189,18 @@ public class SettingsController implements Localizable {
     }
 
     @FXML
-    private void removeAllTabsSettings() {
-        int tabCount = prefs.getInt("tabCount", 0);
-        for (int i = 1; i <= tabCount; i++) {
-            prefs.remove("uniqueTabId" + i);
+    private void handleToggleTheme(ActionEvent event) {
+        Scene scene = toggleThemeButton.getScene();
+        ObservableList<String> stylesheets = scene.getStylesheets();
+        if (stylesheets.contains(getClass().getResource("/styles/dark-theme.css").toExternalForm())) {
+            stylesheets.clear();
+            stylesheets.add(getClass().getResource("/styles/light-theme.css").toExternalForm());
+            settingsModel.saveThemeSetting("light");
+        } else {
+            stylesheets.clear();
+            stylesheets.add(getClass().getResource("/styles/dark-theme.css").toExternalForm());
+            settingsModel.saveThemeSetting("dark");
         }
-        prefs.remove("tabCount");
     }
 
-    public DriverSettings readDriverSettings() {
-        return settingsModel.readDriverSettings();
-    }
 }

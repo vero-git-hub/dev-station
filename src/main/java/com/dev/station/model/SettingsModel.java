@@ -54,4 +54,12 @@ public class SettingsModel {
         return null;
     }
 
+    public void saveThemeSetting(String theme) {
+        // TODO: save user theme to json
+    }
+
+    public String loadThemeSetting() {
+        // TODO: load theme from json
+        return "light";
+    }
 }
