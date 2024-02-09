@@ -21,6 +21,8 @@
 
             <Region HBox.hgrow="ALWAYS"/>
 
+            <Button fx:id="styleModeButton" styleClass="style-mode-button, clickable" onAction="#switchStyleMode"/>
+
             <Button fx:id="imagesButton" styleClass="images-button, clickable" onAction="#handleImagesButtonAction">
                 <graphic>
                     <ImageView>

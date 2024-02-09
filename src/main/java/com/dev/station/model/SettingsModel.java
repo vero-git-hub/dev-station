@@ -55,11 +55,40 @@ public class SettingsModel {
     }
 
     public void saveThemeSetting(String theme) {
-        // TODO: save user theme to json
+        try {
+            String content = new String(Files.readAllBytes(Paths.get(JSON_FILE_PATH)));
+            JSONArray settingsArray = new JSONArray(content);
+
+            for (int i = 0; i < settingsArray.length(); i++) {
+                JSONObject userSettings = settingsArray.getJSONObject(i);
+                if (userSettings.getInt("id") == 1) {
+                    userSettings.put("theme", theme);
+
+                    settingsArray.put(i, userSettings);
+                    break;
+                }
+            }
+
+            Files.write(Paths.get(JSON_FILE_PATH), settingsArray.toString(4).getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public String loadThemeSetting() {
-        // TODO: load theme from json
+        try {
+            String content = new String(Files.readAllBytes(Paths.get(JSON_FILE_PATH)));
+            JSONArray settingsArray = new JSONArray(content);
+
+            for (int i = 0; i < settingsArray.length(); i++) {
+                JSONObject userSettings = settingsArray.getJSONObject(i);
+                if (userSettings.getInt("id") == 1) {
+                    return userSettings.getString("theme");
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return "light";
     }
 }

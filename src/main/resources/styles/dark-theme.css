@@ -3,15 +3,25 @@
 }
 
 .menu-button {
-    -fx-background-color: #344C11 !important;
+    -fx-background-color: #274634 !important;
 }
 
 .menu-button:hover {
-    -fx-background-color: #778D45 !important;
+    -fx-background-color: #3b5747 !important;
 }
 
 .menu-vbox {
-    -fx-background-color: #1A2902 !important;
+    -fx-background-color: #072a16 !important;
+    -fx-font-weight: bold !important;
+}
+
+.active-button {
+    -fx-background-color: #60776a !important;
+    -fx-text-fill: #f5efed !important;
+}
+
+.active-button:hover {
+    -fx-background-color: #3b5747 !important;
 }
 
 .footer-label, .menu-button {
@@ -20,5 +30,7 @@
 
 /* Tab content */
 .root {
-    -fx-background-color: #474747 !important;
+    /*-fx-background-color: #474747 !important;*/
+    -fx-background-color: #3c3f41 !important;
 }
+
