@@ -156,3 +156,8 @@
     -fx-text-fill: #ffffff;
     -fx-font-weight: bold;
 }
+
+/* dark-theme.css */
+.style-mode-button {
+    -fx-graphic: url('../images/header/moon-28.png');
+}

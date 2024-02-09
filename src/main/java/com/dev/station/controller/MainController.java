@@ -2,9 +2,12 @@ package com.dev.station.controller;
 
 import com.dev.station.Localizable;
 import com.dev.station.manager.LanguageManager;
+import com.dev.station.model.SettingsModel;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
@@ -27,6 +30,8 @@ public class MainController implements Localizable {
     @FXML private Button settingsButton;
     @FXML private Button pingButton;
     @FXML private Label footerLabel;
+    @FXML public Button styleModeButton;
+    private SettingsModel settingsModel = new SettingsModel();
 
     public MainController() {
         LanguageManager.registerForUpdates(this::updateUI);
@@ -175,5 +180,19 @@ public class MainController implements Localizable {
 
     private String getTranslate(String key) {
         return bundle.getString(key);
+    }
+
+    public void switchStyleMode(ActionEvent actionEvent) {
+        Scene scene = styleModeButton.getScene();
+        boolean isDark = scene.getStylesheets().stream().anyMatch(s -> s.contains("dark-theme.css"));
+        scene.getStylesheets().clear();
+
+        if (isDark) {
+            scene.getStylesheets().add(getClass().getResource("/styles/light-theme.css").toExternalForm());
+            settingsModel.saveThemeSetting("light");
+        } else {
+            scene.getStylesheets().add(getClass().getResource("/styles/dark-theme.css").toExternalForm());
+            settingsModel.saveThemeSetting("dark");
+        }
     }
 }

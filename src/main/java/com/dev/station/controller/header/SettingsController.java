@@ -7,10 +7,7 @@ import com.dev.station.manager.LanguageManager;
 import com.dev.station.manager.NotificationManager;
 import com.dev.station.model.SettingsModel;
 import com.dev.station.util.ValidUtils;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 
 import java.io.File;
@@ -44,7 +41,6 @@ public class SettingsController implements Localizable {
     @FXML public Label imageWidthLabel;
     @FXML public Label imageHeightLabel;
     @FXML private ComboBox<String> languageComboBox;
-    @FXML private Button toggleThemeButton;
 
     public SettingsController() {
         LanguageManager.registerForUpdates(this::updateUI);
@@ -187,20 +183,4 @@ public class SettingsController implements Localizable {
             notificationManager.showErrorAlert("errorSaveSettings");
         }
     }
-
-    @FXML
-    private void handleToggleTheme(ActionEvent event) {
-        Scene scene = toggleThemeButton.getScene();
-        ObservableList<String> stylesheets = scene.getStylesheets();
-        if (stylesheets.contains(getClass().getResource("/styles/dark-theme.css").toExternalForm())) {
-            stylesheets.clear();
-            stylesheets.add(getClass().getResource("/styles/light-theme.css").toExternalForm());
-            settingsModel.saveThemeSetting("light");
-        } else {
-            stylesheets.clear();
-            stylesheets.add(getClass().getResource("/styles/dark-theme.css").toExternalForm());
-            settingsModel.saveThemeSetting("dark");
-        }
-    }
-
 }
