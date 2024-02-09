@@ -150,3 +150,9 @@
     -fx-text-fill: #ffffff;
     -fx-font-weight: bold;
 }
+
+#saveCategoryButton {
+    -fx-background-color: #1763b1;
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+}

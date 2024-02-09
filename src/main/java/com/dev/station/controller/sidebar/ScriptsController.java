@@ -85,14 +85,8 @@ public class ScriptsController implements Localizable {
             HBox.setHgrow(region, Priority.ALWAYS);
 
             HBox leftBox = new HBox(10);
-            Label orderLabel = new Label(String.valueOf(i + 1));
-            orderLabel.setPadding(new Insets(5, 10, 5, 0));
-            orderLabel.getStyleClass().add("category-order-label");
-
-            Label nameLabel = new Label(category.getName().toUpperCase());
-            nameLabel.setPadding(new Insets(5, 10, 5, 0));
-            HBox.setMargin(nameLabel, new Insets(0, 16, 0, 16));
-            nameLabel.getStyleClass().add("category-name-label");
+            Label orderLabel = getOrderLabel(i);
+            Label nameLabel = getNameLabel(category);
             leftBox.getChildren().addAll(orderLabel, nameLabel);
 
             HBox rightBox = new HBox(10);
@@ -130,6 +124,23 @@ public class ScriptsController implements Localizable {
         categoryContainer.getChildren().setAll(mainAccordion);
     }
 
+    private Label getOrderLabel(int i) {
+        Label orderLabel = new Label(String.valueOf(i + 1));
+        orderLabel.setPadding(new Insets(5, 10, 5, 0));
+        orderLabel.getStyleClass().add("category-order-label");
+        orderLabel.setOnMouseEntered(event -> orderLabel.setStyle("-fx-background-color: lightgrey; -fx-text-fill: #333"));
+        orderLabel.setOnMouseExited(event -> orderLabel.setStyle(null));
+        return orderLabel;
+    }
+
+    private Label getNameLabel(CategoryData category) {
+        Label nameLabel = new Label(category.getName().toUpperCase());
+        nameLabel.setPadding(new Insets(5, 10, 5, 0));
+        HBox.setMargin(nameLabel, new Insets(0, 16, 0, 16));
+        nameLabel.getStyleClass().add("category-name-label");
+        return nameLabel;
+    }
+
     private Button getAddButton(CategoryData category) {
         Image image = new Image(getClass().getResourceAsStream("/images/scripts/rs-class-add-block.png"));
         ImageView imageView = new ImageView(image);
@@ -141,6 +152,7 @@ public class ScriptsController implements Localizable {
         addButton.setOnAction(event -> {
             showAddScriptDialog(category);
         });
+        addButton = setHoverEffects(addButton);
         return addButton;
     }
 
@@ -168,6 +180,7 @@ public class ScriptsController implements Localizable {
                 loadCategories();
             }
         });
+        deleteButton = setHoverEffects(deleteButton);
         return deleteButton;
     }
 
@@ -200,7 +213,15 @@ public class ScriptsController implements Localizable {
                 }
             });
         });
+
+        editButton = setHoverEffects(editButton);
         return editButton;
+    }
+
+    private Button setHoverEffects(Button button) {
+        button.setOnMouseEntered(event -> button.setStyle("-fx-background-color: lightgrey;"));
+        button.setOnMouseExited(event -> button.setStyle(null));
+        return button;
     }
 
     /**
