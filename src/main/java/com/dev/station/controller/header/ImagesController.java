@@ -1,6 +1,7 @@
 package com.dev.station.controller.header;
 
 import com.dev.station.controller.MainController;
+import com.dev.station.model.SettingsModel;
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -15,8 +16,12 @@ public class ImagesController {
     private final Preferences prefs = MainController.prefs;
     @FXML
     private TilePane imagesTilePane;
+    SettingsModel settingsModel = new SettingsModel();
 
     public void initialize() {
+        String theme = settingsModel.loadThemeSetting();
+        updateImagesLayout(theme);
+
         loadImages();
     }
 
@@ -59,6 +64,18 @@ public class ImagesController {
         } catch (Exception e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    public void updateImagesLayout(String theme) {
+        if (imagesTilePane != null) {
+            imagesTilePane.getStyleClass().clear();
+            imagesTilePane.getStyleClass().add("images-layout");
+            if ("dark".equals(theme)) {
+                imagesTilePane.getStyleClass().add("dark-theme-images");
+            } else {
+                imagesTilePane.getStyleClass().add("light-theme-images");
+            }
         }
     }
 }

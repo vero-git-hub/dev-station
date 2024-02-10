@@ -28,9 +28,11 @@
     -fx-text-fill: #f5efed !important;
 }
 
-/* Tab content */
-.root {
-    /*-fx-background-color: #474747 !important;*/
-    -fx-background-color: #3c3f41 !important;
+/* Tab, images, settings contents */
+.root, .images-layout.dark-theme-images {
+    -fx-background-color: #3c3f41;
 }
 
+#versionStatusLabel, .labelAboveTerminal, .labelBeforeUrlField, #settingsDir {
+    -fx-text-fill: #f5efed;
+}

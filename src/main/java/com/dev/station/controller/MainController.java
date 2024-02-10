@@ -30,7 +30,7 @@ public class MainController implements Localizable {
     @FXML private Button settingsButton;
     @FXML private Button pingButton;
     @FXML private Label footerLabel;
-    @FXML public Button styleModeButton;
+    @FXML public Button switchThemeButton;
     private SettingsModel settingsModel = new SettingsModel();
 
     public MainController() {
@@ -182,8 +182,8 @@ public class MainController implements Localizable {
         return bundle.getString(key);
     }
 
-    public void switchStyleMode(ActionEvent actionEvent) {
-        Scene scene = styleModeButton.getScene();
+    @FXML public void switchTheme(ActionEvent actionEvent) {
+        Scene scene = switchThemeButton.getScene();
         boolean isDark = scene.getStylesheets().stream().anyMatch(s -> s.contains("dark-theme.css"));
         scene.getStylesheets().clear();
 
