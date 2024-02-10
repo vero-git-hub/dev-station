@@ -158,6 +158,6 @@
 }
 
 /* dark-theme.css */
-.style-mode-button {
+.switch-theme-button {
     -fx-graphic: url('../images/header/moon-28.png');
 }
