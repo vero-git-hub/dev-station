@@ -11,6 +11,7 @@ public class TableManager {
 
     public void setupTable(TableColumn<PathData, Number> numberColumn, TableColumn<PathData, String> nameColumn, TableColumn<PathData, String> pathColumn, TableColumn<PathData, String> exclusionsColumn,
                            TableColumn<PathData, Void> editColumn,
+                           TableColumn<PathData, Void> deleteColumn,
                            TableView<PathData> pathsTable) {
         numberColumn.setCellFactory(col -> new TableCell<PathData, Number>() {
             @Override
@@ -29,9 +30,12 @@ public class TableManager {
 
         double numberColumnWidth = pathsTable.widthProperty().multiply(0.05).doubleValue();
         numberColumn.prefWidthProperty().bind(pathsTable.widthProperty().multiply(0.05));
-        nameColumn.prefWidthProperty().bind(pathsTable.widthProperty().subtract(numberColumnWidth).divide(4));
-        pathColumn.prefWidthProperty().bind(pathsTable.widthProperty().subtract(numberColumnWidth).divide(4));
-        exclusionsColumn.prefWidthProperty().bind(pathsTable.widthProperty().subtract(numberColumnWidth).divide(4));
-        editColumn.prefWidthProperty().bind(pathsTable.widthProperty().subtract(numberColumnWidth).divide(4));
+
+        int numDivide = 5;
+        nameColumn.prefWidthProperty().bind(pathsTable.widthProperty().subtract(numberColumnWidth).divide(numDivide));
+        pathColumn.prefWidthProperty().bind(pathsTable.widthProperty().subtract(numberColumnWidth).divide(numDivide));
+        exclusionsColumn.prefWidthProperty().bind(pathsTable.widthProperty().subtract(numberColumnWidth).divide(numDivide));
+        editColumn.prefWidthProperty().bind(pathsTable.widthProperty().subtract(numberColumnWidth).divide(numDivide));
+        deleteColumn.prefWidthProperty().bind(pathsTable.widthProperty().subtract(numberColumnWidth).divide(numDivide));
     }
 }

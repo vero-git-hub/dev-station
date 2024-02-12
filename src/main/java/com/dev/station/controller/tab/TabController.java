@@ -25,6 +25,7 @@ import javafx.stage.Stage;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
 
@@ -39,6 +40,7 @@ public class TabController implements Localizable {
     @FXML private TableColumn<PathData, String> pathColumn;
     @FXML private TableColumn<PathData, String> exclusionsColumn;
     @FXML private TableColumn<PathData, Void> editColumn;
+    @FXML private TableColumn<PathData, Void> deleteColumn;
     @FXML private Label settingsDir;
     @FXML private Button addNewPath;
     @FXML private TextField recycleBinPathField;
@@ -219,11 +221,12 @@ public class TabController implements Localizable {
     }
 
     public void setupTableColumns() {
-        setupEditButtonColumn(editColumn);
-        tableManager.setupTable(numberColumn, nameColumn, pathColumn, exclusionsColumn, editColumn, pathsTable);
+        setupEditButtonColumn();
+        setupDeleteButtonColumn();
+        tableManager.setupTable(numberColumn, nameColumn, pathColumn, exclusionsColumn, editColumn, deleteColumn, pathsTable);
     }
 
-    private TableColumn<PathData, Void> setupEditButtonColumn(TableColumn<PathData, Void> editColumn) {
+    private void setupEditButtonColumn() {
         editColumn.setCellFactory(param -> new TableCell<PathData, Void>() {
             private final Button editButton = new Button("Edit");
 
@@ -245,7 +248,6 @@ public class TabController implements Localizable {
                 }
             }
         });
-        return editColumn;
     }
 
     /**
@@ -275,6 +277,71 @@ public class TabController implements Localizable {
             stage.showAndWait();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private void setupDeleteButtonColumn() {
+        deleteColumn.setCellFactory(param -> new TableCell<PathData, Void>() {
+            private final Button deleteButton = new Button("Delete");
+
+            {
+                deleteButton.setOnAction(event -> {
+                    PathData data = getTableView().getItems().get(getIndex());
+                    handleDeleteAction(data);
+                });
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    setGraphic(deleteButton);
+                }
+            }
+        });
+    }
+
+    /**
+     * Delete tab path
+     * @param data
+     */
+    private void handleDeleteAction(PathData data) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirm Deletion");
+        alert.setHeaderText("Delete Path");
+        alert.setContentText("Are you sure you want to delete this path?");
+
+        ButtonType buttonTypeYes = new ButtonType("Yes", ButtonBar.ButtonData.YES);
+        ButtonType buttonTypeNo = new ButtonType("No", ButtonBar.ButtonData.NO);
+        alert.getButtonTypes().setAll(buttonTypeYes, buttonTypeNo);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == buttonTypeYes) {
+
+            pathsTable.getItems().remove(data);
+
+            JsonTabsManager jsonTabsManager = new JsonTabsManager();
+            List<TabData> tabs = jsonTabsManager.loadTabs();
+
+            boolean foundAndDeleted = false;
+            for (TabData tab : tabs) {
+                if (tab.getId().equals(myTab.getId())) {
+                    foundAndDeleted = tab.getPaths().removeIf(path -> path.equals(data));
+                    break;
+                }
+            }
+
+            if (foundAndDeleted) {
+                boolean savedSuccessfully = jsonTabsManager.saveTabs(tabs);
+                if (!savedSuccessfully) {
+                    System.err.println("Failed to save tabs after deletion.");
+                    pathsTable.getItems().add(data);
+                } else {
+                    updatePathsTable();
+                }
+            }
         }
     }
 
