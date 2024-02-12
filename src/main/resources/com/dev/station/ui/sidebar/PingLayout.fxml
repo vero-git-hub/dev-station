@@ -5,6 +5,8 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.TextFlow?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
 <VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" spacing="10"
       fx:controller="com.dev.station.controller.sidebar.PingController" styleClass="tab-container" stylesheets="@../../../../../styles/style.css">
     <padding>
@@ -13,7 +15,24 @@
 
     <HBox spacing="10">
         <TextField fx:id="websiteUrlField" promptText="Enter url (https://...)" />
-        <Button fx:id="scanSiteButton" text="Scan" onAction="#handleScanSite" />
+        <Button fx:id="scanSiteButton" onAction="#handleScanSite">
+            <graphic>
+                <ImageView>
+                    <Image url="@../../../../../images/ping/loupe-64.png"/>
+                    <fitWidth>25</fitWidth>
+                    <fitHeight>25</fitHeight>
+                </ImageView>
+            </graphic>
+        </Button>
+        <Button fx:id="clearButton" onAction="#handleClearInput">
+            <graphic>
+                <ImageView>
+                    <Image url="@../../../../../images/ping/clear-48.png"/>
+                    <fitWidth>25</fitWidth>
+                    <fitHeight>25</fitHeight>
+                </ImageView>
+            </graphic>
+        </Button>
         <ProgressIndicator fx:id="scanProgressIndicator" visible="false"/>
     </HBox>
 

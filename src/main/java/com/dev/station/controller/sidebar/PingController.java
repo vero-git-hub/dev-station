@@ -2,12 +2,13 @@ package com.dev.station.controller.sidebar;
 
 import com.dev.station.util.AlertUtils;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
@@ -24,7 +25,18 @@ public class PingController {
     @FXML private ProgressIndicator scanProgressIndicator;
     @FXML private TextFlow resultTextFlow;
 
-    public void handleScanSite(ActionEvent actionEvent) {
+    @FXML
+    public void initialize() {
+        websiteUrlField.setOnKeyPressed(event -> handleEnterPressed(event));
+    }
+
+     private void handleEnterPressed(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+            handleScanSite();
+        }
+    }
+
+    @FXML public void handleScanSite() {
         String websiteUrlText = extractDomain(websiteUrlField.getText());
 
         if(websiteUrlText != null) {
@@ -63,6 +75,11 @@ public class PingController {
                 }
             }).start();
         }
+    }
+
+    @FXML
+    private void handleClearInput() {
+        websiteUrlField.clear();
     }
 
     public String extractDomain(String urlString) {
