@@ -242,7 +242,7 @@ public class ScriptsController implements Localizable {
         TextField pathField = new TextField();
         TextField descriptionField = new TextField();
         ComboBox<String> actionComboBox = new ComboBox<>();
-        actionComboBox.getItems().addAll("run", "other action");
+        actionComboBox.getItems().addAll("run", "other (future)");
         actionComboBox.setValue("run");
 
         nameField.setPromptText("Script Name");
@@ -296,7 +296,7 @@ public class ScriptsController implements Localizable {
 
         Label actionLabel = new Label("Action:");
         ComboBox<String> actionComboBox = new ComboBox<>();
-        actionComboBox.getItems().addAll("run", "other action");
+        actionComboBox.getItems().addAll("run", "other (future)");
         actionComboBox.setValue(program.getAction());
 
         Label descriptionLabel = new Label("Description:");

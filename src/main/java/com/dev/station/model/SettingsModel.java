@@ -91,4 +91,42 @@ public class SettingsModel {
         }
         return "light";
     }
+
+    public void saveLanguageSetting(String language) {
+        try {
+            String content = new String(Files.readAllBytes(Paths.get(JSON_FILE_PATH)));
+            JSONArray settingsArray = new JSONArray(content);
+
+            for (int i = 0; i < settingsArray.length(); i++) {
+                JSONObject userSettings = settingsArray.getJSONObject(i);
+                if (userSettings.getInt("id") == 1) {
+                    userSettings.put("language", language);
+
+                    settingsArray.put(i, userSettings);
+                    break;
+                }
+            }
+
+            Files.write(Paths.get(JSON_FILE_PATH), settingsArray.toString(4).getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String loadLanguageSetting() {
+        try {
+            String content = new String(Files.readAllBytes(Paths.get(JSON_FILE_PATH)));
+            JSONArray settingsArray = new JSONArray(content);
+
+            for (int i = 0; i < settingsArray.length(); i++) {
+                JSONObject userSettings = settingsArray.getJSONObject(i);
+                if (userSettings.getInt("id") == 1) {
+                    return userSettings.getString("language");
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "EN";
+    }
 }

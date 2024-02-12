@@ -9,6 +9,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.StackPane;
@@ -31,10 +32,13 @@ public class MainController implements Localizable {
     @FXML private Button pingButton;
     @FXML private Label footerLabel;
     @FXML public Button switchThemeButton;
-    private SettingsModel settingsModel = new SettingsModel();
+    @FXML private ComboBox<String> languageComboBox;
+
+    private SettingsModel settingsModel;
 
     public MainController() {
         LanguageManager.registerForUpdates(this::updateUI);
+        settingsModel = new SettingsModel();
     }
 
     @FXML
@@ -43,7 +47,7 @@ public class MainController implements Localizable {
         loadSavedLanguage();
 
         setButtonActions();
-        footerLabel.setText("v0.2.21");
+        footerLabel.setText("v0.2");
     }
 
     private void setButtonActions() {
@@ -70,13 +74,40 @@ public class MainController implements Localizable {
 
     @Override
     public void loadSavedLanguage() {
-        String savedLanguage = prefs.get("selectedLanguage", "English");
+        setLanguageComboBoxSizes(58, 35);
+
+        String savedLanguage = settingsModel.loadLanguageSetting();
+        languageComboBox.setValue(savedLanguage);
+
+        languageComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null && !newVal.equals(oldVal)) {
+                Locale newLocale = LanguageManager.getLocale(newVal);
+                switchLanguage(newLocale);
+            }
+        });
+
         Locale locale = LanguageManager.getLocale(savedLanguage);
         LanguageManager.switchLanguage(locale);
     }
 
+    private void setLanguageComboBoxSizes(int width, int height) {
+        languageComboBox.setPrefWidth(width);
+        languageComboBox.setPrefHeight(height);
+    }
+
     @Override
     public void switchLanguage(Locale newLocale) {
+        String newLanguage;
+        if (newLocale.equals(Locale.ENGLISH)) {
+            newLanguage = "EN";
+        } else if (newLocale.equals(new Locale("ru", "RU"))) {
+            newLanguage = "RU";
+        } else {
+            newLanguage = "EN";
+        }
+
+        settingsModel.saveLanguageSetting(newLanguage);
+
         LanguageManager.switchLanguage(newLocale);
         updateUI();
     }

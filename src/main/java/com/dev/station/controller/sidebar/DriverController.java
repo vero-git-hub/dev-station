@@ -61,7 +61,7 @@ public class DriverController implements Localizable {
 
     @Override
     public void loadSavedLanguage() {
-        String savedLanguage = prefs.get("selectedLanguage", "English");
+        String savedLanguage = settingsModel.loadLanguageSetting();
         Locale locale = LanguageManager.getLocale(savedLanguage);
         LanguageManager.switchLanguage(locale);
     }

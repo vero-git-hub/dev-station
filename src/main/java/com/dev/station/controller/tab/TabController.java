@@ -11,6 +11,7 @@ import com.dev.station.manager.NotificationManager;
 import com.dev.station.manager.clear.PathManager;
 import com.dev.station.manager.clear.RecycleBinManager;
 import com.dev.station.manager.clear.TableManager;
+import com.dev.station.model.SettingsModel;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -48,9 +49,11 @@ public class TabController implements Localizable {
     private TableManager tableManager;
     private RecycleBinManager recycleBinManager;
     private Tab myTab;
+    SettingsModel settingsModel;
 
     public TabController() {
         LanguageManager.registerForUpdates(this::updateUI);
+        settingsModel = new SettingsModel();
     }
 
     public boolean isRestorationPerformed() {
@@ -174,7 +177,7 @@ public class TabController implements Localizable {
 
     @Override
     public void loadSavedLanguage() {
-        String savedLanguage = prefs.get("selectedLanguage", "English");
+        String savedLanguage = settingsModel.loadLanguageSetting();
         Locale locale = LanguageManager.getLocale(savedLanguage);
         LanguageManager.switchLanguage(locale);
     }
