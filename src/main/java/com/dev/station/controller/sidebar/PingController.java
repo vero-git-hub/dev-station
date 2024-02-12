@@ -1,5 +1,6 @@
 package com.dev.station.controller.sidebar;
 
+import com.dev.station.util.AlertUtils;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -13,6 +14,7 @@ import javafx.scene.text.TextFlow;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.net.URL;
 
 public class PingController {
 
@@ -23,41 +25,59 @@ public class PingController {
     @FXML private TextFlow resultTextFlow;
 
     public void handleScanSite(ActionEvent actionEvent) {
-        String websiteUrlText = websiteUrlField.getText();
-        scanProgressIndicator.setVisible(true);
+        String websiteUrlText = extractDomain(websiteUrlField.getText());
 
-        new Thread(() -> {
-            try {
-                String command = "ping " + websiteUrlText;
-                Process process = Runtime.getRuntime().exec(command);
-                BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream(), "CP866"));
-                String line;
-                StringBuilder output = new StringBuilder();
-                boolean isAvailable = false;
+        if(websiteUrlText != null) {
+            scanProgressIndicator.setVisible(true);
 
-                while ((line = reader.readLine()) != null) {
-                    output.append(line).append("\n");
-                    if (line.contains("время=") || line.contains("time=")) {
-                        isAvailable = true;
+            new Thread(() -> {
+                try {
+                    String command = "ping " + websiteUrlText;
+                    Process process = Runtime.getRuntime().exec(command);
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream(), "CP866"));
+                    String line;
+                    StringBuilder output = new StringBuilder();
+                    boolean isAvailable = false;
+
+                    while ((line = reader.readLine()) != null) {
+                        output.append(line).append("\n");
+                        if (line.contains("время=") || line.contains("time=")) {
+                            isAvailable = true;
+                        }
                     }
+
+                    String finalOutput = output.toString();
+                    boolean finalIsAvailable = isAvailable;
+                    Platform.runLater(() -> {
+                        terminalOutputArea.setText(finalOutput);
+                        updateResultTextFlow(websiteUrlText, finalIsAvailable);
+                        scanProgressIndicator.setVisible(false);
+                    });
+
+                    process.waitFor();
+                } catch (Exception e) {
+                    Platform.runLater(() -> {
+                        terminalOutputArea.setText("An error occurred while executing the ping command.");
+                        scanProgressIndicator.setVisible(false);
+                    });
                 }
+            }).start();
+        }
+    }
 
-                String finalOutput = output.toString();
-                boolean finalIsAvailable = isAvailable;
-                Platform.runLater(() -> {
-                    terminalOutputArea.setText(finalOutput);
-                    updateResultTextFlow(websiteUrlText, finalIsAvailable);
-                    scanProgressIndicator.setVisible(false);
-                });
+    public String extractDomain(String urlString) {
+        try {
+            URL url = new URL(urlString);
+            String host = url.getHost();
 
-                process.waitFor();
-            } catch (Exception e) {
-                Platform.runLater(() -> {
-                    terminalOutputArea.setText("An error occurred while executing the ping command.");
-                    scanProgressIndicator.setVisible(false);
-                });
+            if (host.startsWith("www.")) {
+                host = host.substring(4);
             }
-        }).start();
+            return host;
+        } catch (Exception e) {
+            AlertUtils.showErrorAlert("Error extract domain", "Please enter valid url.");
+            return null;
+        }
     }
 
     private void updateResultTextFlow(String websiteUrl, boolean isAvailable) {
@@ -67,6 +87,9 @@ public class PingController {
             Text resultText = new Text("Result: ");
             Text urlText = new Text(websiteUrl + " ");
             Text availableText = new Text(isAvailable ? "available" : "not available");
+
+            resultText.getStyleClass().add("result-text");
+            urlText.getStyleClass().add("url-text");
 
             urlText.setUnderline(true);
             availableText.setFill(isAvailable ? Color.GREEN : Color.RED);

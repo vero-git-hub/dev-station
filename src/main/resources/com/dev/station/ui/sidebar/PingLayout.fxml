@@ -12,8 +12,7 @@
     </padding>
 
     <HBox spacing="10">
-        <Label text="Enter url without 'https://.../'" styleClass="labelBeforeUrlField"/>
-        <TextField fx:id="websiteUrlField" promptText="Enter url" />
+        <TextField fx:id="websiteUrlField" promptText="Enter url (https://...)" />
         <Button fx:id="scanSiteButton" text="Scan" onAction="#handleScanSite" />
         <ProgressIndicator fx:id="scanProgressIndicator" visible="false"/>
     </HBox>
