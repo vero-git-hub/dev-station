@@ -41,6 +41,7 @@ public class DriverController implements Localizable {
 
     public DriverController() {
         LanguageManager.registerForUpdates(this::updateUI);
+        settingsModel = new SettingsModel();
     }
 
     @FXML
@@ -54,7 +55,6 @@ public class DriverController implements Localizable {
 
         driverManager = new DriverManager(notificationManager);
         launchManager = new LaunchManager(notificationManager);
-        settingsModel = new SettingsModel();
 
         compareDriverVersions();
     }

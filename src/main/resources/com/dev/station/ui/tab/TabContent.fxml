@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
+
+<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" spacing="10" styleClass="tab-container" fx:controller="com.dev.station.controller.tab.TabController">
+    <padding>
+        <Insets top="10" right="10" bottom="10" left="10"/>
+    </padding>
+    <HBox spacing="10">
+        <ToggleButton fx:id="toggleMoveFiles" onAction="#moveFilesToRecycleBin" styleClass="clickable"/>
+        <ToggleButton fx:id="toggleReturnFiles" onAction="#returnFromRecycleBin" styleClass="clickable">
+            <graphic>
+                <ImageView fitWidth="25" fitHeight="25" preserveRatio="true">
+                    <Image url="@../../../../../images/return-30.png"/>
+                </ImageView>
+            </graphic>
+        </ToggleButton>
+        <ToggleButton fx:id="toggleClearRecycleBin" onAction="#clearRecycleBin" styleClass="clickable">
+            <graphic>
+                <ImageView fitWidth="25" fitHeight="25" preserveRatio="true">
+                    <Image url="@../../../../../images/recycle-bin-30.png"/>
+                </ImageView>
+            </graphic>
+        </ToggleButton>
+    </HBox>
+    <Separator orientation="HORIZONTAL"/>
+    <HBox alignment="CENTER">
+        <Label fx:id="settingsDir"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <TextField fx:id="recycleBinPathField"/>
+        <Button onAction="#handleSaveRecycleBinPath" styleClass="clickable">
+            <graphic>
+                <ImageView fitWidth="25" fitHeight="25" preserveRatio="true">
+                    <Image url="@../../../../../images/save-30.png"/>
+                </ImageView>
+            </graphic>
+        </Button>
+        <Region HBox.hgrow="ALWAYS"/>
+
+        <Button fx:id="addNewPath" text="+" onAction="#handleAddPath" styleClass="clickable">
+            <graphic>
+                <ImageView fitWidth="25" fitHeight="25" preserveRatio="true">
+                    <Image url="@../../../../../images/folder-96.png"/>
+                </ImageView>
+            </graphic>
+        </Button>
+    </HBox>
+    <TableView fx:id="pathsTable">
+        <columns>
+            <TableColumn fx:id="numberColumn" text="№"/>
+            <TableColumn fx:id="nameColumn"/>
+            <TableColumn fx:id="pathColumn"/>
+            <TableColumn fx:id="exclusionsColumn"/>
+            <TableColumn fx:id="editColumn"/>
+            <TableColumn fx:id="deleteColumn"/>
+        </columns>
+    </TableView>
+</VBox>

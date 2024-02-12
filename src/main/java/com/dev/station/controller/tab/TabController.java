@@ -38,6 +38,7 @@ public class TabController implements Localizable {
     @FXML private TableColumn<PathData, String> nameColumn;
     @FXML private TableColumn<PathData, String> pathColumn;
     @FXML private TableColumn<PathData, String> exclusionsColumn;
+    @FXML private TableColumn<PathData, Void> editColumn;
     @FXML private Label settingsDir;
     @FXML private Button addNewPath;
     @FXML private TextField recycleBinPathField;
@@ -218,7 +219,63 @@ public class TabController implements Localizable {
     }
 
     public void setupTableColumns() {
-        tableManager.setupTable(numberColumn, nameColumn, pathColumn, exclusionsColumn, pathsTable);
+        setupEditButtonColumn(editColumn);
+        tableManager.setupTable(numberColumn, nameColumn, pathColumn, exclusionsColumn, editColumn, pathsTable);
+    }
+
+    private TableColumn<PathData, Void> setupEditButtonColumn(TableColumn<PathData, Void> editColumn) {
+        editColumn.setCellFactory(param -> new TableCell<PathData, Void>() {
+            private final Button editButton = new Button("Edit");
+
+            {
+                editButton.setOnAction(event -> {
+                    PathData data = getTableView().getItems().get(getIndex());
+
+                    handleEditAction(data);
+                });
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    setGraphic(editButton);
+                }
+            }
+        });
+        return editColumn;
+    }
+
+    /**
+     * Edit tab path
+     * @param data
+     */
+    private void handleEditAction(PathData data) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/dev/station/ui/forms/AddPathForm.fxml"));
+            loader.setResources(bundle);
+            Parent root = loader.load();
+
+            AddPathFormController addPathFormController = loader.getController();
+            addPathFormController.setPathManager(pathManager);
+            addPathFormController.setTabId(myTab.getId());
+            addPathFormController.setTabController(this);
+            addPathFormController.setEditMode(true, data);
+            addPathFormController.setCurrentPathData(data);
+
+            addPathFormController.setDataSavedListener(this::updateTable);
+
+            Stage stage = new Stage();
+            stage.setTitle(getTranslate("editPathFormTitle"));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setScene(new Scene(root));
+
+            stage.showAndWait();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void updatePathsTable() {

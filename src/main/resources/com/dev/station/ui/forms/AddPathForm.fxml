@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" spacing="10" fx:controller="com.dev.station.controller.forms.AddPathFormController">
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <GridPane hgap="10" vgap="10">
+        <Label fx:id="pathNameLabel" text="Path Name:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <TextField fx:id="pathNameField" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+        <Label fx:id="pathToDirectoryLabel" text="Path to Directory:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <TextField fx:id="directoryPathField" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+        <Label fx:id="exclusionsLabel" text="Exclusions (comma-separated):" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <TextField fx:id="exclusionsField" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+    </GridPane>
+
+    <HBox spacing="10" alignment="center">
+        <Button fx:id="saveButton" text="Save" onAction="#handleSave" styleClass="clickable"/>
+        <Button fx:id="cancelButton" text="Cancel" onAction="#handleCancel" styleClass="clickable"/>
+    </HBox>
+</VBox>

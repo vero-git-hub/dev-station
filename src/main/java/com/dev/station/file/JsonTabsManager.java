@@ -31,7 +31,7 @@ public class JsonTabsManager {
         return new ArrayList<>();
     }
 
-    public void saveTabs(List<TabData> tabs) {
+    public boolean saveTabs(List<TabData> tabs) {
         try {
             JSONArray tabsArray = new JSONArray();
             for (TabData tab : tabs) {
@@ -41,6 +41,9 @@ public class JsonTabsManager {
             Files.write(Paths.get(FILE_PATH), jsonString.getBytes());
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
         }
+
+        return true;
     }
 }
