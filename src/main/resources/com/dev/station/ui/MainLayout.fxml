@@ -5,6 +5,8 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
 
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
 <BorderPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.dev.station.controller.MainController" stylesheets="@../../../../styles/style.css">
     <top>
         <HBox spacing="10" styleClass="header-hbox" style="-fx-padding: 10 10 10 10;">
@@ -20,6 +22,15 @@
             </Button>
 
             <Region HBox.hgrow="ALWAYS"/>
+
+            <ComboBox fx:id="languageComboBox">
+                <items>
+                    <FXCollections fx:factory="observableArrayList">
+                        <String fx:value="EN"/>
+                        <String fx:value="RU"/>
+                    </FXCollections>
+                </items>
+            </ComboBox>
 
             <Button fx:id="switchThemeButton" styleClass="switch-theme-button, clickable" onAction="#switchTheme"/>
 

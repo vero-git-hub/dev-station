@@ -10,24 +10,6 @@
             fx:controller="com.dev.station.controller.header.SettingsController">
     <TabPane AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"
              tabClosingPolicy="UNAVAILABLE">
-        <Tab fx:id="generalTab" text="General" styleClass="tab, clickable">
-            <ScrollPane fitToWidth="true">
-                <VBox spacing="10" styleClass="settings-container">
-                    <padding>
-                        <Insets top="10" right="10" bottom="10" left="10"/>
-                    </padding>
-                    <ComboBox fx:id="languageComboBox">
-                        <items>
-                            <FXCollections fx:factory="observableArrayList">
-                                <String fx:value="English"/>
-                                <String fx:value="Русский"/>
-                            </FXCollections>
-                        </items>
-                    </ComboBox>
-                </VBox>
-            </ScrollPane>
-        </Tab>
-
         <Tab fx:id="driverTab" styleClass="tab, clickable">
             <content>
                 <ScrollPane fitToWidth="true">

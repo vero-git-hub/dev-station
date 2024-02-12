@@ -28,7 +28,6 @@ public class SettingsController implements Localizable {
     @FXML private CheckBox useOriginalSizeCheckbox;
     @FXML private TextField websiteUrl;
     @FXML private TextField driverFolderPathField;
-    @FXML private Tab generalTab;
     @FXML private Tab driverTab;
     @FXML private Tab imagesTab;
     @FXML private TitledPane driverSettingsAccordion;
@@ -40,7 +39,6 @@ public class SettingsController implements Localizable {
     @FXML public Label imagesFolderPathLabel;
     @FXML public Label imageWidthLabel;
     @FXML public Label imageHeightLabel;
-    @FXML private ComboBox<String> languageComboBox;
 
     public SettingsController() {
         LanguageManager.registerForUpdates(this::updateUI);
@@ -72,33 +70,13 @@ public class SettingsController implements Localizable {
 
     @Override
     public void loadSavedLanguage() {
-        String savedLanguage = prefs.get("selectedLanguage", "English");
-        languageComboBox.setValue(savedLanguage);
-
-        languageComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal != null && !newVal.equals(oldVal)) {
-                Locale newLocale = LanguageManager.getLocale(newVal);
-                switchLanguage(newLocale);
-            }
-        });
-
-        Locale initialLocale = LanguageManager.getLocale(savedLanguage);
-        switchLanguage(initialLocale);
+        String savedLanguage = settingsModel.loadLanguageSetting();
+        Locale locale = LanguageManager.getLocale(savedLanguage);
+        LanguageManager.switchLanguage(locale);
     }
 
     @Override
     public void switchLanguage(Locale newLocale) {
-        String newLanguage;
-        if (newLocale.equals(Locale.ENGLISH)) {
-            newLanguage = "English";
-        } else if (newLocale.equals(new Locale("ru", "RU"))) {
-            newLanguage = "Русский";
-        } else {
-            newLanguage = "English";
-        }
-
-        prefs.put("selectedLanguage", newLanguage);
-
         LanguageManager.switchLanguage(newLocale);
         updateUI();
     }
@@ -108,8 +86,7 @@ public class SettingsController implements Localizable {
         ResourceBundle bundle = LanguageManager.getResourceBundle();
 
         this.notificationManager = new NotificationManager(bundle);
-
-        generalTab.setText(bundle.getString("settingsTabGeneral"));
+        
         driverTab.setText(bundle.getString("settingsTabDriver"));
         imagesTab.setText(bundle.getString("settingsTabImages"));
 
@@ -128,8 +105,7 @@ public class SettingsController implements Localizable {
         imageHeightLabel.setText(bundle.getString("imageHeightLabel"));
     }
 
-    @FXML
-    private void saveSeleniumSettings() {
+    @FXML private void saveSeleniumSettings() {
         String seleniumPath = seleniumPathField.getText();
 
         if (ValidUtils.isValidPath(seleniumPath) && seleniumPath.endsWith(".exe") && new File(seleniumPath).exists()) {
@@ -153,8 +129,7 @@ public class SettingsController implements Localizable {
         }
     }
 
-    @FXML
-    private void saveImagesSettings() {
+    @FXML private void saveImagesSettings() {
         prefs.put("imagesFolderPath", imagesFolderPathField.getText());
         saveImageSizeSettings();
     }
@@ -171,8 +146,7 @@ public class SettingsController implements Localizable {
         notificationManager.showInformationAlert("successSaveSettings");
     }
 
-    @FXML
-    private void saveDriverSettings() {
+    @FXML private void saveDriverSettings() {
         String websiteUrlText = websiteUrl.getText();
         String pathFieldText = driverFolderPathField.getText();
 

@@ -40,8 +40,8 @@ public class LanguageManager {
 
     public static Locale getLocale(String savedLanguage) {
         return switch (savedLanguage) {
-            case "English" -> new Locale("en", "US");
-            case "Русский" -> new Locale("ru", "RU");
+            case "EN" -> new Locale("en", "US");
+            case "RU" -> new Locale("ru", "RU");
             default -> Locale.getDefault();
         };
     }
