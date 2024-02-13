@@ -53,7 +53,7 @@ public class PingController {
 
                     while ((line = reader.readLine()) != null) {
                         output.append(line).append("\n");
-                        if (line.contains("время=") || line.contains("time=")) {
+                        if (line.contains("время=") || line.contains("time=") || line.contains("<1мс") || line.contains("<1ms")) {
                             isAvailable = true;
                         }
                     }
