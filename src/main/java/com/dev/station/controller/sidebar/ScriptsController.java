@@ -19,7 +19,10 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 
 import java.util.List;
@@ -60,16 +63,16 @@ public class ScriptsController implements Localizable {
     }
 
     private void loadCategories() {
-        VBox mainContainer = new VBox(10);
-        mainContainer.setPadding(new Insets(10));
+        VBox mainContainer = new VBox(5);
+        //mainContainer.setPadding(new Insets(5));
 
         List<CategoryData> categories = scriptsModel.loadCategoryData();
 
         for (int i = 0; i < categories.size(); i++) {
             CategoryData category = categories.get(i);
 
-            VBox root = new VBox(5);
-            root.setPadding(new Insets(10));
+            VBox root = new VBox();
+            //root.setPadding(new Insets(10));
             root.setAlignment(Pos.CENTER);
 
             TitledPane categoryTitledPane = new TitledPane();
@@ -114,7 +117,7 @@ public class ScriptsController implements Localizable {
             }
 
             categoryTitledPane.setContent(new VBox(contentPane, programsBox));
-            categoryTitledPane.setExpanded(false);
+            categoryTitledPane.setExpanded(true);
 
             mainContainer.getChildren().add(categoryTitledPane);
         }
@@ -337,7 +340,26 @@ public class ScriptsController implements Localizable {
         grid.add(categoryLabel, 0, 4);
         grid.add(categoryComboBox, 1, 4);
 
-        Button saveButton = new Button("Save");
+        Button saveButton = createSaveButton(program, nameField, pathField, descriptionField, actionComboBox, categoryComboBox, programTitledPane);
+        Button cancelButton = createCancelButton(programTitledPane);
+        Button deleteButton = createDeleteButton(program, programTitledPane);
+        Button launchButton = createLaunchButton(program);
+
+        HBox buttonsBox = new HBox(10, saveButton, cancelButton, deleteButton, launchButton);
+
+        grid.add(buttonsBox, 1, 5);
+
+        VBox contentBox = new VBox(grid);
+        return contentBox;
+    }
+
+    private Button createSaveButton(ProgramData program, TextField nameField, TextField pathField, TextField descriptionField, ComboBox<String> actionComboBox, ComboBox<CategoryData> categoryComboBox, TitledPane programTitledPane) {
+        Button saveButton = new Button();
+        Image image = new Image(getClass().getResourceAsStream("/images/crud/save-30.png"));
+        ImageView imageView = new ImageView(image);
+        imageView.setFitHeight(25);
+        imageView.setFitWidth(25);
+        saveButton.setGraphic(imageView);
         saveButton.setOnAction(event -> {
             String programName = nameField.getText();
             String programPath = pathField.getText();
@@ -366,15 +388,31 @@ public class ScriptsController implements Localizable {
             loadCategories();
 
         });
+        return saveButton;
+    }
 
-        Button cancelButton = new Button("Cancel");
+    private Button createCancelButton(TitledPane programTitledPane) {
+        Button cancelButton = new Button();
+        Image image = new Image(getClass().getResourceAsStream("/images/action/return-30-1.png"));
+        ImageView imageView = new ImageView(image);
+        imageView.setFitHeight(25);
+        imageView.setFitWidth(25);
+        cancelButton.setGraphic(imageView);
         cancelButton.setOnAction(event -> {
             if (programTitledPane != null) {
                 programTitledPane.setExpanded(false);
             }
         });
+        return cancelButton;
+    }
 
-        Button deleteButton = new Button("Delete");
+    private Button createDeleteButton(ProgramData program, TitledPane programTitledPane) {
+        Button deleteButton = new Button();
+        Image image = new Image(getClass().getResourceAsStream("/images/action/clear-48.png"));
+        ImageView imageView = new ImageView(image);
+        imageView.setFitHeight(25);
+        imageView.setFitWidth(25);
+        deleteButton.setGraphic(imageView);
         deleteButton.setOnAction(event -> {
             Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
             confirmationAlert.setTitle("Deletion confirmation");
@@ -391,8 +429,16 @@ public class ScriptsController implements Localizable {
                 updateUIAfterDeletion();
             }
         });
+        return deleteButton;
+    }
 
-        Button launchButton = new Button("Run");
+    private Button createLaunchButton(ProgramData program) {
+        Button launchButton = new Button();
+        Image image = new Image(getClass().getResourceAsStream("/images/action/start-48.png"));
+        ImageView imageView = new ImageView(image);
+        imageView.setFitHeight(25);
+        imageView.setFitWidth(25);
+        launchButton.setGraphic(imageView);
         launchButton.setOnAction(event -> {
             String path = program.getProgramPath();
             String extension = program.getProgramExtension();
@@ -409,12 +455,7 @@ public class ScriptsController implements Localizable {
             }
 
         });
-
-        HBox buttonsBox = new HBox(10, saveButton, cancelButton, deleteButton, launchButton);
-        grid.add(buttonsBox, 1, 5);
-
-        VBox contentBox = new VBox(grid);
-        return contentBox;
+        return launchButton;
     }
 
     private CategoryData findCategoryById(List<CategoryData> categories, int categoryId) {

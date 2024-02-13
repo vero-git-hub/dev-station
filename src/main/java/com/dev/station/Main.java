@@ -18,7 +18,7 @@ public class Main extends Application {
 
             SettingsModel settingsModel = new SettingsModel();
             String theme = settingsModel.loadThemeSetting();
-            Scene scene = new Scene(root, 800, 600);
+            Scene scene = new Scene(root, 825, 600); // width, height
             if ("dark".equals(theme)) {
                 scene.getStylesheets().add(getClass().getResource("/styles/dark-theme.css").toExternalForm());
             } else {

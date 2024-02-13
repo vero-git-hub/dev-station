@@ -13,7 +13,7 @@
         <ToggleButton fx:id="toggleReturnFiles" onAction="#returnFromRecycleBin" styleClass="clickable">
             <graphic>
                 <ImageView fitWidth="25" fitHeight="25" preserveRatio="true">
-                    <Image url="@../../../../../images/return-30.png"/>
+                    <Image url="@../../../../../images/action/return-30.png"/>
                 </ImageView>
             </graphic>
         </ToggleButton>
@@ -33,7 +33,7 @@
         <Button onAction="#handleSaveRecycleBinPath" styleClass="clickable">
             <graphic>
                 <ImageView fitWidth="25" fitHeight="25" preserveRatio="true">
-                    <Image url="@../../../../../images/save-30.png"/>
+                    <Image url="@../../../../../images/crud/save-30.png"/>
                 </ImageView>
             </graphic>
         </Button>
