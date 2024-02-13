@@ -68,45 +68,20 @@ public class ScriptsController implements Localizable {
         for (int i = 0; i < categories.size(); i++) {
             CategoryData category = categories.get(i);
 
-            VBox root = new VBox(5);
-            root.setPadding(new Insets(10));
-            root.setAlignment(Pos.CENTER);
+            VBox categoryContentBox = new VBox(5);
+            categoryContentBox.setAlignment(Pos.CENTER);
+            categoryContentBox.setPadding(new Insets(5));
 
-            TitledPane categoryTitledPane = new TitledPane();
-            categoryTitledPane.setAlignment(Pos.CENTER);
-
-            HBox contentPane = new HBox();
-            contentPane.setAlignment(Pos.CENTER);
-
-            contentPane.setPadding(new Insets(0, 10, 0, 35));
-            contentPane.minWidthProperty().bind(categoryTitledPane.widthProperty());
-
-            HBox region = new HBox();
-            region.setMaxWidth(Double.MAX_VALUE);
-            HBox.setHgrow(region, Priority.ALWAYS);
-
-            HBox leftBox = new HBox(10);
+            HBox headerBox = new HBox(10);
+            headerBox.setAlignment(Pos.CENTER_LEFT);
             Label orderLabel = getOrderLabel(i);
             Label nameLabel = getNameLabel(category);
-            leftBox.getChildren().addAll(orderLabel, nameLabel);
-
-            HBox rightBox = new HBox(10);
             Button editButton = getEditButton(category, nameLabel);
             Button deleteButton = getDeleteButton(category);
             Button addButton = getAddButton(category);
+            headerBox.getChildren().addAll(orderLabel, nameLabel, editButton, deleteButton, addButton);
 
-            rightBox.getChildren().addAll(editButton, deleteButton, addButton);
-
-            contentPane.getChildren().addAll(
-                    leftBox,
-                    region,
-                    rightBox
-            );
-
-            categoryTitledPane.setGraphic(contentPane);
-            categoryTitledPane.getStyleClass().add("category-titled-pane");
-
-            Accordion programsAccordion = new Accordion();
+            categoryContentBox.getChildren().add(headerBox);
 
             for (ProgramData program : category.getPrograms()) {
                 TitledPane programTitledPane = new TitledPane();
@@ -114,13 +89,14 @@ public class ScriptsController implements Localizable {
 
                 VBox programDetailsBox = createProgramDetails(program, programTitledPane);
                 programTitledPane.setContent(programDetailsBox);
+                programTitledPane.setExpanded(false);
 
-                programsAccordion.getPanes().add(programTitledPane);
+                categoryContentBox.getChildren().add(programTitledPane);
             }
 
-            categoryTitledPane.setContent(programsAccordion);
+            TitledPane categoryTitledPane = new TitledPane(category.getName(), categoryContentBox);
+            categoryTitledPane.getStyleClass().add("category-titled-pane");
             categoryTitledPane.setExpanded(true);
-
             mainContainer.getChildren().add(categoryTitledPane);
         }
 
