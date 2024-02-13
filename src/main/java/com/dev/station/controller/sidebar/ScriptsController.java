@@ -60,7 +60,8 @@ public class ScriptsController implements Localizable {
     }
 
     private void loadCategories() {
-        Accordion mainAccordion = new Accordion();
+        VBox mainContainer = new VBox(10);
+        mainContainer.setPadding(new Insets(10));
 
         List<CategoryData> categories = scriptsModel.loadCategoryData();
 
@@ -118,10 +119,12 @@ public class ScriptsController implements Localizable {
             }
 
             categoryTitledPane.setContent(programsAccordion);
-            mainAccordion.getPanes().add(categoryTitledPane);
+            categoryTitledPane.setExpanded(true);
+
+            mainContainer.getChildren().add(categoryTitledPane);
         }
 
-        categoryContainer.getChildren().setAll(mainAccordion);
+        categoryContainer.getChildren().setAll(mainContainer);
     }
 
     private Label getOrderLabel(int i) {
