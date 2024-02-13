@@ -5,6 +5,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.ScrollPane?>
 <VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" spacing="10"
       fx:controller="com.dev.station.controller.sidebar.ScriptsController" styleClass="tab-container">
     <padding>
@@ -16,6 +17,8 @@
         <Button fx:id="saveCategoryButton" text="Save" onAction="#handleSaveCategory" />
     </HBox>
 
-    <VBox fx:id="categoryContainer"></VBox>
+    <ScrollPane styleClass="scripts-scroll-pane" fitToWidth="true" VBox.vgrow="ALWAYS">
+        <VBox fx:id="categoryContainer" spacing="10" />
+    </ScrollPane>
 
 </VBox>

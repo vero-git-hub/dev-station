@@ -68,7 +68,7 @@
 }
 
 .button-save {
-    -fx-graphic: url('../images/save-30.png');
+    -fx-graphic: url('../images/crud/save-30.png');
 }
 
 .button-home {
@@ -76,7 +76,7 @@
 }
 
 .button-return {
-    -fx-graphic: url('../images/return-30.png');
+    -fx-graphic: url('../images/action/return-30.png');
 }
 
 .button-clear {

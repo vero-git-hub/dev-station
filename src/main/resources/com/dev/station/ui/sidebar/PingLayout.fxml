@@ -27,7 +27,7 @@
         <Button fx:id="clearButton" onAction="#handleClearInput">
             <graphic>
                 <ImageView>
-                    <Image url="@../../../../../images/ping/clear-48.png"/>
+                    <Image url="@../../../../../images/action/clear-48.png"/>
                     <fitWidth>25</fitWidth>
                     <fitHeight>25</fitHeight>
                 </ImageView>
