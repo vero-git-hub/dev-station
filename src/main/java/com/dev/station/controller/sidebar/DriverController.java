@@ -18,6 +18,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 
@@ -74,8 +75,13 @@ public class DriverController implements Localizable {
 
     @Override
     public void updateUI() {
-        updateButton.setText(getTranslate("updateButton"));
+        // updateButton.setText(getTranslate("updateButton"));
         toggleSelenium.setText(getTranslate("toggleSelenium"));
+        setTooltips();
+    }
+
+    private void setTooltips() {
+        Tooltip.install(updateButton, new Tooltip(getTranslate("toggleDriverUpdateHint")));
     }
 
     public void compareDriverVersions() {

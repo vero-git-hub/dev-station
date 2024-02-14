@@ -9,6 +9,7 @@ module com.dev.station {
     requires java.prefs;
     requires org.jsoup;
     requires org.json;
+    requires java.desktop;
 
 
     opens com.dev.station to javafx.fxml;
@@ -21,4 +22,5 @@ module com.dev.station {
     opens com.dev.station.controller.tab to javafx.fxml;
     exports com.dev.station.file;
     opens com.dev.station.file to javafx.fxml;
+    opens com.dev.station.factory to javafx.base;
 }

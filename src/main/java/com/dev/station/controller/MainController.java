@@ -6,12 +6,10 @@ import com.dev.station.model.SettingsModel;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.*;
 import javafx.scene.layout.StackPane;
 
 import java.io.IOException;
@@ -78,6 +76,21 @@ public class MainController implements Localizable {
 
         String savedLanguage = settingsModel.loadLanguageSetting();
         languageComboBox.setValue(savedLanguage);
+
+        languageComboBox.setCellFactory(lv -> new ListCell<String>() {
+            @Override
+            public void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(item);
+
+                    setOnMouseEntered(event -> setCursor(Cursor.HAND));
+                    setOnMouseExited(event -> setCursor(Cursor.DEFAULT));
+                }
+            }
+        });
 
         languageComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null && !newVal.equals(oldVal)) {

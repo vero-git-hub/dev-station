@@ -14,7 +14,7 @@
 
     <HBox spacing="10">
         <TextField fx:id="categoryInputField" promptText="Name category" />
-        <Button fx:id="saveCategoryButton" text="Save" onAction="#handleSaveCategory" />
+        <Button fx:id="saveCategoryButton" text="Save" styleClass="clickable" onAction="#handleSaveCategory" />
     </HBox>
 
     <ScrollPane styleClass="scripts-scroll-pane" fitToWidth="true" VBox.vgrow="ALWAYS">
