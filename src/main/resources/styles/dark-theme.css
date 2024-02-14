@@ -37,7 +37,7 @@
     -fx-text-fill: #f5efed;
 }
 
-.result-text, .url-text {
+.result-text {
     -fx-fill: #f5efed !important;
 }
 

@@ -88,7 +88,7 @@ public class ScriptsController implements Localizable {
             HBox.setHgrow(region, Priority.ALWAYS);
 
             HBox leftBox = new HBox(10);
-            Label orderLabel = getOrderLabel(i);
+            Label orderLabel = getOrderLabel(category);
             Label nameLabel = getNameLabel(category);
             leftBox.getChildren().addAll(orderLabel, nameLabel);
 
@@ -125,8 +125,9 @@ public class ScriptsController implements Localizable {
         categoryContainer.getChildren().setAll(mainContainer);
     }
 
-    private Label getOrderLabel(int i) {
-        Label orderLabel = new Label(String.valueOf(i + 1));
+    private Label getOrderLabel(CategoryData category) {
+        String text = String.valueOf(category.getPrograms().size());
+        Label orderLabel = new Label(text);
         orderLabel.setPadding(new Insets(5, 10, 5, 0));
         orderLabel.getStyleClass().add("category-order-label");
         orderLabel.setOnMouseEntered(event -> orderLabel.setStyle("-fx-background-color: lightgrey; -fx-text-fill: #333"));

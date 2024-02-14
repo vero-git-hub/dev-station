@@ -15,7 +15,7 @@
 
     <HBox spacing="10">
         <TextField fx:id="websiteUrlField" promptText="Enter url (https://...)" />
-        <Button fx:id="scanSiteButton" onAction="#handleScanSite">
+        <Button fx:id="scanSiteButton" styleClass="clickable" onAction="#handleScanSite">
             <graphic>
                 <ImageView>
                     <Image url="@../../../../../images/ping/loupe-64.png"/>
@@ -24,7 +24,7 @@
                 </ImageView>
             </graphic>
         </Button>
-        <Button fx:id="clearButton" onAction="#handleClearInput">
+        <Button fx:id="clearButton" styleClass="clickable" onAction="#handleClearInput">
             <graphic>
                 <ImageView>
                     <Image url="@../../../../../images/action/clear-48.png"/>

@@ -17,9 +17,12 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -101,6 +104,9 @@ public class TabController implements Localizable {
         nameColumn.setText(bundle.getString("nameColumn"));
         pathColumn.setText(bundle.getString("pathColumn"));
         exclusionsColumn.setText(bundle.getString("exclusionsColumn"));
+        editColumn.setText(bundle.getString("editColumn"));
+        deleteColumn.setText(bundle.getString("deleteColumn"));
+
         settingsDir.setText(getTranslate("settingsDir"));
         setTooltips();
     }
@@ -200,6 +206,9 @@ public class TabController implements Localizable {
         nameColumn.setText(bundle.getString("nameColumn"));
         pathColumn.setText(bundle.getString("pathColumn"));
         exclusionsColumn.setText(bundle.getString("exclusionsColumn"));
+        editColumn.setText(bundle.getString("editColumn"));
+        deleteColumn.setText(bundle.getString("deleteColumn"));
+
         settingsDir.setText(getTranslate("settingsDir"));
         recycleBinPathField.setPromptText(getTranslate("recycleBinPathField"));
         setTooltips();
@@ -228,14 +237,21 @@ public class TabController implements Localizable {
 
     private void setupEditButtonColumn() {
         editColumn.setCellFactory(param -> new TableCell<PathData, Void>() {
-            private final Button editButton = new Button("Edit");
+            private final ImageView editIcon = new ImageView(new Image(getClass().getResourceAsStream("/images/crud/edit-64.png")));
+            private final Button editButton = new Button();
 
             {
+                editIcon.setFitHeight(28);
+                editIcon.setFitWidth(28);
+                editButton.setGraphic(editIcon);
                 editButton.setOnAction(event -> {
                     PathData data = getTableView().getItems().get(getIndex());
 
                     handleEditAction(data);
                 });
+
+                editButton.setOnMouseEntered(e -> editButton.setCursor(Cursor.HAND));
+                editButton.setOnMouseExited(e -> editButton.setCursor(Cursor.DEFAULT));
             }
 
             @Override
@@ -282,13 +298,20 @@ public class TabController implements Localizable {
 
     private void setupDeleteButtonColumn() {
         deleteColumn.setCellFactory(param -> new TableCell<PathData, Void>() {
-            private final Button deleteButton = new Button("Delete");
+            private final ImageView deleteIcon = new ImageView(new Image(getClass().getResourceAsStream("/images/crud/delete-64.png")));
+            private final Button deleteButton = new Button();
 
             {
+                deleteIcon.setFitHeight(28);
+                deleteIcon.setFitWidth(28);
+                deleteButton.setGraphic(deleteIcon);
                 deleteButton.setOnAction(event -> {
                     PathData data = getTableView().getItems().get(getIndex());
                     handleDeleteAction(data);
                 });
+
+                deleteButton.setOnMouseEntered(e -> deleteButton.setCursor(Cursor.HAND));
+                deleteButton.setOnMouseExited(e -> deleteButton.setCursor(Cursor.DEFAULT));
             }
 
             @Override

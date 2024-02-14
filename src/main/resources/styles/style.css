@@ -161,3 +161,15 @@
 .switch-theme-button {
     -fx-graphic: url('../images/header/moon-28.png');
 }
+
+.update-button:hover, .toggle-selenium:hover {
+    -fx-cursor: hand;
+}
+
+.url-text {
+    -fx-fill: #0000FF;
+}
+
+.url-text:hover {
+    -fx-fill: #FF00FF;
+}

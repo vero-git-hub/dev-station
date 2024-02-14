@@ -13,6 +13,7 @@ public class TableManager {
                            TableColumn<PathData, Void> editColumn,
                            TableColumn<PathData, Void> deleteColumn,
                            TableView<PathData> pathsTable) {
+
         numberColumn.setCellFactory(col -> new TableCell<PathData, Number>() {
             @Override
             protected void updateItem(Number item, boolean empty) {
@@ -35,7 +36,9 @@ public class TableManager {
         nameColumn.prefWidthProperty().bind(pathsTable.widthProperty().subtract(numberColumnWidth).divide(numDivide));
         pathColumn.prefWidthProperty().bind(pathsTable.widthProperty().subtract(numberColumnWidth).divide(numDivide));
         exclusionsColumn.prefWidthProperty().bind(pathsTable.widthProperty().subtract(numberColumnWidth).divide(numDivide));
-        editColumn.prefWidthProperty().bind(pathsTable.widthProperty().subtract(numberColumnWidth).divide(numDivide));
-        deleteColumn.prefWidthProperty().bind(pathsTable.widthProperty().subtract(numberColumnWidth).divide(numDivide));
+        editColumn.prefWidthProperty().bind(pathsTable.widthProperty().multiply(0.17));
+        deleteColumn.prefWidthProperty().bind(pathsTable.widthProperty().multiply(0.17));
+
+        //pathsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     }
 }
