@@ -17,12 +17,15 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -45,7 +48,7 @@ public class TabController implements Localizable {
     @FXML private TableColumn<PathData, Void> editColumn;
     @FXML private TableColumn<PathData, Void> deleteColumn;
     @FXML private Label settingsDir;
-    @FXML private Button addNewPath;
+    @FXML private Button addNewPathButton;
     @FXML private TextField recycleBinPathField;
     private final Preferences prefs = MainController.prefs;
     private boolean isRestorationPerformed = false;
@@ -82,6 +85,23 @@ public class TabController implements Localizable {
         setMultilingual();
         loadSavedLanguage();
         definitionManagers();
+        setImageOnButton();
+    }
+
+    private void setImageOnButton() {
+        ImageView imageView = new ImageView(new Image(getClass().getResourceAsStream("/images/folder-96.png")));
+        imageView.setFitWidth(25);
+        imageView.setFitHeight(25);
+
+        HBox hbox = new HBox();
+        hbox.setSpacing(5);
+        hbox.setAlignment(Pos.CENTER_LEFT);
+
+        Text text = new Text("+");
+        hbox.getChildren().addAll(text, imageView);
+
+        addNewPathButton.setGraphic(hbox);
+        addNewPathButton.setText("");
     }
 
     private void definitionManagers() {
@@ -217,7 +237,8 @@ public class TabController implements Localizable {
     private void setTooltips() {
         Tooltip.install(toggleReturnFiles, new Tooltip(getTranslate("toggleReturnFilesHint")));
         Tooltip.install(toggleClearRecycleBin, new Tooltip(getTranslate("toggleClearRecycleBinHint")));
-        Tooltip.install(addNewPath, new Tooltip());
+        addNewPathButton.setContentDisplay(ContentDisplay.LEFT);
+        Tooltip.install(addNewPathButton, new Tooltip(getTranslate("addNewPath")));
     }
 
     public void loadData(TabData tabData) {
