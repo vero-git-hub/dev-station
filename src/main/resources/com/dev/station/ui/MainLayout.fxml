@@ -23,7 +23,7 @@
 
             <Region HBox.hgrow="ALWAYS"/>
 
-            <ComboBox fx:id="languageComboBox" styleClass="clickable">
+            <ComboBox fx:id="languageComboBox" styleClass="language-combo-box, clickable">
                 <items>
                     <FXCollections fx:factory="observableArrayList">
                         <String fx:value="EN"/>

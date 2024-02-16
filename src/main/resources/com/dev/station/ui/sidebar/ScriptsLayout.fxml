@@ -13,7 +13,7 @@
     </padding>
 
     <HBox spacing="10">
-        <TextField fx:id="categoryInputField" promptText="Name category" />
+        <TextField fx:id="categoryNameInputField" promptText="Name category" />
         <Button fx:id="saveCategoryButton" text="Save" styleClass="clickable" onAction="#handleSaveCategory" />
     </HBox>
 

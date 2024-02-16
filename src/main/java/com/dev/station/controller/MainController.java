@@ -72,7 +72,7 @@ public class MainController implements Localizable {
 
     @Override
     public void loadSavedLanguage() {
-        setLanguageComboBoxSizes(58, 35);
+        setLanguageComboBoxSizes(59, 35);
 
         String savedLanguage = settingsModel.loadLanguageSetting();
         languageComboBox.setValue(savedLanguage);
@@ -145,6 +145,7 @@ public class MainController implements Localizable {
         Tooltip.install(homeButton, new Tooltip(getTranslate("homeButtonHint")));
         Tooltip.install(imagesButton, new Tooltip(getTranslate("imagesButtonHint")));
         Tooltip.install(settingsButton, new Tooltip(getTranslate("settingsButtonHint")));
+        Tooltip.install(switchThemeButton, new Tooltip(getTranslate("switchThemeButton")));
     }
 
     private void loadClearContent() {

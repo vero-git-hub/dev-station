@@ -1,12 +1,12 @@
 package com.dev.station.controller.sidebar;
 
+import com.dev.station.Localizable;
+import com.dev.station.manager.LanguageManager;
+import com.dev.station.model.SettingsModel;
 import com.dev.station.util.AlertUtils;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ProgressIndicator;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
@@ -18,21 +18,42 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URL;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
-public class PingController {
+public class PingController implements Localizable {
 
     @FXML TextField websiteUrlField;
     @FXML Button scanSiteButton;
     @FXML private TextArea terminalOutputArea;
     @FXML private ProgressIndicator scanProgressIndicator;
     @FXML private TextFlow resultTextFlow;
+    @FXML private Button clearFieldButton;
+    @FXML Label labelAboveTerminal;
+    private SettingsModel settingsModel;
+    ResourceBundle bundle;
+    Text resultText;
+
+    public PingController() {
+        LanguageManager.registerForUpdates(this::updateUI);
+        settingsModel = new SettingsModel();
+    }
 
     @FXML
     public void initialize() {
+        loadSavedLanguage();
         websiteUrlField.setOnKeyPressed(event -> handleEnterPressed(event));
+        Tooltip.install(scanSiteButton, new Tooltip(getTranslate("scanSiteButton")));
+        Tooltip.install(clearFieldButton, new Tooltip(getTranslate("clearFieldButton")));
+        websiteUrlField.setPromptText(getTranslate("websiteUrlField"));
+        labelAboveTerminal.setText(getTranslate("labelAboveTerminal"));
     }
 
-     private void handleEnterPressed(KeyEvent event) {
+    private String getTranslate(String key) {
+        return bundle.getString(key);
+    }
+
+    private void handleEnterPressed(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
             handleScanSite();
         }
@@ -104,11 +125,13 @@ public class PingController {
         Platform.runLater(() -> {
             resultTextFlow.getChildren().clear();
 
-            Text resultText = new Text("Result: ");
+            resultText = new Text(getTranslate("resultText"));
+
             Text urlText = new Text(websiteUrl + " ");
-            Text availableText = new Text(isAvailable ? "available" : "not available");
+            Text availableText = new Text(isAvailable ? getTranslate("siteAvailableText") : getTranslate("siteUnavailableText"));
 
             resultText.getStyleClass().add("result-text");
+
             urlText.getStyleClass().add("url-text");
             urlText.getStyleClass().add("clickable");
 
@@ -132,5 +155,23 @@ public class PingController {
                 }
             }
         });
+    }
+
+    @Override
+    public void loadSavedLanguage() {
+        String savedLanguage = settingsModel.loadLanguageSetting();
+        Locale locale = LanguageManager.getLocale(savedLanguage);
+        LanguageManager.switchLanguage(locale);
+    }
+
+    @Override
+    public void switchLanguage(Locale newLocale) {
+        LanguageManager.switchLanguage(newLocale);
+        updateUI();
+    }
+
+    @Override
+    public void updateUI() {
+        bundle = LanguageManager.getResourceBundle();
     }
 }

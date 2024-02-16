@@ -14,7 +14,7 @@
     </padding>
 
     <HBox spacing="10">
-        <TextField fx:id="websiteUrlField" promptText="Enter url (https://...)" />
+        <TextField fx:id="websiteUrlField"/>
         <Button fx:id="scanSiteButton" styleClass="clickable" onAction="#handleScanSite">
             <graphic>
                 <ImageView>
@@ -24,7 +24,7 @@
                 </ImageView>
             </graphic>
         </Button>
-        <Button fx:id="clearButton" styleClass="clickable" onAction="#handleClearInput">
+        <Button fx:id="clearFieldButton" styleClass="clickable" onAction="#handleClearInput">
             <graphic>
                 <ImageView>
                     <Image url="@../../../../../images/action/clear-48.png"/>
@@ -36,7 +36,7 @@
         <ProgressIndicator fx:id="scanProgressIndicator" visible="false"/>
     </HBox>
 
-    <Label text="Terminal:" styleClass="labelAboveTerminal"/>
+    <Label fx:id="labelAboveTerminal" text="Terminal:" styleClass="labelAboveTerminal"/>
     <TextArea fx:id="terminalOutputArea" wrapText="true" editable="false" styleClass="text-area"/>
     <TextFlow fx:id="resultTextFlow" />
 

@@ -7,6 +7,7 @@ import com.dev.station.manager.LanguageManager;
 import com.dev.station.manager.LaunchManager;
 import com.dev.station.manager.NotificationManager;
 import com.dev.station.model.ScriptsModel;
+import com.dev.station.model.SettingsModel;
 import com.dev.station.util.AlertUtils;
 import com.dev.station.util.FileUtils;
 import javafx.application.Platform;
@@ -35,8 +36,17 @@ public class ScriptsController implements Localizable {
     NotificationManager notificationManager;
     LaunchManager launchManager;
     private ScriptsModel scriptsModel;
-    @FXML private TextField categoryInputField;
+    @FXML private TextField categoryNameInputField;
     @FXML private VBox categoryContainer;
+    @FXML private Button saveCategoryButton;
+    Button renameCategoryButton;
+    Button deleteCategoryButton;
+    SettingsModel settingsModel;
+
+    public ScriptsController() {
+        LanguageManager.registerForUpdates(this::updateUI);
+        settingsModel = new SettingsModel();
+    }
 
     @FXML private void initialize() {
         bundle = LanguageManager.getResourceBundle();
@@ -50,15 +60,16 @@ public class ScriptsController implements Localizable {
         launchManager = new LaunchManager(notificationManager);
 
         loadCategories();
+        categoryNameInputField.setPromptText(getTranslate("categoryNameInputField"));
     }
 
     @FXML
     private void handleSaveCategory(ActionEvent event) {
-        String categoryName  = categoryInputField.getText().trim();
+        String categoryName  = categoryNameInputField.getText().trim();
         if (!categoryName.isEmpty()) {
             scriptsModel.handleSaveCategory(event, categoryName);
             loadCategories();
-            categoryInputField.clear();
+            categoryNameInputField.clear();
         }
     }
 
@@ -149,13 +160,13 @@ public class ScriptsController implements Localizable {
         imageView.setFitHeight(16);
         imageView.setFitWidth(16);
 
-        Button addButton = new Button("Add script".toUpperCase(), imageView);
-        addButton.getStyleClass().add("button-add");
-        addButton.setOnAction(event -> {
+        Button addScriptButton = new Button(getTranslate("addScriptButton").toUpperCase(), imageView);
+        addScriptButton.getStyleClass().add("button-add");
+        addScriptButton.setOnAction(event -> {
             showAddScriptDialog(category);
         });
-        addButton = setHoverEffects(addButton);
-        return addButton;
+        addScriptButton = setHoverEffects(addScriptButton);
+        return addScriptButton;
     }
 
     private Button getDeleteButton(CategoryData category) {
@@ -167,10 +178,10 @@ public class ScriptsController implements Localizable {
 
         imageView.setViewport(new Rectangle2D(0, 15, 17, 17));
 
-        Button deleteButton = new Button();
-        deleteButton.setGraphic(imageView);
+        deleteCategoryButton = new Button();
+        deleteCategoryButton.setGraphic(imageView);
 
-        deleteButton.setOnAction(event -> {
+        deleteCategoryButton.setOnAction(event -> {
             Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
             confirmationAlert.setTitle("Deletion confirmation");
             confirmationAlert.setHeaderText("Delete a category");
@@ -182,8 +193,9 @@ public class ScriptsController implements Localizable {
                 loadCategories();
             }
         });
-        deleteButton = setHoverEffects(deleteButton);
-        return deleteButton;
+        deleteCategoryButton.setTooltip(new Tooltip(getTranslate("deleteCategoryButton")));
+        deleteCategoryButton = setHoverEffects(deleteCategoryButton);
+        return deleteCategoryButton;
     }
 
     private Button getEditButton(CategoryData category, Label nameLabel) {
@@ -195,10 +207,10 @@ public class ScriptsController implements Localizable {
 
         imageView.setViewport(new Rectangle2D(0, 31, 17, 17));
 
-        Button editButton = new Button();
-        editButton.setGraphic(imageView);
+        renameCategoryButton = new Button();
+        renameCategoryButton.setGraphic(imageView);
 
-        editButton.setOnAction(event -> {
+        renameCategoryButton.setOnAction(event -> {
             TextInputDialog dialog = new TextInputDialog(category.getName());
             dialog.setTitle("Renaming a category");
             dialog.setHeaderText("Changing the category name");
@@ -216,8 +228,10 @@ public class ScriptsController implements Localizable {
             });
         });
 
-        editButton = setHoverEffects(editButton);
-        return editButton;
+        renameCategoryButton.setTooltip(new Tooltip(getTranslate("renameCategoryButton")));
+
+        renameCategoryButton = setHoverEffects(renameCategoryButton);
+        return renameCategoryButton;
     }
 
     private Button setHoverEffects(Button button) {
@@ -482,16 +496,28 @@ public class ScriptsController implements Localizable {
 
     @Override
     public void loadSavedLanguage() {
-
+        String savedLanguage = settingsModel.loadLanguageSetting();
+        Locale locale = LanguageManager.getLocale(savedLanguage);
+        LanguageManager.switchLanguage(locale);
     }
 
     @Override
     public void switchLanguage(Locale newLocale) {
-
+        LanguageManager.switchLanguage(newLocale);
+        updateUI();
     }
 
     @Override
     public void updateUI() {
+        saveCategoryButton.setText(getTranslate("saveCategoryButton"));
+        setTooltips();
+    }
 
+    private void setTooltips() {
+        Tooltip.install(renameCategoryButton, new Tooltip("Edit"));
+    }
+
+    private String getTranslate(String key) {
+        return bundle.getString(key);
     }
 }
