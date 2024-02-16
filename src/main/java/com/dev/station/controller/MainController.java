@@ -11,6 +11,7 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -31,6 +32,7 @@ public class MainController implements Localizable {
     @FXML private Label footerLabel;
     @FXML public Button switchThemeButton;
     @FXML private ComboBox<String> languageComboBox;
+    @FXML private VBox menuVBox;
 
     private SettingsModel settingsModel;
 
@@ -46,6 +48,15 @@ public class MainController implements Localizable {
 
         setButtonActions();
         footerLabel.setText("v0.2");
+    }
+
+    private void removeActiveButtonClass() {
+        for (var child : menuVBox.getChildren()) {
+            if (child instanceof Button) {
+                Button button = (Button) child;
+                button.getStyleClass().remove("active-button");
+            }
+        }
     }
 
     private void setButtonActions() {
@@ -97,6 +108,10 @@ public class MainController implements Localizable {
                 Locale newLocale = LanguageManager.getLocale(newVal);
                 switchLanguage(newLocale);
             }
+        });
+
+        languageComboBox.setOnMouseClicked(event -> {
+            //TODO: action after changing language
         });
 
         Locale locale = LanguageManager.getLocale(savedLanguage);
@@ -199,6 +214,7 @@ public class MainController implements Localizable {
 
     @FXML
     private void handleImagesButtonAction() {
+        removeActiveButtonClass();
         try {
             Node imagesContent = FXMLLoader.load(getClass().getResource("/com/dev/station/ui/header/ImagesLayout.fxml"));
             contentArea.getChildren().setAll(imagesContent);
@@ -209,6 +225,7 @@ public class MainController implements Localizable {
 
     @FXML
     private void handleSettingsButtonAction() {
+        removeActiveButtonClass();
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/dev/station/ui/header/SettingsLayout.fxml"));
             Node settings = loader.load();
@@ -220,6 +237,7 @@ public class MainController implements Localizable {
 
     @FXML
     private void returnHome() {
+        removeActiveButtonClass();
         contentArea.getChildren().clear();
     }
 
