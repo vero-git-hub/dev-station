@@ -1,4 +1,4 @@
-package com.dev.station.entity.driver.version;
+package com.dev.station.entity.driver;
 
 import com.dev.station.util.AlertUtils;
 

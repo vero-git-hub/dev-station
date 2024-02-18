@@ -1,14 +1,12 @@
 package com.dev.station.manager;
 
 import com.dev.station.entity.WebParser;
-import com.dev.station.entity.driver.version.VersionExtractor;
-import com.dev.station.entity.driver.version.VersionFinder;
+import com.dev.station.entity.driver.VersionExtractor;
 import com.dev.station.util.AlertUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.prefs.Preferences;
 
 public class DriverManager {
     private final NotificationManager notificationManager;
