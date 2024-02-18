@@ -1,6 +1,7 @@
 package com.dev.station.model;
 
 import com.dev.station.entity.DriverSettings;
+import com.dev.station.entity.ImageSettings;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.nio.file.Files;
@@ -128,5 +129,70 @@ public class SettingsModel {
             e.printStackTrace();
         }
         return "EN";
+    }
+
+    public void saveImageSettingsToFile(ImageSettings imageSettings) {
+        try {
+            JSONArray settingsArray;
+            try {
+                String content = new String(Files.readAllBytes(Paths.get(JSON_FILE_PATH)));
+                settingsArray = new JSONArray(content);
+            } catch (Exception e) {
+                settingsArray = new JSONArray();
+            }
+
+            JSONObject resizeOptions = new JSONObject();
+            resizeOptions.put("keepOriginalSize", imageSettings.isKeepOriginalSize());
+            resizeOptions.put("width", imageSettings.getWidth());
+            resizeOptions.put("height", imageSettings.getHeight());
+
+            JSONObject imageSettingsJson = new JSONObject();
+            imageSettingsJson.put("path", imageSettings.getPath());
+            imageSettingsJson.put("resizeOptions", resizeOptions);
+
+            boolean found = false;
+            for (int i = 0; i < settingsArray.length(); i++) {
+                JSONObject settings = settingsArray.getJSONObject(i);
+                if (settings.has("imageSettings")) {
+                    settings.put("imageSettings", imageSettingsJson);
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                JSONObject newSettings = new JSONObject();
+                newSettings.put("imageSettings", imageSettingsJson);
+                settingsArray.put(newSettings);
+            }
+
+            Files.write(Paths.get(JSON_FILE_PATH), settingsArray.toString(4).getBytes());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public ImageSettings loadImageSettings() {
+        try {
+            String content = new String(Files.readAllBytes(Paths.get(JSON_FILE_PATH)));
+            JSONArray settingsArray = new JSONArray(content);
+
+            for (int i = 0; i < settingsArray.length(); i++) {
+                JSONObject settings = settingsArray.getJSONObject(i);
+                if (settings.has("imageSettings")) {
+                    JSONObject imageSettingsJson = settings.getJSONObject("imageSettings");
+                    JSONObject resizeOptions = imageSettingsJson.getJSONObject("resizeOptions");
+
+                    String path = imageSettingsJson.getString("path");
+                    boolean keepOriginalSize = resizeOptions.getBoolean("keepOriginalSize");
+                    int width = resizeOptions.getInt("width");
+                    int height = resizeOptions.getInt("height");
+
+                    return new ImageSettings(path, keepOriginalSize, width, height);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
