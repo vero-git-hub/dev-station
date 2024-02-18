@@ -19,10 +19,9 @@ public class LaunchManager {
         this.notificationManager = notificationManager;
     }
 
-    public boolean launchApplication(String pathKey, String defaultPath, ProcessHolder processHolder) {
+    public boolean launchApplication(String path, ProcessHolder processHolder) {
         try {
-            if (!processHolder.isRunning) {
-                String path = prefs.get(pathKey, defaultPath);
+            if (!processHolder.isRunning && path != null && !path.isEmpty()) {
                 processHolder.process = new ProcessBuilder(path).start();
                 processHolder.isRunning = true;
                 return true;
@@ -34,10 +33,9 @@ public class LaunchManager {
         return false;
     }
 
-    public void launchJarApplication(String pathKey, String defaultPath, ProcessHolder processHolder) {
+    public void launchJarApplication(String jarPath, ProcessHolder processHolder) {
         try {
-            if (!processHolder.isRunning) {
-                String jarPath = prefs.get(pathKey, defaultPath);
+            if (!processHolder.isRunning && jarPath != null && !jarPath.isEmpty()) {
                 ProcessBuilder pb = new ProcessBuilder("java", "-jar", jarPath);
                 processHolder.process = pb.start();
 
