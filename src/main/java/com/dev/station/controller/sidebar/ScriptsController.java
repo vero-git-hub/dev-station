@@ -480,20 +480,13 @@ public class ScriptsController implements Localizable {
             String extension = program.getProgramExtension();
             String action = program.getAction();
 
-            //TODO: localize
-//            if(getTranslate("actionComboBoxRun").equals(action)) {
             if("run".equals(action) || "запуск".equals(action)) {
                 if("exe".toLowerCase().equals(extension)) {
                     launchManager.launchApplication(path);
                 } else if ("jar".toLowerCase().equals(extension)) {
-                    System.out.println("Это jar файл");
                     if(launchManager != null){
-                        System.out.println("launchManager не null");
                         launchManager.launchJarApplication(path);
-                    } else {
-                        System.out.println("launchManager null");
                     }
-
                 } else {
                     AlertUtils.showErrorAlert("Wrong extension", "Check extension, only exe or jar is correct for 'run' action.");
                 }
