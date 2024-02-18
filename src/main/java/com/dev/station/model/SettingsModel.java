@@ -8,7 +8,7 @@ import java.nio.file.Paths;
 import java.io.IOException;
 
 public class SettingsModel {
-    private static final String JSON_FILE_PATH = "settings.json";
+    private static final String JSON_FILE_PATH = "ds_settings.json";
 
     public void handleSaveDriverSettings(String websiteUrlText, String pathFieldText) {
         try {
