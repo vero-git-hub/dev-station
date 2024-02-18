@@ -173,3 +173,7 @@
 .url-text:hover {
     -fx-fill: #FF00FF;
 }
+
+.language-combo-box .list-cell {
+    -fx-font-weight: bold;
+}

@@ -82,6 +82,11 @@ public class TabController implements Localizable {
     }
 
     @FXML public void initialize() {
+        bundle = LanguageManager.getResourceBundle();
+
+        notificationManager = new NotificationManager(bundle);
+        LanguageManager.registerNotificationManager(notificationManager);
+
         setMultilingual();
         loadSavedLanguage();
         definitionManagers();
@@ -219,7 +224,7 @@ public class TabController implements Localizable {
 
     @Override
     public void updateUI() {
-        notificationManager.updateResourceBundle(bundle);
+        bundle = LanguageManager.getResourceBundle();
 
         toggleMoveFiles.setText(getTranslate("toggleMoveFiles"));
 

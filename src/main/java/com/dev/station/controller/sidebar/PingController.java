@@ -39,24 +39,11 @@ public class PingController implements Localizable {
         settingsModel = new SettingsModel();
     }
 
-    @FXML
-    public void initialize() {
+    @FXML public void initialize() {
         loadSavedLanguage();
         websiteUrlField.setOnKeyPressed(event -> handleEnterPressed(event));
-        Tooltip.install(scanSiteButton, new Tooltip(getTranslate("scanSiteButton")));
-        Tooltip.install(clearFieldButton, new Tooltip(getTranslate("clearFieldButton")));
-        websiteUrlField.setPromptText(getTranslate("websiteUrlField"));
-        labelAboveTerminal.setText(getTranslate("labelAboveTerminal"));
-    }
-
-    private String getTranslate(String key) {
-        return bundle.getString(key);
-    }
-
-    private void handleEnterPressed(KeyEvent event) {
-        if (event.getCode() == KeyCode.ENTER) {
-            handleScanSite();
-        }
+        setUIText();
+        setTooltips();
     }
 
     @FXML public void handleScanSite() {
@@ -101,12 +88,31 @@ public class PingController implements Localizable {
         }
     }
 
-    @FXML
-    private void handleClearInput() {
+    @FXML private void handleClearInput() {
         websiteUrlField.clear();
     }
 
-    public String extractDomain(String urlString) {
+    private void setUIText() {
+        websiteUrlField.setPromptText(getTranslate("websiteUrlField"));
+        labelAboveTerminal.setText(getTranslate("labelAboveTerminal"));
+    }
+
+    private void setTooltips() {
+        Tooltip.install(scanSiteButton, new Tooltip(getTranslate("scanSiteButton")));
+        Tooltip.install(clearFieldButton, new Tooltip(getTranslate("clearFieldButton")));
+    }
+
+    private String getTranslate(String key) {
+        return bundle.getString(key);
+    }
+
+    private void handleEnterPressed(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+            handleScanSite();
+        }
+    }
+
+    private String extractDomain(String urlString) {
         try {
             URL url = new URL(urlString);
             String host = url.getHost();
@@ -173,5 +179,7 @@ public class PingController implements Localizable {
     @Override
     public void updateUI() {
         bundle = LanguageManager.getResourceBundle();
+        setUIText();
+        setTooltips();
     }
 }
