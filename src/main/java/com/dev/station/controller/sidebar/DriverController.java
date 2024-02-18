@@ -28,6 +28,10 @@ import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
 
 public class DriverController implements Localizable {
+    @FXML private ToggleButton toggleSelenium;
+    @FXML private Label versionStatusLabel = new Label();
+    @FXML private Button updateButton;
+    @FXML private StackPane notificationPane;
     private final Preferences prefs = MainController.prefs;
     private Process seleniumProcess;
     ResourceBundle bundle;
@@ -35,18 +39,15 @@ public class DriverController implements Localizable {
     DriverManager driverManager;
     LaunchManager launchManager;
     SettingsModel settingsModel;
-    @FXML private ToggleButton toggleSelenium;
-    @FXML private Label versionStatusLabel = new Label();
-    @FXML private Button updateButton;
-    @FXML private StackPane notificationPane;
+    private boolean isVersionSame = true;
+    private boolean isUpdateAvailable = false;
 
     public DriverController() {
         LanguageManager.registerForUpdates(this::updateUI);
         settingsModel = new SettingsModel();
     }
 
-    @FXML
-    private void initialize() {
+    @FXML private void initialize() {
         bundle = LanguageManager.getResourceBundle();
 
         notificationManager = new NotificationManager(bundle);
@@ -76,6 +77,15 @@ public class DriverController implements Localizable {
     @Override
     public void updateUI() {
         // updateButton.setText(getTranslate("updateButton"));
+        bundle = LanguageManager.getResourceBundle();
+
+        if (isUpdateAvailable) {
+            versionStatusLabel.setText(getTranslate("versionVary"));
+        } else {
+            versionStatusLabel.setText(getTranslate("versionSame"));
+        }
+        updateButtonVisibility(isUpdateAvailable);
+
         toggleSelenium.setText(getTranslate("toggleSelenium"));
         setTooltips();
     }
@@ -94,13 +104,13 @@ public class DriverController implements Localizable {
 
         String versionStatus;
         if(currentVersion.equals(websiteVersion)) {
-            versionStatus = getTranslate("versionSame");
-            updateVersionStatus(versionStatus + " " + currentVersion);
+            isUpdateAvailable = false;
+            updateVersionStatus(getTranslate("versionSame") + " " + currentVersion);
         } else {
-            versionStatus = getTranslate("versionVary");
-            updateVersionStatus(versionStatus);
-            updateButtonVisibility(true);
+            isUpdateAvailable = true;
+            updateVersionStatus(getTranslate("versionVary"));
         }
+        updateButtonVisibility(isUpdateAvailable);
         showTemporaryNotification(getTranslate("driverVersionsComparisonSuccess"));
     }
 
@@ -124,8 +134,7 @@ public class DriverController implements Localizable {
         versionStatusLabel.setText(message);
     }
 
-    @FXML
-    private void handleUpdateButton() {
+    @FXML private void handleUpdateButton() {
         UpdateFinder updateFinder = new UpdateFinder(notificationManager);
         String fileURL = updateFinder.findUpdateLink(prefs);
         String saveDir = prefs.get("driverFolderPath", "");
@@ -153,8 +162,7 @@ public class DriverController implements Localizable {
         }
     }
 
-    @FXML
-    private void handleToggleSelenium() {
+    @FXML private void handleToggleSelenium() {
         if (toggleSelenium.isSelected()) {
             boolean isSeleniumRunning = false;
             boolean launchedExe = launchManager.launchApplication("seleniumPath", "C:\\Program Files\\Selenium\\selenium.exe", new ProcessHolder(seleniumProcess, isSeleniumRunning));

@@ -26,22 +26,24 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class ScriptsController implements Localizable {
+
+    @FXML private TextField categoryNameInputField;
+    @FXML private VBox categoryContainer;
+    @FXML private Button saveCategoryButton;
     ResourceBundle bundle;
     NotificationManager notificationManager;
     LaunchManager launchManager;
     private ScriptsModel scriptsModel;
-    @FXML private TextField categoryNameInputField;
-    @FXML private VBox categoryContainer;
-    @FXML private Button saveCategoryButton;
     Button renameCategoryButton;
     Button deleteCategoryButton;
     SettingsModel settingsModel;
+    Button saveButton;
+    Button cancelButton;
+    Button deleteButton;
+    Button launchButton;
 
     public ScriptsController() {
         LanguageManager.registerForUpdates(this::updateUI);
@@ -60,11 +62,10 @@ public class ScriptsController implements Localizable {
         launchManager = new LaunchManager(notificationManager);
 
         loadCategories();
-        categoryNameInputField.setPromptText(getTranslate("categoryNameInputField"));
+        setUIText();
     }
 
-    @FXML
-    private void handleSaveCategory(ActionEvent event) {
+    @FXML private void handleSaveCategory(ActionEvent event) {
         String categoryName  = categoryNameInputField.getText().trim();
         if (!categoryName.isEmpty()) {
             scriptsModel.handleSaveCategory(event, categoryName);
@@ -74,8 +75,11 @@ public class ScriptsController implements Localizable {
     }
 
     private void loadCategories() {
+        if (scriptsModel == null) {
+            return;
+        }
+
         VBox mainContainer = new VBox(5);
-        //mainContainer.setPadding(new Insets(5));
 
         List<CategoryData> categories = scriptsModel.loadCategoryData();
 
@@ -99,9 +103,10 @@ public class ScriptsController implements Localizable {
             HBox.setHgrow(region, Priority.ALWAYS);
 
             HBox leftBox = new HBox(10);
-            Label orderLabel = getOrderLabel(category);
+            Label programCountLabel = getOrderLabel(category);
+            Tooltip.install(programCountLabel, new Tooltip(getTranslate("programCountLabel")));
             Label nameLabel = getNameLabel(category);
-            leftBox.getChildren().addAll(orderLabel, nameLabel);
+            leftBox.getChildren().addAll(programCountLabel, nameLabel);
 
             HBox rightBox = new HBox(10);
             Button editButton = getEditButton(category, nameLabel);
@@ -307,21 +312,27 @@ public class ScriptsController implements Localizable {
     private VBox createProgramDetails(ProgramData program, TitledPane programTitledPane) {
         GridPane grid = createGridPane();
 
-        Label nameLabel = new Label("Script name:");
+        Label nameLabel = new Label(getTranslate("programsNameLabel"));
         TextField nameField = new TextField(program.getProgramName());
 
-        Label actionLabel = new Label("Action:");
+        Label actionLabel = new Label(getTranslate("programsActionLabel"));
         ComboBox<String> actionComboBox = new ComboBox<>();
-        actionComboBox.getItems().addAll("run", "other (future)");
-        actionComboBox.setValue(program.getAction());
+        actionComboBox.getItems().addAll(getTranslate("actionComboBoxRun"), getTranslate("actionComboBoxOther"));
 
-        Label descriptionLabel = new Label("Description:");
+        String programAction = program.getAction();
+        if(programAction.equals("run") || programAction.equals("запуск")) {
+            actionComboBox.setValue(getTranslate("actionComboBoxRun"));
+        } else {
+            actionComboBox.setValue(getTranslate("actionComboBoxOther"));
+        }
+
+        Label descriptionLabel = new Label(getTranslate("programsDescriptionLabel"));
         TextField descriptionField = new TextField(program.getDescription());
 
-        Label pathLabel = new Label("Path name (exe/jar):");
+        Label pathLabel = new Label(getTranslate("programsPathLabel"));
         TextField pathField = new TextField(program.getProgramPath());
 
-        Label categoryLabel = new Label("Category:");
+        Label categoryLabel = new Label(getTranslate("programsCategoryLabel"));
         ComboBox<CategoryData> categoryComboBox = new ComboBox<>();
 
         List<CategoryData> categories = scriptsModel.loadCategoryData();
@@ -355,10 +366,13 @@ public class ScriptsController implements Localizable {
         grid.add(categoryLabel, 0, 4);
         grid.add(categoryComboBox, 1, 4);
 
-        Button saveButton = createSaveButton(program, nameField, pathField, descriptionField, actionComboBox, categoryComboBox, programTitledPane);
-        Button cancelButton = createCancelButton(programTitledPane);
-        Button deleteButton = createDeleteButton(program, programTitledPane);
-        Button launchButton = createLaunchButton(program);
+        saveButton = createSaveButton(program, nameField, pathField, descriptionField, actionComboBox, categoryComboBox, programTitledPane);
+        cancelButton = createCancelButton(programTitledPane);
+        deleteButton = createDeleteButton(program, programTitledPane);
+        launchButton = createLaunchButton(program);
+
+        setButtonStyles(Arrays.asList(saveButton, cancelButton, deleteButton, launchButton));
+        setTooltips();
 
         HBox buttonsBox = new HBox(10, saveButton, cancelButton, deleteButton, launchButton);
 
@@ -366,6 +380,12 @@ public class ScriptsController implements Localizable {
 
         VBox contentBox = new VBox(grid);
         return contentBox;
+    }
+
+    private void setButtonStyles(List<Button> list) {
+        for (Button btn : list) {
+            btn.getStyleClass().add("clickable");
+        }
     }
 
     private Button createSaveButton(ProgramData program, TextField nameField, TextField pathField, TextField descriptionField, ComboBox<String> actionComboBox, ComboBox<CategoryData> categoryComboBox, TitledPane programTitledPane) {
@@ -384,7 +404,8 @@ public class ScriptsController implements Localizable {
 
             String programExtension = FileUtils.getFileExtension(programPath);
 
-            if ("run".equals(action) && !("exe".equalsIgnoreCase(programExtension) || "jar".equalsIgnoreCase(programExtension))) {
+            if (("run".equals(action) || "запуск".equals(action))
+                    && (!("exe".equalsIgnoreCase(programExtension) || "jar".equalsIgnoreCase(programExtension)))) {
                 Alert alert = new Alert(Alert.AlertType.WARNING, "For 'run' action, only '.exe' or '.jar' extensions are allowed.", ButtonType.OK);
                 alert.showAndWait();
                 return;
@@ -441,7 +462,7 @@ public class ScriptsController implements Localizable {
 
                 scriptsModel.deleteProgram(programId, categoryId);
 
-                updateUIAfterDeletion();
+                loadCategories();
             }
         });
         return deleteButton;
@@ -459,11 +480,20 @@ public class ScriptsController implements Localizable {
             String extension = program.getProgramExtension();
             String action = program.getAction();
 
-            if("run".equals(action)) {
+            //TODO: localize
+//            if(getTranslate("actionComboBoxRun").equals(action)) {
+            if("run".equals(action) || "запуск".equals(action)) {
                 if("exe".toLowerCase().equals(extension)) {
                     launchManager.launchApplication(path);
                 } else if ("jar".toLowerCase().equals(extension)) {
-                    launchManager.launchJarApplication(path);
+                    System.out.println("Это jar файл");
+                    if(launchManager != null){
+                        System.out.println("launchManager не null");
+                        launchManager.launchJarApplication(path);
+                    } else {
+                        System.out.println("launchManager null");
+                    }
+
                 } else {
                     AlertUtils.showErrorAlert("Wrong extension", "Check extension, only exe or jar is correct for 'run' action.");
                 }
@@ -490,34 +520,36 @@ public class ScriptsController implements Localizable {
         return grid;
     }
 
-    private void updateUIAfterDeletion() {
-        loadCategories();
+    private void setUIText() {
+        saveCategoryButton.setText(getTranslate("saveCategoryButton"));
+        categoryNameInputField.setPromptText(getTranslate("categoryNameInputField"));
     }
 
-    @Override
-    public void loadSavedLanguage() {
+    private void setTooltips() {
+        Tooltip.install(saveButton, new Tooltip(getTranslate("saveButton")));
+        Tooltip.install(cancelButton, new Tooltip(getTranslate("cancelButton")));
+        Tooltip.install(deleteButton, new Tooltip(getTranslate("deleteButton")));
+        Tooltip.install(launchButton, new Tooltip(getTranslate("launchButton")));
+    }
+
+    private String getTranslate(String key) {
+        return bundle.getString(key);
+    }
+
+    @Override public void loadSavedLanguage() {
         String savedLanguage = settingsModel.loadLanguageSetting();
         Locale locale = LanguageManager.getLocale(savedLanguage);
         LanguageManager.switchLanguage(locale);
     }
 
-    @Override
-    public void switchLanguage(Locale newLocale) {
+    @Override public void switchLanguage(Locale newLocale) {
         LanguageManager.switchLanguage(newLocale);
         updateUI();
     }
 
-    @Override
-    public void updateUI() {
-        saveCategoryButton.setText(getTranslate("saveCategoryButton"));
-        setTooltips();
-    }
-
-    private void setTooltips() {
-        Tooltip.install(renameCategoryButton, new Tooltip("Edit"));
-    }
-
-    private String getTranslate(String key) {
-        return bundle.getString(key);
+    @Override public void updateUI() {
+        bundle = LanguageManager.getResourceBundle();
+        setUIText();
+        loadCategories();
     }
 }
