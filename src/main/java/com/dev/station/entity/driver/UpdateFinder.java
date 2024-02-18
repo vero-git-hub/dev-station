@@ -1,24 +1,30 @@
 package com.dev.station.entity.driver;
 
+import com.dev.station.entity.DriverSettings;
 import com.dev.station.manager.NotificationManager;
+import com.dev.station.model.SettingsModel;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.util.prefs.Preferences;
 
 public class UpdateFinder {
     private final NotificationManager notificationManager;
+    SettingsModel settingsModel;
 
     public UpdateFinder(NotificationManager notificationManager) {
         this.notificationManager = notificationManager;
+        settingsModel = new SettingsModel();
     }
 
-    public String findUpdateLink(Preferences prefs) {
+    public String findUpdateLink() {
         try {
-            Document doc = Jsoup.connect(prefs.get("websiteUrl", "")).get();
+            DriverSettings driverSettings = settingsModel.readDriverSettings();
+            String url = driverSettings.getWebsiteUrl();
+
+            Document doc = Jsoup.connect(url).get();
 
             Elements stableSection = doc.select("#stable .table-wrapper tbody tr.status-ok");
 
