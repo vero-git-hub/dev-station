@@ -4,6 +4,7 @@ import com.dev.station.Localizable;
 import com.dev.station.controller.MainController;
 import com.dev.station.entity.DriverSettings;
 import com.dev.station.entity.ImageSettings;
+import com.dev.station.entity.SeleniumSettings;
 import com.dev.station.manager.LanguageManager;
 import com.dev.station.manager.NotificationManager;
 import com.dev.station.model.SettingsModel;
@@ -56,15 +57,26 @@ public class SettingsController implements Localizable {
 
     @FXML private void saveSeleniumSettings() {
         String seleniumPath = seleniumPathField.getText();
+        String seleniumJARPath = seleniumJARPathField.getText();
 
-        if (ValidUtils.isValidPath(seleniumPath) && seleniumPath.endsWith(".exe") && new File(seleniumPath).exists()) {
-            prefs.put("seleniumPath", seleniumPath);
-            notificationManager.showInformationAlert("successUpdateSeleniumPath");
+        boolean isValidExePath = ValidUtils.isValidPath(seleniumPath) && seleniumPath.endsWith(".exe") && new File(seleniumPath).exists();
+        boolean isValidJarPath = ValidUtils.isValidPath(seleniumJARPath) && seleniumJARPath.endsWith(".jar") && new File(seleniumJARPath).exists();
+
+        if (isValidExePath && isValidJarPath) {
+            SeleniumSettings seleniumSettings = new SeleniumSettings(seleniumJARPath, seleniumPath);
+
+            SettingsModel.saveSeleniumSettings(seleniumSettings);
+
+            notificationManager.showInformationAlert("successUpdateSeleniumSettings");
         } else {
-            notificationManager.showErrorAlert("errorUpdateSeleniumPath");
-        }
 
-        saveSeleniumJARSettings();
+            if (!isValidExePath) {
+                notificationManager.showErrorAlert("errorUpdateSeleniumPath");
+            }
+            if (!isValidJarPath) {
+                notificationManager.showErrorAlert("errorUpdateSeleniumJarPath");
+            }
+        }
     }
 
     @FXML private void saveImagesSettings() {
@@ -93,9 +105,15 @@ public class SettingsController implements Localizable {
     }
 
     private void downloadUserValues() {
-        seleniumPathField.setText(prefs.get("seleniumPath", ""));
-        seleniumJARPathField.setText(prefs.get("seleniumJARPath", ""));
+        downloadSeleniumValues();
+        downloadImagesValues();
 
+        DriverSettings driverSettings = settingsModel.readDriverSettings();
+        websiteUrl.setText(driverSettings.getWebsiteUrl());
+        driverFolderPathField.setText(driverSettings.getPath());
+    }
+
+    private void downloadImagesValues() {
         ImageSettings imageSettings = settingsModel.loadImageSettings();
         if (imageSettings != null) {
             imagesFolderPathField.setText(imageSettings.getPath());
@@ -108,19 +126,17 @@ public class SettingsController implements Localizable {
             imageHeightField.setText("");
             useOriginalSizeCheckbox.setSelected(false);
         }
-        DriverSettings driverSettings = settingsModel.readDriverSettings();
-        websiteUrl.setText(driverSettings.getWebsiteUrl());
-        driverFolderPathField.setText(driverSettings.getPath());
     }
 
-    private void saveSeleniumJARSettings() {
-        String seleniumJARPath = seleniumJARPathField.getText();
+    private void downloadSeleniumValues() {
+        SeleniumSettings seleniumSettings = SettingsModel.loadSeleniumSettings();
 
-        if (ValidUtils.isValidPath(seleniumJARPath) && seleniumJARPath.endsWith(".jar") && new File(seleniumJARPath).exists()) {
-            prefs.put("seleniumJARPath", seleniumJARPath);
-            notificationManager.showInformationAlert("successUpdateSeleniumJarPath");
+        if (seleniumSettings != null) {
+            seleniumPathField.setText(seleniumSettings.getPathExe());
+            seleniumJARPathField.setText(seleniumSettings.getPathJar());
         } else {
-            notificationManager.showErrorAlert("errorUpdateSeleniumJarPath");
+            seleniumPathField.setText("");
+            seleniumJARPathField.setText("");
         }
     }
 

@@ -4,6 +4,7 @@ import com.dev.station.Localizable;
 import com.dev.station.controller.MainController;
 import com.dev.station.entity.DriverSettings;
 import com.dev.station.entity.ProcessHolder;
+import com.dev.station.entity.SeleniumSettings;
 import com.dev.station.entity.driver.FileDownloader;
 import com.dev.station.entity.driver.UpdateFinder;
 import com.dev.station.entity.driver.ZipExtractor;
@@ -102,7 +103,6 @@ public class DriverController implements Localizable {
         String currentVersion = driverManager.getCurrentVersion(path);
         String websiteVersion = driverManager.getWebsiteVersion(url);
 
-        String versionStatus;
         if(currentVersion.equals(websiteVersion)) {
             isUpdateAvailable = false;
             updateVersionStatus(getTranslate("versionSame") + " " + currentVersion);
@@ -164,11 +164,17 @@ public class DriverController implements Localizable {
 
     @FXML private void handleToggleSelenium() {
         if (toggleSelenium.isSelected()) {
-            boolean isSeleniumRunning = false;
-            boolean launchedExe = launchManager.launchApplication("seleniumPath", "C:\\Program Files\\Selenium\\selenium.exe", new ProcessHolder(seleniumProcess, isSeleniumRunning));
+            SeleniumSettings seleniumSettings = SettingsModel.loadSeleniumSettings();
 
-            if (launchedExe) {
-                launchManager.launchJarApplication("seleniumJARPath", "C:\\Program Files\\Selenium\\selenium.jar", new ProcessHolder(seleniumProcess, isSeleniumRunning));
+            if (seleniumSettings != null) {
+                boolean isSeleniumRunning = false;
+                boolean launchedExe = launchManager.launchApplication(seleniumSettings.getPathExe(), new ProcessHolder(seleniumProcess, isSeleniumRunning));
+
+                if (launchedExe) {
+                    launchManager.launchJarApplication(seleniumSettings.getPathJar(), new ProcessHolder(seleniumProcess, isSeleniumRunning));
+                }
+            } else {
+                notificationManager.showErrorAlert("Selenium settings not found.");
             }
         }
     }

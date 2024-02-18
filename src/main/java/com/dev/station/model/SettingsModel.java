@@ -2,6 +2,7 @@ package com.dev.station.model;
 
 import com.dev.station.entity.DriverSettings;
 import com.dev.station.entity.ImageSettings;
+import com.dev.station.entity.SeleniumSettings;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.nio.file.Files;
@@ -195,4 +196,62 @@ public class SettingsModel {
         }
         return null;
     }
+
+    public static void saveSeleniumSettings(SeleniumSettings seleniumSettings) {
+        try {
+            JSONArray settingsArray;
+            try {
+                String content = new String(Files.readAllBytes(Paths.get(JSON_FILE_PATH)));
+                settingsArray = new JSONArray(content);
+            } catch (Exception e) {
+                settingsArray = new JSONArray();
+            }
+
+            JSONObject seleniumSettingsJson = new JSONObject();
+            seleniumSettingsJson.put("pathJar", seleniumSettings.getPathJar());
+            seleniumSettingsJson.put("pathExe", seleniumSettings.getPathExe());
+
+            boolean found = false;
+            for (int i = 0; i < settingsArray.length(); i++) {
+                JSONObject settings = settingsArray.getJSONObject(i);
+                if (settings.has("seleniumSettings")) {
+                    settings.put("seleniumSettings", seleniumSettingsJson);
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) {
+                JSONObject newSettings = new JSONObject();
+                newSettings.put("seleniumSettings", seleniumSettingsJson);
+                settingsArray.put(newSettings);
+            }
+
+            Files.write(Paths.get(JSON_FILE_PATH), settingsArray.toString(4).getBytes());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static SeleniumSettings loadSeleniumSettings() {
+        try {
+            String content = new String(Files.readAllBytes(Paths.get(JSON_FILE_PATH)));
+            JSONArray settingsArray = new JSONArray(content);
+
+            for (int i = 0; i < settingsArray.length(); i++) {
+                JSONObject settings = settingsArray.getJSONObject(i);
+                if (settings.has("seleniumSettings")) {
+                    JSONObject seleniumSettingsJson = settings.getJSONObject("seleniumSettings");
+                    String pathJar = seleniumSettingsJson.optString("pathJar", "");
+                    String pathExe = seleniumSettingsJson.optString("pathExe", "");
+                    return new SeleniumSettings(pathJar, pathExe);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }
