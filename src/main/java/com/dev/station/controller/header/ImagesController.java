@@ -1,7 +1,8 @@
 package com.dev.station.controller.header;
 
-import com.dev.station.controller.MainController;
+import com.dev.station.entity.ImageSettings;
 import com.dev.station.model.SettingsModel;
+import com.dev.station.util.AlertUtils;
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -10,12 +11,9 @@ import javafx.scene.layout.TilePane;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.prefs.Preferences;
 
 public class ImagesController {
-    private final Preferences prefs = MainController.prefs;
-    @FXML
-    private TilePane imagesTilePane;
+    @FXML private TilePane imagesTilePane;
     SettingsModel settingsModel = new SettingsModel();
 
     public void initialize() {
@@ -28,29 +26,32 @@ public class ImagesController {
     public void loadImages() {
         imagesTilePane.getChildren().clear();
 
-        String imagesFolderPath = prefs.get("imagesFolderPath", "default/path");
-        File folder = new File(imagesFolderPath);
-        File[] listOfFiles = folder.listFiles();
+        ImageSettings settings = settingsModel.loadImageSettings();
 
-        if (listOfFiles != null) {
-            for (File file : listOfFiles) {
-                if (file.isFile() && isImageFile(file.toPath())) {
-                    ImageView imageView = createImageView(file);
-                    imagesTilePane.getChildren().add(imageView);
+        if (settings != null) {
+            String imagesFolderPath = settings.getPath();
+            File folder = new File(imagesFolderPath);
+            File[] listOfFiles = folder.listFiles();
+
+            if (listOfFiles != null) {
+                for (File file : listOfFiles) {
+                    if (file.isFile() && isImageFile(file.toPath())) {
+                        ImageView imageView = createImageView(file, settings);
+                        imagesTilePane.getChildren().add(imageView);
+                    }
                 }
             }
+        } else {
+            AlertUtils.showErrorAlert("Failed load", "Image settings not loaded.");
         }
     }
 
-    private ImageView createImageView(File imageFile) {
+    private ImageView createImageView(File imageFile, ImageSettings settings) {
         ImageView imageView = new ImageView(new Image(imageFile.toURI().toString()));
 
-        boolean useOriginalSize = prefs.getBoolean("useOriginalSizeCheckbox", false);
-        if (!useOriginalSize) {
-            int width = prefs.getInt("imageWidthField", 100);
-            int height = prefs.getInt("imageHeightField", 100);
-            imageView.setFitWidth(width);
-            imageView.setFitHeight(height);
+        if (!settings.isKeepOriginalSize()) {
+            imageView.setFitWidth(settings.getWidth());
+            imageView.setFitHeight(settings.getHeight());
             imageView.setPreserveRatio(true);
         }
 
