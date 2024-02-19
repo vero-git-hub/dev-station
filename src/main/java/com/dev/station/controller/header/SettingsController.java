@@ -3,6 +3,7 @@ package com.dev.station.controller.header;
 import com.dev.station.Localizable;
 import com.dev.station.entity.DriverSettings;
 import com.dev.station.entity.ImageSettings;
+import com.dev.station.entity.RegistryCleaner;
 import com.dev.station.entity.SeleniumSettings;
 import com.dev.station.manager.LanguageManager;
 import com.dev.station.manager.NotificationManager;
@@ -36,6 +37,7 @@ public class SettingsController implements Localizable {
     @FXML public Label imagesFolderPathLabel;
     @FXML public Label imageWidthLabel;
     @FXML public Label imageHeightLabel;
+    @FXML private Button cleanRegistry;
     private NotificationManager notificationManager;
     private SettingsModel settingsModel;
 
@@ -99,6 +101,10 @@ public class SettingsController implements Localizable {
         } else {
             notificationManager.showErrorAlert("errorSaveSettings");
         }
+    }
+
+    @FXML private void cleanRegistryAction() {
+        RegistryCleaner.deleteAppRegistryFolder("Software\\JavaSoft\\Prefs\\com\\dev");
     }
 
     private void downloadUserValues() {
@@ -169,5 +175,7 @@ public class SettingsController implements Localizable {
         imagesFolderPathLabel.setText(bundle.getString("imagesFolderPathLabel"));
         imageWidthLabel.setText(bundle.getString("imageWidthLabel"));
         imageHeightLabel.setText(bundle.getString("imageHeightLabel"));
+
+        cleanRegistry.setText(bundle.getString("cleanRegistry"));
     }
 }
