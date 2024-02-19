@@ -1,7 +1,6 @@
 package com.dev.station.controller.header;
 
 import com.dev.station.Localizable;
-import com.dev.station.controller.MainController;
 import com.dev.station.entity.DriverSettings;
 import com.dev.station.entity.ImageSettings;
 import com.dev.station.entity.SeleniumSettings;
@@ -15,7 +14,6 @@ import javafx.scene.control.*;
 import java.io.File;
 import java.util.Locale;
 import java.util.ResourceBundle;
-import java.util.prefs.Preferences;
 
 public class SettingsController implements Localizable {
 
@@ -38,7 +36,6 @@ public class SettingsController implements Localizable {
     @FXML public Label imagesFolderPathLabel;
     @FXML public Label imageWidthLabel;
     @FXML public Label imageHeightLabel;
-    private final Preferences prefs = MainController.prefs;
     private NotificationManager notificationManager;
     private SettingsModel settingsModel;
 

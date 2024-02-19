@@ -1,11 +1,10 @@
 package com.dev.station.manager.clear;
 
-import com.dev.station.controller.MainController;
 import com.dev.station.controller.tab.TabController;
-import com.dev.station.file.PathData;
 import com.dev.station.entity.RecoveryContext;
 import com.dev.station.entity.RecycleBin;
 import com.dev.station.file.JsonTabsManager;
+import com.dev.station.file.PathData;
 import com.dev.station.file.TabData;
 import com.dev.station.manager.FileManager;
 import com.dev.station.manager.NotificationManager;
@@ -18,13 +17,13 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
-import java.util.prefs.Preferences;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Stream;
 
 public class RecycleBinManager {
-    private RecycleBin recycleBin;
-    private final Preferences prefs = MainController.prefs;
     private final TabController tabController;
     private final NotificationManager notificationManager;
     private ToggleButton toggleReturnFiles;
