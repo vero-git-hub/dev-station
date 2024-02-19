@@ -1,6 +1,5 @@
 package com.dev.station.manager;
 
-import com.dev.station.controller.MainController;
 import com.dev.station.entity.ProcessHolder;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -9,10 +8,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.prefs.Preferences;
 
 public class LaunchManager {
-    private static final Preferences prefs = MainController.prefs;
     private final NotificationManager notificationManager;
 
     public LaunchManager(NotificationManager notificationManager) {

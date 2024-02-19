@@ -1,7 +1,6 @@
 package com.dev.station.controller.sidebar;
 
 import com.dev.station.Localizable;
-import com.dev.station.controller.MainController;
 import com.dev.station.controller.tab.TabController;
 import com.dev.station.manager.LanguageManager;
 import com.dev.station.manager.NotificationManager;
@@ -14,16 +13,16 @@ import javafx.scene.control.TabPane;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
-import java.util.prefs.Preferences;
 
 public class ClearController implements Localizable {
+
+    @FXML private TabPane tabPane;
+    @FXML private Tab addTabButton;
+    @FXML private Label addTabLabel;
     private NotificationManager notificationManager;
     private TabManager tabManager;
     private ResourceBundle bundle;
     private SettingsModel settingsModel;
-    @FXML private TabPane tabPane;
-    @FXML private Tab addTabButton;
-    @FXML private Label addTabLabel;
 
     public ClearController() {
         LanguageManager.registerForUpdates(this::updateUI);

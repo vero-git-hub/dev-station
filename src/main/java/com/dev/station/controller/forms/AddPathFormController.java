@@ -1,12 +1,11 @@
 package com.dev.station.controller.forms;
 
-import com.dev.station.controller.MainController;
 import com.dev.station.controller.tab.TabController;
 import com.dev.station.file.JsonTabsManager;
 import com.dev.station.file.PathData;
 import com.dev.station.file.TabData;
 import com.dev.station.manager.LanguageManager;
-import com.dev.station.manager.clear.PathManager;
+
 import com.dev.station.util.AlertUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -17,7 +16,6 @@ import javafx.stage.Stage;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.prefs.Preferences;
 
 public class AddPathFormController {
     @FXML public Label pathNameLabel;
@@ -31,15 +29,10 @@ public class AddPathFormController {
     private Runnable onSave;
     ResourceBundle bundle;
     private DataSavedListener dataSavedListener;
-    private PathManager pathManager;
     private String tabId;
     private TabController tabController;
     private boolean isEditMode = false;
     private PathData currentPathData;
-
-    public void setPathManager(PathManager pathManager) {
-        this.pathManager = pathManager;
-    }
 
     public void setTabId(String tabId) {
         this.tabId = tabId;
@@ -58,24 +51,7 @@ public class AddPathFormController {
         cancelButton.setText(getTranslate("cancelButton"));
     }
 
-    public void setEditMode(boolean isEditMode, PathData pathData) {
-        this.isEditMode = isEditMode;
-        this.currentPathData = pathData;
-
-        if (isEditMode && pathData != null) {
-            pathNameField.setText(pathData.getName());
-            directoryPathField.setText(pathData.getPath());
-            String exclusionsString = String.join(", ", pathData.getExclusions());
-            exclusionsField.setText(exclusionsString);
-        }
-    }
-
-    public void setCurrentPathData(PathData pathData) {
-        this.currentPathData = pathData;
-    }
-
-    @FXML
-    private void handleSave() {
+    @FXML private void handleSave() {
         String pathName = pathNameField.getText().trim();
         String directoryPath = directoryPathField.getText().trim();
         String exclusionsString = exclusionsField.getText().trim();
@@ -143,8 +119,20 @@ public class AddPathFormController {
         closeStage();
     }
 
-    public void setDataSavedListener(DataSavedListener listener) {
-        this.dataSavedListener = listener;
+    public void setEditMode(boolean isEditMode, PathData pathData) {
+        this.isEditMode = isEditMode;
+        this.currentPathData = pathData;
+
+        if (isEditMode && pathData != null) {
+            pathNameField.setText(pathData.getName());
+            directoryPathField.setText(pathData.getPath());
+            String exclusionsString = String.join(", ", pathData.getExclusions());
+            exclusionsField.setText(exclusionsString);
+        }
+    }
+
+    public void setCurrentPathData(PathData pathData) {
+        this.currentPathData = pathData;
     }
 
     private void closeStage() {
