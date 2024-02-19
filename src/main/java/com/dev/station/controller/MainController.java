@@ -16,11 +16,9 @@ import javafx.scene.layout.VBox;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.ResourceBundle;
-import java.util.prefs.Preferences;
 
 public class MainController implements Localizable {
-    public static Preferences prefs;
-    ResourceBundle bundle;
+
     @FXML private StackPane contentArea;
     @FXML private Button scriptsButton;
     @FXML private Button clearButton;
@@ -33,7 +31,7 @@ public class MainController implements Localizable {
     @FXML public Button switchThemeButton;
     @FXML private ComboBox<String> languageComboBox;
     @FXML private VBox menuVBox;
-
+    ResourceBundle bundle;
     private SettingsModel settingsModel;
 
     public MainController() {
@@ -43,7 +41,6 @@ public class MainController implements Localizable {
 
     @FXML
     public void initialize() {
-        prefs = Preferences.userNodeForPackage(getClass());
         loadSavedLanguage();
 
         setButtonActions();

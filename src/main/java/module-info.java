@@ -6,7 +6,6 @@ module com.dev.station {
     requires org.controlsfx.controls;
     requires org.kordamp.ikonli.javafx;
     requires org.kordamp.bootstrapfx.core;
-    requires java.prefs;
     requires org.jsoup;
     requires org.json;
     requires java.desktop;
@@ -22,5 +21,4 @@ module com.dev.station {
     opens com.dev.station.controller.tab to javafx.fxml;
     exports com.dev.station.file;
     opens com.dev.station.file to javafx.fxml;
-    opens com.dev.station.factory to javafx.base;
 }
