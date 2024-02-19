@@ -1,6 +1,5 @@
 package com.dev.station.manager.clear;
 
-import com.dev.station.controller.MainController;
 import com.dev.station.controller.sidebar.ClearController;
 import com.dev.station.controller.tab.TabController;
 import com.dev.station.file.JsonTabsManager;
@@ -15,10 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.prefs.Preferences;
 
 public class TabManager {
-    private final Preferences prefs = MainController.prefs;
     private final ClearController clearController;
     TabPane tabPane;
     Tab addTabButton;
@@ -34,7 +31,6 @@ public class TabManager {
     public void setupTabPane() {
         setupTabContextMenus();
         selectDefaultTab();
-        restoreTabTitles();
         setupAddTabButton();
     }
 
@@ -59,15 +55,6 @@ public class TabManager {
         } else {
             System.out.println("No default tab set");
         }
-    }
-
-    private void restoreTabTitles() {
-        tabPane.getTabs().forEach(tab -> {
-            String tabId = tab.getId();
-            if (tabId != null && prefs.get(tabId, null) != null) {
-                tab.setText(prefs.get(tabId, tab.getText()));
-            }
-        });
     }
 
     private void setupAddTabButton() {
