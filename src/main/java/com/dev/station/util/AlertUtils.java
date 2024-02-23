@@ -21,15 +21,12 @@ import javafx.util.Duration;
 public class AlertUtils {
 
     public static String PATH_TO_STYLE_FILE = "/styles/style.css";
-    public static String PATH_TO_SUCCESS_ICON = "/images/alert/check-mark-32.png";
-    private static final String PATH_TO_CLOSE_ICON = "/images/alert/close-24.png";
+    public static final String PATH_TO_SUCCESS_ICON = "/images/alert/check-mark-32.png";
+    public static final String PATH_TO_ERROR_ICON = "/images/alert/red-cross-30.png";
+    public static final String PATH_TO_CLOSE_ICON = "/images/alert/close-24.png";
 
     public static void showErrorAlert(String title, String content) {
-        Alert alert = new Alert(AlertType.ERROR);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(content);
-        alert.showAndWait();
+        showCustomAlert(title + " - " + content, PATH_TO_ERROR_ICON, 5);
     }
 
     public static void showInformationAlert(String title, String content) {
@@ -51,7 +48,7 @@ public class AlertUtils {
             hbox.setAlignment(Pos.CENTER_LEFT);
 
             if (iconPath != null && !iconPath.isEmpty()) {
-                ImageView icon = new ImageView(new Image(AlertUtils.class.getResourceAsStream(PATH_TO_SUCCESS_ICON)));
+                ImageView icon = new ImageView(new Image(AlertUtils.class.getResourceAsStream(iconPath)));
                 icon.setFitHeight(24);
                 icon.setPreserveRatio(true);
                 hbox.getChildren().add(icon);
