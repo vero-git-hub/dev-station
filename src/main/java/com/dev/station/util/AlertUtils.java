@@ -1,26 +1,27 @@
 package com.dev.station.util;
 
 import javafx.animation.PauseTransition;
+import javafx.application.Platform;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
-
 public class AlertUtils {
 
     public static String PATH_TO_STYLE_FILE = "/styles/style.css";
-    public static String PATH_TO_IMAGE_SUCCESS_ALERT = "/images/alert/check-mark-32.png";
+    public static String PATH_TO_SUCCESS_ICON = "/images/alert/check-mark-32.png";
     private static final String PATH_TO_CLOSE_ICON = "/images/alert/close-24.png";
 
     public static void showErrorAlert(String title, String content) {
@@ -32,58 +33,64 @@ public class AlertUtils {
     }
 
     public static void showInformationAlert(String title, String content) {
-        showAutoCloseAlert("Changes saved successfully");
+        showCustomAlert("Changes saved successfully", PATH_TO_SUCCESS_ICON, 5);
     }
 
-    public static void showAutoCloseAlert(String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.initStyle(StageStyle.TRANSPARENT);
-        alert.setHeaderText(null);
+    /**
+     * Shows a custom notification.
+     * @param message Message to display.
+     * @param iconPath Path to the icon (can be null if the icon is not needed).
+     * @param duration Duration of notification display in seconds.
+     */
+    public static void showCustomAlert(String message, String iconPath, double duration) {
+        Platform.runLater(() -> {
+            Stage stage = new Stage();
+            stage.initStyle(StageStyle.TRANSPARENT);
 
-        DialogPane dialogPane = alert.getDialogPane();
-        dialogPane.getStylesheets().add(AlertUtils.class.getResource(PATH_TO_STYLE_FILE).toExternalForm());
-        dialogPane.getStyleClass().add("my-dialog");
+            HBox hbox = new HBox(10);
+            hbox.setAlignment(Pos.CENTER_LEFT);
 
-        Stage stage = (Stage) dialogPane.getScene().getWindow();
-        stage.setAlwaysOnTop(true);
-        stage.getIcons().clear();
+            if (iconPath != null && !iconPath.isEmpty()) {
+                ImageView icon = new ImageView(new Image(AlertUtils.class.getResourceAsStream(PATH_TO_SUCCESS_ICON)));
+                icon.setFitHeight(24);
+                icon.setPreserveRatio(true);
+                hbox.getChildren().add(icon);
+            }
 
-        dialogPane.getButtonTypes().clear();
+            Label messageLabel = new Label(message);
+            hbox.getChildren().add(messageLabel);
 
-        HBox content = new HBox();
-        content.setSpacing(10);
-        content.setAlignment(Pos.CENTER_LEFT);
+            Region spacer = new Region();
+            HBox.setHgrow(spacer, Priority.ALWAYS);
+            hbox.getChildren().add(spacer);
 
-        ImageView imageView = new ImageView(new Image(AlertUtils.class.getResourceAsStream(PATH_TO_IMAGE_SUCCESS_ALERT)));
-        imageView.setPreserveRatio(true);
-        imageView.setFitHeight(24);
+            Image closeImage = new Image(AlertUtils.class.getResourceAsStream(PATH_TO_CLOSE_ICON));
+            ImageView closeIcon = new ImageView(closeImage);
+            closeIcon.setFitHeight(16);
+            closeIcon.setFitWidth(16);
+            closeIcon.setPreserveRatio(true);
 
-        StackPane textContainer = new StackPane(new Label(message));
-        textContainer.setAlignment(Pos.CENTER_LEFT);
+            Button closeButton = new Button();
+            closeButton.setGraphic(closeIcon);
+            closeButton.getStyleClass().add("close-button");
 
-        Image closeImage = new Image(AlertUtils.class.getResourceAsStream(PATH_TO_CLOSE_ICON));
-        ImageView closeIcon = new ImageView(closeImage);
-        closeIcon.setFitHeight(16);
-        closeIcon.setFitWidth(16);
-        closeIcon.setPreserveRatio(true);
+            closeButton.setOnAction(e -> stage.close());
+            hbox.getChildren().add(closeButton);
 
-        Button closeButton = new Button();
-        closeButton.setGraphic(closeIcon);
-        closeButton.getStyleClass().add("close-button");
+            VBox vbox = new VBox(hbox);
+            vbox.setStyle("-fx-background-color: rgba(255, 255, 255, 0.9); -fx-background-radius: 5px; -fx-padding: 10;");
 
-        Region spacer = new Region();
+            Scene scene = new Scene(vbox);
+            scene.setFill(null);
+            stage.setScene(scene);
 
-        content.getChildren().addAll(imageView, textContainer, spacer, closeButton);
+            stage.show();
 
-        dialogPane.setGraphic(null);
-        dialogPane.setContent(content);
-
-        closeButton.setOnAction(event -> stage.close());
-
-        alert.show();
-
-        PauseTransition delay = new PauseTransition(Duration.seconds(5));
-        delay.setOnFinished(e -> stage.close());
-        delay.play();
+            if (duration > 0) {
+                PauseTransition delay = new PauseTransition(Duration.seconds(duration));
+                delay.setOnFinished(e -> stage.close());
+                delay.play();
+            }
+        });
     }
 }
