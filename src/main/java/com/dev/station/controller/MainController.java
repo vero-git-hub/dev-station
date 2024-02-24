@@ -3,6 +3,7 @@ package com.dev.station.controller;
 import com.dev.station.Localizable;
 import com.dev.station.manager.LanguageManager;
 import com.dev.station.model.SettingsModel;
+import com.dev.station.util.AlertUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -27,6 +28,7 @@ public class MainController implements Localizable {
     @FXML private Button imagesButton;
     @FXML private Button settingsButton;
     @FXML private Button pingButton;
+    @FXML private Button monitoringButton;
     @FXML private Label footerLabel;
     @FXML public Button switchThemeButton;
     @FXML private ComboBox<String> languageComboBox;
@@ -44,7 +46,7 @@ public class MainController implements Localizable {
         loadSavedLanguage();
 
         setButtonActions();
-        footerLabel.setText("v0.2");
+        footerLabel.setText("v0.3");
     }
 
     private void removeActiveButtonClass() {
@@ -75,6 +77,11 @@ public class MainController implements Localizable {
         pingButton.setOnAction(event -> {
             loadPingContent();
             setActiveButton(pingButton);
+        });
+
+        monitoringButton.setOnAction(event -> {
+            loadMonitoringContent();
+            setActiveButton(monitoringButton);
         });
     }
 
@@ -144,6 +151,7 @@ public class MainController implements Localizable {
         driverButton.setText(getTranslate("driverMenu"));
         clearButton.setText(getTranslate("clearMenu"));
         pingButton.setText(getTranslate("pingMenu"));
+        monitoringButton.setText(getTranslate("monitoringMenu"));
 
         setTooltips();
     }
@@ -153,6 +161,7 @@ public class MainController implements Localizable {
         Tooltip.install(driverButton, new Tooltip(getTranslate("driverMenuHint")));
         Tooltip.install(clearButton, new Tooltip(getTranslate("clearMenuHint")));
         Tooltip.install(pingButton, new Tooltip(getTranslate("pingMenuHint")));
+        Tooltip.install(monitoringButton, new Tooltip(getTranslate("monitoringMenuHint")));
 
         Tooltip.install(homeButton, new Tooltip(getTranslate("homeButtonHint")));
         Tooltip.install(imagesButton, new Tooltip(getTranslate("imagesButtonHint")));
@@ -200,11 +209,16 @@ public class MainController implements Localizable {
         }
     }
 
+    private void loadMonitoringContent() {
+        System.out.println("click");
+    }
+
     private void setActiveButton(Button activeButton) {
         scriptsButton.getStyleClass().remove("active-button");
         driverButton.getStyleClass().remove("active-button");
         clearButton.getStyleClass().remove("active-button");
         pingButton.getStyleClass().remove("active-button");
+        monitoringButton.getStyleClass().remove("active-button");
 
         activeButton.getStyleClass().add("active-button");
     }
