@@ -64,7 +64,7 @@ public class AddPathFormController {
         List<String> exclusions = Arrays.asList(exclusionsString.split("\\s*,\\s*"));
 
         JsonTabsManager jsonTabsManager = new JsonTabsManager();
-        List<TabData> tabs = jsonTabsManager.loadTabs();
+        List<TabData> tabs = jsonTabsManager.loadTabs(1, "Clear");
 
         if (isEditMode && currentPathData != null) {
             currentPathData.setName(pathName);
@@ -92,7 +92,7 @@ public class AddPathFormController {
                     .isPresent();
         }
 
-        boolean saveResult = jsonTabsManager.saveTabs(tabs);
+        boolean saveResult = jsonTabsManager.saveTabs(1, "Clear", tabs);
 
         if (dataSavedListener != null) {
             dataSavedListener.onDataSaved();

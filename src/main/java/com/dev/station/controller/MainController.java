@@ -210,7 +210,13 @@ public class MainController implements Localizable {
     }
 
     private void loadMonitoringContent() {
-        System.out.println("click");
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/dev/station/ui/sidebar/MonitoringLayout.fxml"));
+            Node programLayout = loader.load();
+            contentArea.getChildren().setAll(programLayout);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void setActiveButton(Button activeButton) {

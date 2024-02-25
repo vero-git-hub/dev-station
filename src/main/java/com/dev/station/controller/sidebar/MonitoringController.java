@@ -3,21 +3,24 @@ package com.dev.station.controller.sidebar;
 import com.dev.station.Localizable;
 import com.dev.station.controller.TabControllerInterface;
 import com.dev.station.controller.tab.TabController;
+import com.dev.station.file.PathData;
 import com.dev.station.file.TabData;
 import com.dev.station.manager.LanguageManager;
 import com.dev.station.manager.NotificationManager;
 import com.dev.station.manager.clear.TabManager;
 import com.dev.station.model.SettingsModel;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
+import javafx.scene.Cursor;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-public class ClearController implements Localizable,  TabControllerInterface {
-
+public class MonitoringController implements Localizable, TabControllerInterface {
     @FXML private TabPane tabPane;
     @FXML private Tab addTabButton;
     @FXML private Label addTabLabel;
@@ -26,13 +29,12 @@ public class ClearController implements Localizable,  TabControllerInterface {
     private ResourceBundle bundle;
     private SettingsModel settingsModel;
 
-    public ClearController() {
+    public MonitoringController() {
         LanguageManager.registerForUpdates(this::updateUI);
         settingsModel = new SettingsModel();
     }
 
-    @FXML
-    private void initialize() {
+    @FXML private void initialize() {
         setMultilingual();
         loadSavedLanguage();
         definitionManagers();
@@ -88,11 +90,11 @@ public class ClearController implements Localizable,  TabControllerInterface {
 
     @Override
     public void setupTableColumns() {
-        // Logic for setting up table columns for ClearController
+        // Logic for setting up table columns for MonitoringController
     }
 
     @Override
     public void loadData(TabData tabData) {
-        // Logic for loading data into ClearController if necessary
+        // Logic for loading data into MonitoringController if necessary
     }
 }
