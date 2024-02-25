@@ -48,7 +48,7 @@ public class ClearController implements Localizable,  TabControllerInterface {
     }
 
     private void definitionManagers() {
-        tabManager = new TabManager(this, tabPane, addTabButton, addTabLabel);
+        tabManager = new TabManager(this, tabPane, addTabButton, addTabLabel, "Clear");
     }
 
     private void setupTabPane() {

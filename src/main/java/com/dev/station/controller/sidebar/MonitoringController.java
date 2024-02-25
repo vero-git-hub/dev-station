@@ -3,6 +3,7 @@ package com.dev.station.controller.sidebar;
 import com.dev.station.Localizable;
 import com.dev.station.controller.TabControllerInterface;
 import com.dev.station.controller.tab.TabController;
+import com.dev.station.file.JsonTabsManager;
 import com.dev.station.file.PathData;
 import com.dev.station.file.TabData;
 import com.dev.station.manager.LanguageManager;
@@ -17,6 +18,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -50,7 +52,7 @@ public class MonitoringController implements Localizable, TabControllerInterface
     }
 
     private void definitionManagers() {
-        tabManager = new TabManager(this, tabPane, addTabButton, addTabLabel);
+        tabManager = new TabManager(this, tabPane, addTabButton, addTabLabel, "Monitoring");
     }
 
     private void setupTabPane() {
