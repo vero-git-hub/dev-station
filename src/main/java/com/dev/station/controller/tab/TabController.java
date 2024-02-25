@@ -133,7 +133,7 @@ public class TabController implements Localizable {
         if (!recycleBinPath.isEmpty()) {
             JsonTabsManager jsonTabsManager = new JsonTabsManager();
 
-            List<TabData> tabs = jsonTabsManager.loadTabs();
+            List<TabData> tabs = jsonTabsManager.loadTabs(1, "Clear");
 
             for (TabData tab : tabs) {
                 if (tab.getId().equals(myTab.getId())) {
@@ -142,7 +142,7 @@ public class TabController implements Localizable {
                 }
             }
 
-            jsonTabsManager.saveTabs(tabs);
+            jsonTabsManager.saveTabs(1, "Clear", tabs);
         }
     }
 
@@ -322,7 +322,7 @@ public class TabController implements Localizable {
             pathsTable.getItems().remove(data);
 
             JsonTabsManager jsonTabsManager = new JsonTabsManager();
-            List<TabData> tabs = jsonTabsManager.loadTabs();
+            List<TabData> tabs = jsonTabsManager.loadTabs(1, "Clear");
 
             boolean foundAndDeleted = false;
             for (TabData tab : tabs) {
@@ -333,7 +333,7 @@ public class TabController implements Localizable {
             }
 
             if (foundAndDeleted) {
-                boolean savedSuccessfully = jsonTabsManager.saveTabs(tabs);
+                boolean savedSuccessfully = jsonTabsManager.saveTabs(1, "Clear", tabs);
                 if (!savedSuccessfully) {
                     System.err.println("Failed to save tabs after deletion.");
                     pathsTable.getItems().add(data);
@@ -346,7 +346,7 @@ public class TabController implements Localizable {
 
     public void updatePathsTable() {
         JsonTabsManager jsonTabsManager = new JsonTabsManager();
-        List<TabData> tabs = jsonTabsManager.loadTabs();
+        List<TabData> tabs = jsonTabsManager.loadTabs(1, "Clear");
 
         for (TabData tab : tabs) {
             if (tab.getId().equals(this.myTab.getId())) {

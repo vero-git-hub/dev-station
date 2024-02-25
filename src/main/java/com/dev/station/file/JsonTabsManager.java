@@ -1,6 +1,7 @@
 package com.dev.station.file;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,38 +13,68 @@ import java.util.List;
 public class JsonTabsManager {
     private static final String FILE_PATH = "tabs_config.json";
 
-    public List<TabData> loadTabs() {
+    public List<TabData> loadTabs(int userId, String screenType) {
+        List<TabData> tabs = new ArrayList<>();
         try {
             File file = new File(FILE_PATH);
             if (file.exists()) {
                 String content = new String(Files.readAllBytes(file.toPath()));
-                JSONArray tabsArray = new JSONArray(content);
+                JSONArray configArray = new JSONArray(content);
 
-                List<TabData> tabs = new ArrayList<>();
-                for (int i = 0; i < tabsArray.length(); i++) {
-                    tabs.add(TabData.fromJson(tabsArray.getJSONObject(i)));
+                for (int i = 0; i < configArray.length(); i++) {
+                    JSONObject configObject = configArray.getJSONObject(i);
+                    if (configObject.getInt("userId") == userId && configObject.getString("screenType").equals(screenType)) {
+                        JSONArray tabsArray = configObject.getJSONArray("tabs");
+                        for (int j = 0; j < tabsArray.length(); j++) {
+                            tabs.add(TabData.fromJson(tabsArray.getJSONObject(j)));
+                        }
+                        break;
+                    }
                 }
-                return tabs;
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return new ArrayList<>();
+        return tabs;
     }
 
-    public boolean saveTabs(List<TabData> tabs) {
+    public boolean saveTabs(int userId, String screenType, List<TabData> tabs) {
         try {
-            JSONArray tabsArray = new JSONArray();
-            for (TabData tab : tabs) {
-                tabsArray.put(tab.toJson());
+            File file = new File(FILE_PATH);
+            JSONArray configArray = file.exists() ? new JSONArray(new String(Files.readAllBytes(file.toPath()))) : new JSONArray();
+
+            boolean found = false;
+            for (int i = 0; i < configArray.length(); i++) {
+                JSONObject configObject = configArray.getJSONObject(i);
+                if (configObject.getInt("userId") == userId && configObject.getString("screenType").equals(screenType)) {
+                    JSONArray tabsArray = new JSONArray();
+                    for (TabData tab : tabs) {
+                        tabsArray.put(tab.toJson());
+                    }
+                    configObject.put("tabs", tabsArray);
+                    found = true;
+                    break;
+                }
             }
-            String jsonString = tabsArray.toString(4);
+
+            if (!found) {
+                JSONObject newConfigObject = new JSONObject();
+                newConfigObject.put("userId", userId);
+                newConfigObject.put("screenType", screenType);
+                JSONArray tabsArray = new JSONArray();
+                for (TabData tab : tabs) {
+                    tabsArray.put(tab.toJson());
+                }
+                newConfigObject.put("tabs", tabsArray);
+                configArray.put(newConfigObject);
+            }
+
+            String jsonString = configArray.toString(4);
             Files.write(Paths.get(FILE_PATH), jsonString.getBytes());
+            return true;
         } catch (IOException e) {
             e.printStackTrace();
             return false;
         }
-
-        return true;
     }
 }

@@ -38,7 +38,7 @@ public class RecycleBinManager {
         Object source = event.getSource();
         if (source == toggleMoveFiles) {
             JsonTabsManager jsonTabsManager = new JsonTabsManager();
-            List<TabData> tabs = jsonTabsManager.loadTabs();
+            List<TabData> tabs = jsonTabsManager.loadTabs(1, "Clear");
             TabData currentTabData = null;
 
             for (TabData tab : tabs) {
@@ -87,7 +87,7 @@ public class RecycleBinManager {
 
         if (source == toggleReturnFiles) {
             JsonTabsManager jsonTabsManager = new JsonTabsManager();
-            List<TabData> tabs = jsonTabsManager.loadTabs();
+            List<TabData> tabs = jsonTabsManager.loadTabs(1, "Clear");
             String currentTabId = tabController.getMyTab().getId();
 
             TabData currentTab = tabs.stream().filter(tab -> tab.getId().equals(currentTabId)).findFirst().orElse(null);
@@ -139,7 +139,7 @@ public class RecycleBinManager {
 
     private void deleteFilesBeforeRecovery(String tabId) {
         JsonTabsManager jsonTabsManager = new JsonTabsManager();
-        List<TabData> tabs = jsonTabsManager.loadTabs();
+        List<TabData> tabs = jsonTabsManager.loadTabs(1, "Clear");
 
         TabData currentTab = tabs.stream()
                 .filter(tab -> tab.getId().equals(tabId))
@@ -184,7 +184,7 @@ public class RecycleBinManager {
 
     public void clearRecycleBin(String tabId) {
         JsonTabsManager jsonTabsManager = new JsonTabsManager();
-        List<TabData> tabs = jsonTabsManager.loadTabs();
+        List<TabData> tabs = jsonTabsManager.loadTabs(1, "Clear");
         String recycleBinPathString = null;
 
         for (TabData tab : tabs) {

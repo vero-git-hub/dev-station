@@ -1,6 +1,8 @@
 package com.dev.station.manager.clear;
 
+import com.dev.station.controller.TabControllerInterface;
 import com.dev.station.controller.sidebar.ClearController;
+import com.dev.station.controller.sidebar.MonitoringController;
 import com.dev.station.controller.tab.TabController;
 import com.dev.station.file.JsonTabsManager;
 import com.dev.station.file.TabData;
@@ -16,13 +18,13 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class TabManager {
-    private final ClearController clearController;
-    TabPane tabPane;
-    Tab addTabButton;
-    Label addTabLabel;
+    private TabControllerInterface controller;
+    private TabPane tabPane;
+    private Tab addTabButton;
+    private Label addTabLabel;
 
-    public TabManager(ClearController clearController, TabPane tabPane, Tab addTabButton, Label addTabLabel) {
-        this.clearController = clearController;
+    public TabManager(TabControllerInterface controller, TabPane tabPane, Tab addTabButton, Label addTabLabel) {
+        this.controller = controller;
         this.tabPane = tabPane;
         this.addTabButton = addTabButton;
         this.addTabLabel = addTabLabel;
@@ -40,7 +42,7 @@ public class TabManager {
 
     private void selectDefaultTab() {
         JsonTabsManager jsonTabsManager = new JsonTabsManager();
-        List<TabData> tabs = jsonTabsManager.loadTabs();
+        List<TabData> tabs = jsonTabsManager.loadTabs(1, "Clear");
 
         TabData defaultTabData = tabs.stream()
                 .filter(TabData::isDefault)
@@ -84,7 +86,7 @@ public class TabManager {
             newTab.getStyleClass().add("clickable");
 
             JsonTabsManager jsonTabsManager = new JsonTabsManager();
-            List<TabData> currentTabs = jsonTabsManager.loadTabs();
+            List<TabData> currentTabs = jsonTabsManager.loadTabs(1, "Clear");
 
             TabData newTabData = new TabData();
             newTabData.setId(tabId);
@@ -93,7 +95,7 @@ public class TabManager {
             newTabData.setPaths(new ArrayList<>());
 
             currentTabs.add(newTabData);
-            jsonTabsManager.saveTabs(currentTabs);
+            jsonTabsManager.saveTabs(1, "Clear", currentTabs);
 
             setupTabContextMenu(newTab);
 
@@ -106,9 +108,9 @@ public class TabManager {
 
     private void setupTabContextMenu(Tab tab) {
         ContextMenu contextMenu = new ContextMenu();
-        MenuItem renameItem = new MenuItem(clearController.getTranslate("renameItem"));
-        MenuItem setDefaultItem = new MenuItem(clearController.getTranslate("setDefaultItem"));
-        MenuItem deleteItem = new MenuItem(clearController.getTranslate("deleteItem"));
+        MenuItem renameItem = new MenuItem(controller.getTranslate("renameItem"));
+        MenuItem setDefaultItem = new MenuItem(controller.getTranslate("setDefaultItem"));
+        MenuItem deleteItem = new MenuItem(controller.getTranslate("deleteItem"));
 
         renameItem.getStyleClass().add("clickable");
         setDefaultItem.getStyleClass().add("clickable");
@@ -125,18 +127,18 @@ public class TabManager {
 
     private void handleDeleteTab(Tab tab) {
         Alert confirmationDialog = new Alert(Alert.AlertType.CONFIRMATION);
-        confirmationDialog.setTitle(clearController.getTranslate("titleDeleteTab"));
-        confirmationDialog.setHeaderText(clearController.getTranslate("headerTextDeleteTab"));
-        confirmationDialog.setContentText(clearController.getTranslate("contentTextDeleteTab"));
+        confirmationDialog.setTitle(controller.getTranslate("titleDeleteTab"));
+        confirmationDialog.setHeaderText(controller.getTranslate("headerTextDeleteTab"));
+        confirmationDialog.setContentText(controller.getTranslate("contentTextDeleteTab"));
 
         Optional<ButtonType> result = confirmationDialog.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             JsonTabsManager jsonTabsManager = new JsonTabsManager();
-            List<TabData> tabs = jsonTabsManager.loadTabs();
+            List<TabData> tabs = jsonTabsManager.loadTabs(1, "Clear");
 
             tabs.removeIf(t -> t.getId().equals(tab.getId()));
 
-            jsonTabsManager.saveTabs(tabs);
+            jsonTabsManager.saveTabs(1, "Clear", tabs);
 
             tabPane.getTabs().remove(tab);
         }
@@ -144,14 +146,14 @@ public class TabManager {
 
     private void handleRenameTab(Tab tab) {
         TextInputDialog dialog = new TextInputDialog(tab.getText());
-        dialog.setTitle(clearController.getTranslate("titleRenameTab"));
-        dialog.setHeaderText(clearController.getTranslate("headerTextRenameTab"));
+        dialog.setTitle(controller.getTranslate("titleRenameTab"));
+        dialog.setHeaderText(controller.getTranslate("headerTextRenameTab"));
         Optional<String> result = dialog.showAndWait();
         result.ifPresent(name -> {
             tab.setText(name);
 
             JsonTabsManager jsonTabsManager = new JsonTabsManager();
-            List<TabData> tabs = jsonTabsManager.loadTabs();
+            List<TabData> tabs = jsonTabsManager.loadTabs(1, "Clear");
 
             for (TabData tabData : tabs) {
                 if (tabData.getId().equals(tab.getId())) {
@@ -160,13 +162,13 @@ public class TabManager {
                 }
             }
 
-            jsonTabsManager.saveTabs(tabs);
+            jsonTabsManager.saveTabs(1, "Clear", tabs);
         });
     }
 
     private void handleSetDefaultTab(Tab tab) {
         JsonTabsManager jsonTabsManager = new JsonTabsManager();
-        List<TabData> tabs = jsonTabsManager.loadTabs();
+        List<TabData> tabs = jsonTabsManager.loadTabs(1, "Clear");
 
         tabs.forEach(t -> t.setDefault(false));
 
@@ -175,12 +177,12 @@ public class TabManager {
                 .findFirst()
                 .ifPresent(t -> t.setDefault(true));
 
-        jsonTabsManager.saveTabs(tabs);
+        jsonTabsManager.saveTabs(1, "Clear", tabs);
     }
 
     public void loadTabsFromJson() {
         JsonTabsManager jsonTabsManager = new JsonTabsManager();
-        List<TabData> tabs = jsonTabsManager.loadTabs();
+        List<TabData> tabs = jsonTabsManager.loadTabs(1, "Clear");
 
         for (TabData tabData : tabs) {
             Tab tab = createTabFromData(tabData);
