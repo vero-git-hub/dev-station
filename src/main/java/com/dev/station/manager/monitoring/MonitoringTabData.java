@@ -9,7 +9,7 @@ public class MonitoringTabData {
     private String id;
     private String filePath;
     private String fileName;
-    private boolean monitoringFrequency;
+    private int monitoringFrequency;
     private boolean toggleMonitoring;
     private boolean openContentButton;
     private boolean parseAsArrayToggle;
@@ -18,7 +18,7 @@ public class MonitoringTabData {
     public MonitoringTabData() {}
 
     public MonitoringTabData(boolean isDefault, String name, String id, String filePath, String fileName,
-                             boolean monitoringFrequency, boolean toggleMonitoring, boolean openContentButton,
+                             int monitoringFrequency, boolean toggleMonitoring, boolean openContentButton,
                              boolean parseAsArrayToggle, boolean clearContentToggle) {
         this.isDefault = isDefault;
         this.name = name;
@@ -73,11 +73,11 @@ public class MonitoringTabData {
         this.fileName = fileName;
     }
 
-    public boolean isMonitoringFrequency() {
+    public int getMonitoringFrequency() {
         return monitoringFrequency;
     }
 
-    public void setMonitoringFrequency(boolean monitoringFrequency) {
+    public void setMonitoringFrequency(int monitoringFrequency) {
         this.monitoringFrequency = monitoringFrequency;
     }
 
@@ -125,7 +125,7 @@ public class MonitoringTabData {
                 jsonObject.getString("id"),
                 jsonObject.getString("filePath"),
                 jsonObject.getString("fileName"),
-                jsonObject.getBoolean("monitoringFrequency"),
+                jsonObject.getInt("monitoringFrequency"),
                 jsonObject.getBoolean("toggleMonitoring"),
                 jsonObject.getBoolean("openContentButton"),
                 jsonObject.getBoolean("parseAsArrayToggle"),

@@ -29,9 +29,6 @@ public class AlertUtils {
     }
 
     public static void showSuccessAlert(String title, String content) {
-        if(content.isEmpty()) {
-            content = "Changes saved successfully";
-        }
         showCustomAlert(content, PATH_TO_SUCCESS_ICON, 5);
     }
 

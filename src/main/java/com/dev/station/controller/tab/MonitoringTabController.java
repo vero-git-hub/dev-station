@@ -3,12 +3,15 @@ package com.dev.station.controller.tab;
 import com.dev.station.Localizable;
 import com.dev.station.manager.LanguageManager;
 import com.dev.station.manager.NotificationManager;
+import com.dev.station.manager.monitoring.MonitoringJsonTabsManager;
 import com.dev.station.manager.monitoring.MonitoringTabData;
 import com.dev.station.model.SettingsModel;
+import com.dev.station.util.AlertUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -36,9 +39,29 @@ public class MonitoringTabController implements Localizable {
         settingsModel = new SettingsModel();
     }
 
+    public Tab getMyTab() {
+        return myTab;
+    }
+
+    public void setMyTab(Tab myTab) {
+        this.myTab = myTab;
+    }
+
     @FXML public void handleToggleMonitoringAction(ActionEvent actionEvent) {}
 
-    @FXML public void handleSaveSettingsAction(ActionEvent actionEvent) {}
+    @FXML public void handleSaveSettingsAction(ActionEvent actionEvent) {
+        String filePathValue = filePath.getText();
+        String fileNameValue = fileName.getText();
+        int monitoringFrequencyValue = Integer.parseInt(monitoringFrequency.getText());
+        boolean toggleMonitoringValue = toggleMonitoring.isSelected();
+        boolean openContentButtonValue = openContentButton.isSelected();
+        boolean parseAsArrayToggleValue = parseAsArrayToggle.isSelected();
+        boolean clearContentToggleValue = clearContentToggle.isSelected();
+
+        String tabIdToUpdate = myTab.getId();
+
+        updateMonitoringTab(tabIdToUpdate, filePathValue, fileNameValue, monitoringFrequencyValue, toggleMonitoringValue, openContentButtonValue, parseAsArrayToggleValue, clearContentToggleValue);
+    }
 
     public void initialize() {
         bundle = LanguageManager.getResourceBundle();
@@ -50,6 +73,31 @@ public class MonitoringTabController implements Localizable {
         loadSavedLanguage();
     }
 
+    private void updateMonitoringTab(String tabId, String filePath, String fileName, int monitoringFrequency, boolean toggleMonitoring, boolean openContentButton, boolean parseAsArrayToggle, boolean clearContentToggle) {
+        MonitoringJsonTabsManager jsonTabsManager = new MonitoringJsonTabsManager();
+        List<MonitoringTabData> tabs = jsonTabsManager.loadMonitoringTabs(1, "Monitoring");
+
+        for (MonitoringTabData tab : tabs) {
+            if (tab.getId().equals(tabId)) {
+                tab.setFilePath(filePath);
+                tab.setFileName(fileName);
+                tab.setMonitoringFrequency(monitoringFrequency);
+                tab.setToggleMonitoring(toggleMonitoring);
+                tab.setOpenContentButton(openContentButton);
+                tab.setParseAsArrayToggle(parseAsArrayToggle);
+                tab.setClearContentToggle(clearContentToggle);
+                break;
+            }
+        }
+
+        boolean success = jsonTabsManager.saveMonitoringTabs(1, "Monitoring", tabs);
+        if (success) {
+            AlertUtils.showSuccessAlert("",getTranslate("alerts.successSaving"));
+        } else {
+            AlertUtils.showErrorAlert("", getTranslate("alerts.errorSaving"));
+        }
+    }
+
     private void setMultilingual() {
         bundle = LanguageManager.getResourceBundle();
         notificationManager = new NotificationManager(bundle);
@@ -58,9 +106,15 @@ public class MonitoringTabController implements Localizable {
 
     public void updateUI(ResourceBundle bundle) {}
 
-    public void setMyTab(Tab tab) {}
-
-    public void loadData(MonitoringTabData tabData) {}
+    public void loadData(MonitoringTabData tabData) {
+        filePath.setText(tabData.getFilePath());
+        fileName.setText(tabData.getFileName());
+        monitoringFrequency.setText(String.valueOf(tabData.getMonitoringFrequency()));
+        toggleMonitoring.setSelected(tabData.isToggleMonitoring());
+        openContentButton.setSelected(tabData.isOpenContentButton());
+        parseAsArrayToggle.setSelected(tabData.isParseAsArrayToggle());
+        clearContentToggle.setSelected(tabData.isClearContentToggle());
+    }
 
     public String getTranslate(String key) {
         return bundle.getString(key);
