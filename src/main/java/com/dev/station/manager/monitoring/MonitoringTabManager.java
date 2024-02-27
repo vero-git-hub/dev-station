@@ -93,7 +93,7 @@ public class MonitoringTabManager {
             tabData.setId(UUID.randomUUID().toString());
             tabData.setFilePath("/path/to/file");
             tabData.setFileName("monitoring_file.txt");
-            tabData.setMonitoringFrequency(true);
+            tabData.setMonitoringFrequency(1);
             tabData.setToggleMonitoring(true);
             tabData.setOpenContentButton(true);
             tabData.setParseAsArrayToggle(false);
