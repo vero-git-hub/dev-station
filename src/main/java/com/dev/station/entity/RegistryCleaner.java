@@ -12,7 +12,7 @@ public class RegistryCleaner {
             Process process = Runtime.getRuntime().exec(command);
             int exitCode = process.waitFor();
             if (exitCode == 0) {
-                AlertUtils.showInformationAlert("Success clean registry", "Registry folder deleted successfully.");
+                AlertUtils.showSuccessAlert("Success clean registry", "Registry folder deleted successfully.");
             } else {
                 AlertUtils.showErrorAlert("Error clean registry", "Error occurred while deleting registry folder.");
             }
