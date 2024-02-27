@@ -1,6 +1,6 @@
 package com.dev.station.manager.clear;
 
-import com.dev.station.controller.tab.TabController;
+import com.dev.station.controller.tab.ClearTabController;
 import com.dev.station.entity.RecoveryContext;
 import com.dev.station.entity.RecycleBin;
 import com.dev.station.file.JsonTabsManager;
@@ -24,12 +24,12 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 public class RecycleBinManager {
-    private final TabController tabController;
+    private final ClearTabController clearTabController;
     private final NotificationManager notificationManager;
     private ToggleButton toggleReturnFiles;
 
-    public RecycleBinManager(TabController tabController, NotificationManager notificationManager, ToggleButton toggleReturnFiles) {
-        this.tabController = tabController;
+    public RecycleBinManager(ClearTabController clearTabController, NotificationManager notificationManager, ToggleButton toggleReturnFiles) {
+        this.clearTabController = clearTabController;
         this.notificationManager = notificationManager;
         this.toggleReturnFiles = toggleReturnFiles;
     }
@@ -88,14 +88,14 @@ public class RecycleBinManager {
         if (source == toggleReturnFiles) {
             JsonTabsManager jsonTabsManager = new JsonTabsManager();
             List<TabData> tabs = jsonTabsManager.loadTabs(1, "Clear");
-            String currentTabId = tabController.getMyTab().getId();
+            String currentTabId = clearTabController.getMyTab().getId();
 
             TabData currentTab = tabs.stream().filter(tab -> tab.getId().equals(currentTabId)).findFirst().orElse(null);
 
             if (currentTab != null) {
                 String recycleBinPath = currentTab.getRecycleBinPath();
                 RecycleBin recycleBin = new RecycleBin(recycleBinPath);
-                return new RecoveryContext(recycleBin, tabController.isRestorationPerformed(), currentTabId, source);
+                return new RecoveryContext(recycleBin, clearTabController.isRestorationPerformed(), currentTabId, source);
             }
         }
         notificationManager.showErrorAlert("returnFromRecycleBinMethodError");
@@ -129,7 +129,7 @@ public class RecycleBinManager {
             context.currentRecycleBin.clearMetadata();
             notificationManager.showInformationAlert("returnFromRecycleBinSuccess");
             if (context.source == toggleReturnFiles) {
-                tabController.setRestorationPerformed(true);
+                clearTabController.setRestorationPerformed(true);
             }
         } catch (IOException e) {
             notificationManager.showErrorAlert("returnFromRecycleBinError");

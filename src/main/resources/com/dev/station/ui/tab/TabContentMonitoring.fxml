@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.dev.station.controller.tab.MonitoringTabController"
+            prefHeight="400.0" prefWidth="600.0">
+    <children>
+        <Label text="Путь к файлу:" layoutX="20" layoutY="20" />
+        <TextField fx:id="filePath" layoutX="150" layoutY="20" prefWidth="400" />
+
+        <Label text="Название файла:" layoutX="20" layoutY="60" />
+        <TextField fx:id="fileName" layoutX="150" layoutY="60" prefWidth="400" />
+
+        <Label text="Периодичность мониторинга (сек):" layoutX="20" layoutY="100" />
+        <TextField fx:id="monitoringFrequency" layoutX="150" layoutY="100" prefWidth="400" />
+
+        <ToggleButton text="Включить мониторинг" fx:id="toggleMonitoring" layoutX="20" layoutY="140" prefWidth="150" onAction="#handleToggleMonitoringAction">
+            <toggleGroup>
+                <ToggleGroup fx:id="monitoringToggleGroup" />
+            </toggleGroup>
+        </ToggleButton>
+
+        <Button text="Открыть содержимое в другом окне" fx:id="openContentButton" layoutX="200" layoutY="140" prefWidth="300" />
+
+        <ToggleButton text="Парсинг в виде массива" fx:id="parseAsArrayToggle" layoutX="20" layoutY="180" prefWidth="180" />
+        <ToggleButton text="Очистка содержимого после обновления" fx:id="clearContentToggle" layoutX="210" layoutY="180" prefWidth="340" />
+
+        <Button text="Сохранить настройки" fx:id="saveSettingsButton" layoutX="20" layoutY="260" prefWidth="530" onAction="#handleSaveSettingsAction" />
+    </children>
+</AnchorPane>

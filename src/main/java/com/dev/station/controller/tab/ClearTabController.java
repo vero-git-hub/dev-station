@@ -32,7 +32,7 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-public class TabController implements Localizable {
+public class ClearTabController implements Localizable, TabInterface {
 
     @FXML private ToggleButton toggleMoveFiles;
     @FXML private ToggleButton toggleReturnFiles;
@@ -55,7 +55,7 @@ public class TabController implements Localizable {
     private Tab myTab;
     SettingsModel settingsModel;
 
-    public TabController() {
+    public ClearTabController() {
         LanguageManager.registerForUpdates(this::updateUI);
         settingsModel = new SettingsModel();
     }

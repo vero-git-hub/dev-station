@@ -1,28 +1,19 @@
 package com.dev.station.controller.sidebar;
 
 import com.dev.station.Localizable;
-import com.dev.station.controller.TabControllerInterface;
-import com.dev.station.controller.tab.TabController;
-import com.dev.station.file.JsonTabsManager;
-import com.dev.station.file.PathData;
+import com.dev.station.controller.tab.ClearTabController;
 import com.dev.station.file.TabData;
 import com.dev.station.manager.LanguageManager;
 import com.dev.station.manager.NotificationManager;
 import com.dev.station.manager.clear.TabManager;
 import com.dev.station.model.SettingsModel;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.Cursor;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 
-import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-public class MonitoringController implements Localizable, TabControllerInterface {
+public class MonitoringController implements Localizable, ClearMonitoringInterface {
     @FXML private TabPane tabPane;
     @FXML private Tab addTabButton;
     @FXML private Label addTabLabel;
@@ -78,9 +69,9 @@ public class MonitoringController implements Localizable, TabControllerInterface
         notificationManager.updateResourceBundle(bundle);
 
         for (Tab tab : tabPane.getTabs()) {
-            if (tab.getContent() != null && tab.getContent().getUserData() instanceof TabController) {
-                TabController tabController = (TabController) tab.getContent().getUserData();
-                tabController.updateUI(LanguageManager.getResourceBundle());
+            if (tab.getContent() != null && tab.getContent().getUserData() instanceof ClearTabController) {
+                ClearTabController clearTabController = (ClearTabController) tab.getContent().getUserData();
+                clearTabController.updateUI(LanguageManager.getResourceBundle());
             }
         }
     }
