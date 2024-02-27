@@ -1,9 +1,8 @@
 package com.dev.station.manager.clear;
 
-import com.dev.station.controller.TabControllerInterface;
-import com.dev.station.controller.sidebar.ClearController;
-import com.dev.station.controller.sidebar.MonitoringController;
-import com.dev.station.controller.tab.TabController;
+import com.dev.station.controller.sidebar.ClearMonitoringInterface;
+import com.dev.station.controller.tab.ClearTabController;
+import com.dev.station.controller.tab.TabInterface;
 import com.dev.station.file.JsonTabsManager;
 import com.dev.station.file.TabData;
 import com.dev.station.manager.LanguageManager;
@@ -18,13 +17,13 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class TabManager {
-    private TabControllerInterface controller;
+    private ClearMonitoringInterface controller;
     private TabPane tabPane;
     private Tab addTabButton;
     private Label addTabLabel;
     private String screenType;
 
-    public TabManager(TabControllerInterface controller, TabPane tabPane, Tab addTabButton, Label addTabLabel, String screenType) {
+    public TabManager(ClearMonitoringInterface controller, TabPane tabPane, Tab addTabButton, Label addTabLabel, String screenType) {
         this.controller = controller;
         this.tabPane = tabPane;
         this.addTabButton = addTabButton;
@@ -77,14 +76,14 @@ public class TabManager {
             loader.setResources(LanguageManager.getResourceBundle());
 
             Node content = loader.load();
-            TabController tabController = loader.getController();
+            ClearTabController clearTabController = loader.getController();
 
             String tabId = UUID.randomUUID().toString();
             Tab newTab = new Tab("New tab");
             newTab.setContent(content);
             newTab.setId(tabId);
-            tabController.setMyTab(newTab);
-            tabController.setupTableColumns();
+            clearTabController.setMyTab(newTab);
+            clearTabController.setupTableColumns();
             newTab.getStyleClass().add("clickable");
 
             JsonTabsManager jsonTabsManager = new JsonTabsManager();
@@ -193,12 +192,18 @@ public class TabManager {
     }
 
     private Tab createTabFromData(TabData tabData) {
+        String resource = "/com/dev/station/ui/tab/TabContent.fxml";
+        String resourceForMonitoring = "/com/dev/station/ui/tab/TabContentMonitoring.fxml";
+
+        if("Monitoring".equals(screenType)) {
+            resource = resourceForMonitoring;
+        }
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/dev/station/ui/tab/TabContent.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(resource));
             loader.setResources(LanguageManager.getResourceBundle());
 
             Node content = loader.load();
-            TabController tabController = loader.getController();
+            TabInterface tabController = loader.getController();
 
             Tab tab = new Tab(tabData.getName());
             tab.setContent(content);

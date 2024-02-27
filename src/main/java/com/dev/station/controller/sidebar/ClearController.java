@@ -1,8 +1,7 @@
 package com.dev.station.controller.sidebar;
 
 import com.dev.station.Localizable;
-import com.dev.station.controller.TabControllerInterface;
-import com.dev.station.controller.tab.TabController;
+import com.dev.station.controller.tab.ClearTabController;
 import com.dev.station.file.TabData;
 import com.dev.station.manager.LanguageManager;
 import com.dev.station.manager.NotificationManager;
@@ -16,7 +15,7 @@ import javafx.scene.control.TabPane;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-public class ClearController implements Localizable,  TabControllerInterface {
+public class ClearController implements Localizable, ClearMonitoringInterface {
 
     @FXML private TabPane tabPane;
     @FXML private Tab addTabButton;
@@ -74,9 +73,9 @@ public class ClearController implements Localizable,  TabControllerInterface {
         notificationManager.updateResourceBundle(bundle);
 
         for (Tab tab : tabPane.getTabs()) {
-            if (tab.getContent() != null && tab.getContent().getUserData() instanceof TabController) {
-                TabController tabController = (TabController) tab.getContent().getUserData();
-                tabController.updateUI(LanguageManager.getResourceBundle());
+            if (tab.getContent() != null && tab.getContent().getUserData() instanceof ClearTabController) {
+                ClearTabController clearTabController = (ClearTabController) tab.getContent().getUserData();
+                clearTabController.updateUI(LanguageManager.getResourceBundle());
             }
         }
     }
