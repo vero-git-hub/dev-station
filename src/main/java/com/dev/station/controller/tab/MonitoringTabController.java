@@ -11,6 +11,10 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -29,6 +33,7 @@ public class MonitoringTabController implements Localizable {
     @FXML public ToggleButton parseAsArrayToggle;
     @FXML public ToggleButton clearContentToggle;
     @FXML public Button saveSettingsButton;
+    @FXML public TextArea fileContentArea;
     ResourceBundle bundle;
     private NotificationManager notificationManager;
     private Tab myTab;
@@ -47,7 +52,28 @@ public class MonitoringTabController implements Localizable {
         this.myTab = myTab;
     }
 
-    @FXML public void handleToggleMonitoringAction(ActionEvent actionEvent) {}
+    @FXML public void handleToggleMonitoringAction(ActionEvent actionEvent) {
+        if (toggleMonitoring.isSelected()) {
+            fileContentArea.setVisible(true);
+            loadAndDisplayFileContent();
+        } else {
+            fileContentArea.setVisible(false);
+        }
+    }
+
+    private void loadAndDisplayFileContent() {
+        String filePathStr = filePath.getText();
+        String fileNameStr = fileName.getText();
+        File file = new File(filePathStr, fileNameStr);
+
+        try {
+            String content = new String(Files.readAllBytes(file.toPath()), StandardCharsets.UTF_8);
+            fileContentArea.setText(content);
+        } catch (IOException e) {
+            AlertUtils.showErrorAlert("", e.getMessage());
+            e.printStackTrace();
+        }
+    }
 
     @FXML public void handleSaveSettingsAction(ActionEvent actionEvent) {
         String filePathValue = filePath.getText();
