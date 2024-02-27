@@ -1,26 +1,26 @@
-package com.dev.station.manager.clear;
+package com.dev.station.manager.monitoring;
 
-import com.dev.station.controller.sidebar.ClearController;
+import com.dev.station.controller.sidebar.MonitoringController;
 import com.dev.station.controller.tab.ClearTabController;
+import com.dev.station.controller.tab.MonitoringTabController;
 import com.dev.station.manager.LanguageManager;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public class TabManager {
-    private ClearController controller;
+public class MonitoringTabManager {
+    private MonitoringController controller;
     private TabPane tabPane;
     private Tab addTabButton;
     private Label addTabLabel;
     private String screenType;
 
-    public TabManager(ClearController controller, TabPane tabPane, Tab addTabButton, Label addTabLabel, String screenType) {
+    public MonitoringTabManager(MonitoringController controller, TabPane tabPane, Tab addTabButton, Label addTabLabel, String screenType) {
         this.controller = controller;
         this.tabPane = tabPane;
         this.addTabButton = addTabButton;
@@ -39,11 +39,12 @@ public class TabManager {
     }
 
     private void selectDefaultTab() {
-        JsonTabsManager jsonTabsManager = new JsonTabsManager();
-        List<TabData> tabs = jsonTabsManager.loadTabs(1, screenType);
+        MonitoringJsonTabsManager monitoringJsonTabsManager = new MonitoringJsonTabsManager();
 
-        TabData defaultTabData = tabs.stream()
-                .filter(TabData::isDefault)
+        List<MonitoringTabData> tabs = monitoringJsonTabsManager.loadMonitoringTabs(1, screenType);
+
+        MonitoringTabData defaultTabData = tabs.stream()
+                .filter(MonitoringTabData::isDefault)
                 .findFirst()
                 .orElse(null);
 
@@ -83,17 +84,23 @@ public class TabManager {
             clearTabController.setupTableColumns();
             newTab.getStyleClass().add("clickable");
 
-            JsonTabsManager jsonTabsManager = new JsonTabsManager();
-            List<TabData> currentTabs = jsonTabsManager.loadTabs(1, screenType);
+            MonitoringJsonTabsManager monitoringJsonTabsManager = new MonitoringJsonTabsManager();
+            List<MonitoringTabData> currentTabs = monitoringJsonTabsManager.loadMonitoringTabs(1, screenType);
 
-            TabData newTabData = new TabData();
-            newTabData.setId(tabId);
-            newTabData.setName(newTab.getText());
-            newTabData.setRecycleBinPath("");
-            newTabData.setPaths(new ArrayList<>());
+            MonitoringTabData tabData = new MonitoringTabData();
+            tabData.setDefault(false);
+            tabData.setName("New Monitoring Tab");
+            tabData.setId(UUID.randomUUID().toString());
+            tabData.setFilePath("/path/to/file");
+            tabData.setFileName("monitoring_file.txt");
+            tabData.setMonitoringFrequency(true);
+            tabData.setToggleMonitoring(true);
+            tabData.setOpenContentButton(true);
+            tabData.setParseAsArrayToggle(false);
+            tabData.setClearContentToggle(true);
 
-            currentTabs.add(newTabData);
-            jsonTabsManager.saveTabs(1, screenType, currentTabs);
+            currentTabs.add(tabData);
+            monitoringJsonTabsManager.saveMonitoringTabs(1, screenType, currentTabs);
 
             setupTabContextMenu(newTab);
 
@@ -131,12 +138,12 @@ public class TabManager {
 
         Optional<ButtonType> result = confirmationDialog.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            JsonTabsManager jsonTabsManager = new JsonTabsManager();
-            List<TabData> tabs = jsonTabsManager.loadTabs(1, screenType);
+            MonitoringJsonTabsManager monitoringJsonTabsManager = new MonitoringJsonTabsManager();
+            List<MonitoringTabData> tabs = monitoringJsonTabsManager.loadMonitoringTabs(1, screenType);
 
             tabs.removeIf(t -> t.getId().equals(tab.getId()));
 
-            jsonTabsManager.saveTabs(1, screenType, tabs);
+            monitoringJsonTabsManager.saveMonitoringTabs(1, screenType, tabs);
 
             tabPane.getTabs().remove(tab);
         }
@@ -150,23 +157,23 @@ public class TabManager {
         result.ifPresent(name -> {
             tab.setText(name);
 
-            JsonTabsManager jsonTabsManager = new JsonTabsManager();
-            List<TabData> tabs = jsonTabsManager.loadTabs(1, screenType);
+            MonitoringJsonTabsManager jsonTabsManager = new MonitoringJsonTabsManager();
+            List<MonitoringTabData> tabs = jsonTabsManager.loadMonitoringTabs(1, screenType);
 
-            for (TabData tabData : tabs) {
+            for (MonitoringTabData tabData : tabs) {
                 if (tabData.getId().equals(tab.getId())) {
                     tabData.setName(name);
                     break;
                 }
             }
 
-            jsonTabsManager.saveTabs(1, screenType, tabs);
+            jsonTabsManager.saveMonitoringTabs(1, screenType, tabs);
         });
     }
 
     private void handleSetDefaultTab(Tab tab) {
-        JsonTabsManager jsonTabsManager = new JsonTabsManager();
-        List<TabData> tabs = jsonTabsManager.loadTabs(1, screenType);
+        MonitoringJsonTabsManager jsonTabsManager = new MonitoringJsonTabsManager();
+        List<MonitoringTabData> tabs = jsonTabsManager.loadMonitoringTabs(1, screenType);
 
         tabs.forEach(t -> t.setDefault(false));
 
@@ -175,32 +182,26 @@ public class TabManager {
                 .findFirst()
                 .ifPresent(t -> t.setDefault(true));
 
-        jsonTabsManager.saveTabs(1, screenType, tabs);
+        jsonTabsManager.saveMonitoringTabs(1, screenType, tabs);
     }
 
     public void loadTabsFromJson() {
-        JsonTabsManager jsonTabsManager = new JsonTabsManager();
-        List<TabData> tabs = jsonTabsManager.loadTabs(1, screenType);
+        MonitoringJsonTabsManager jsonTabsManager = new MonitoringJsonTabsManager();
+        List<MonitoringTabData> tabs = jsonTabsManager.loadMonitoringTabs(1, screenType);
 
-        for (TabData tabData : tabs) {
+        for (MonitoringTabData tabData : tabs) {
             Tab tab = createTabFromData(tabData);
             tabPane.getTabs().add(tabPane.getTabs().size() - 1, tab);
         }
     }
 
-    private Tab createTabFromData(TabData tabData) {
-        String resource = "/com/dev/station/ui/tab/TabContent.fxml";
-        String resourceForMonitoring = "/com/dev/station/ui/tab/MonitoringTabContent.fxml";
-
-        if("Monitoring".equals(screenType)) {
-            resource = resourceForMonitoring;
-        }
+    private Tab createTabFromData(MonitoringTabData tabData) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(resource));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/dev/station/ui/tab/MonitoringTabContent.fxml"));
             loader.setResources(LanguageManager.getResourceBundle());
 
             Node content = loader.load();
-            ClearTabController tabController = loader.getController();
+            MonitoringTabController tabController = loader.getController();
 
             Tab tab = new Tab(tabData.getName());
             tab.setContent(content);

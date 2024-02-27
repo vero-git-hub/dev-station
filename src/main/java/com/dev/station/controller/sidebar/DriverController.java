@@ -85,7 +85,7 @@ public class DriverController implements Localizable {
             updateVersionStatus(getTranslate("updateVersionStatus"));
             updateButtonVisibility(false);
         } catch (IOException e) {
-            notificationManager.showErrorAlert("errorExtracted");
+            notificationManager.showDetailsErrorAlert(e.getMessage());
             e.printStackTrace();
         }
     }

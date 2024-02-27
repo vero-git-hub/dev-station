@@ -1,24 +1,25 @@
 package com.dev.station.controller.sidebar;
 
 import com.dev.station.Localizable;
-import com.dev.station.controller.tab.ClearTabController;
-import com.dev.station.file.TabData;
+import com.dev.station.controller.tab.MonitoringTabController;
 import com.dev.station.manager.LanguageManager;
 import com.dev.station.manager.NotificationManager;
-import com.dev.station.manager.clear.TabManager;
+import com.dev.station.manager.monitoring.MonitoringTabManager;
 import com.dev.station.model.SettingsModel;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-public class MonitoringController implements Localizable, ClearMonitoringInterface {
+public class MonitoringController implements Localizable {
     @FXML private TabPane tabPane;
     @FXML private Tab addTabButton;
     @FXML private Label addTabLabel;
     private NotificationManager notificationManager;
-    private TabManager tabManager;
+    private MonitoringTabManager tabManager;
     private ResourceBundle bundle;
     private SettingsModel settingsModel;
 
@@ -43,7 +44,7 @@ public class MonitoringController implements Localizable, ClearMonitoringInterfa
     }
 
     private void definitionManagers() {
-        tabManager = new TabManager(this, tabPane, addTabButton, addTabLabel, "Monitoring");
+        tabManager = new MonitoringTabManager(this, tabPane, addTabButton, addTabLabel, "Monitoring");
     }
 
     private void setupTabPane() {
@@ -69,25 +70,14 @@ public class MonitoringController implements Localizable, ClearMonitoringInterfa
         notificationManager.updateResourceBundle(bundle);
 
         for (Tab tab : tabPane.getTabs()) {
-            if (tab.getContent() != null && tab.getContent().getUserData() instanceof ClearTabController) {
-                ClearTabController clearTabController = (ClearTabController) tab.getContent().getUserData();
-                clearTabController.updateUI(LanguageManager.getResourceBundle());
+            if (tab.getContent() != null && tab.getContent().getUserData() instanceof MonitoringTabController) {
+                MonitoringTabController monitoringTabController = (MonitoringTabController) tab.getContent().getUserData();
+                monitoringTabController.updateUI(LanguageManager.getResourceBundle());
             }
         }
     }
 
-    @Override
     public String getTranslate(String key) {
         return bundle.getString(key);
-    }
-
-    @Override
-    public void setupTableColumns() {
-        // Logic for setting up table columns for MonitoringController
-    }
-
-    @Override
-    public void loadData(TabData tabData) {
-        // Logic for loading data into MonitoringController if necessary
     }
 }

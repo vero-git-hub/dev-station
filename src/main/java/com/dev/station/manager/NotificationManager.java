@@ -25,6 +25,10 @@ public class NotificationManager {
         AlertUtils.showErrorAlert(bundle.getString("errorAlert"), message);
     }
 
+    public void showDetailsErrorAlert(String message) {
+        AlertUtils.showErrorAlert(getTranslatedText("errorAlert"),message);
+    }
+
     private String getTranslatedText(String key) {
         return bundle.containsKey(key) ? bundle.getString(key) : key;
     }

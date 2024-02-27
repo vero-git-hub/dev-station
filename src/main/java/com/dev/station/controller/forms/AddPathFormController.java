@@ -1,9 +1,9 @@
 package com.dev.station.controller.forms;
 
 import com.dev.station.controller.tab.ClearTabController;
-import com.dev.station.file.JsonTabsManager;
-import com.dev.station.file.PathData;
-import com.dev.station.file.TabData;
+import com.dev.station.manager.clear.JsonTabsManager;
+import com.dev.station.manager.clear.PathData;
+import com.dev.station.manager.clear.TabData;
 import com.dev.station.manager.LanguageManager;
 
 import com.dev.station.util.AlertUtils;

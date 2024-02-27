@@ -19,6 +19,8 @@ module com.dev.station {
     opens com.dev.station.controller.forms to javafx.fxml;
     opens com.dev.station.entity to javafx.base;
     opens com.dev.station.controller.tab to javafx.fxml;
-    exports com.dev.station.file;
-    opens com.dev.station.file to javafx.fxml;
+    exports com.dev.station.manager.monitoring;
+    opens com.dev.station.manager.monitoring to javafx.fxml;
+    exports com.dev.station.manager.clear;
+    opens com.dev.station.manager.clear to javafx.fxml;
 }
