@@ -4,8 +4,6 @@ import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -22,6 +20,7 @@ public class AlertUtils {
 
     public static String PATH_TO_STYLE_FILE = "/styles/style.css";
     public static final String PATH_TO_SUCCESS_ICON = "/images/alert/check-mark-32.png";
+    private static final String PATH_TO_INFO_ICON = "/images/alert/info-40.png";
     public static final String PATH_TO_ERROR_ICON = "/images/alert/red-cross-30.png";
     public static final String PATH_TO_CLOSE_ICON = "/images/alert/close-24.png";
 
@@ -29,8 +28,15 @@ public class AlertUtils {
         showCustomAlert(title + " - " + content, PATH_TO_ERROR_ICON, 5);
     }
 
+    public static void showSuccessAlert(String title, String content) {
+        if(content.isEmpty()) {
+            content = "Changes saved successfully";
+        }
+        showCustomAlert(content, PATH_TO_SUCCESS_ICON, 5);
+    }
+
     public static void showInformationAlert(String title, String content) {
-        showCustomAlert("Changes saved successfully", PATH_TO_SUCCESS_ICON, 5);
+        showCustomAlert(content, PATH_TO_INFO_ICON, 5);
     }
 
     /**

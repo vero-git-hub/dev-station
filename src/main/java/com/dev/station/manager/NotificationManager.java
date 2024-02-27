@@ -17,7 +17,7 @@ public class NotificationManager {
 
     public void showInformationAlert(String key) {
         String message = getTranslatedText(key);
-        AlertUtils.showInformationAlert(bundle.getString("informationAlert"), message);
+        AlertUtils.showSuccessAlert(bundle.getString("informationAlert"), message);
     }
 
     public void showErrorAlert(String messageKey) {

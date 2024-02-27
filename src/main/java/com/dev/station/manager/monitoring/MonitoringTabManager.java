@@ -1,9 +1,9 @@
 package com.dev.station.manager.monitoring;
 
 import com.dev.station.controller.sidebar.MonitoringController;
-import com.dev.station.controller.tab.ClearTabController;
 import com.dev.station.controller.tab.MonitoringTabController;
 import com.dev.station.manager.LanguageManager;
+import com.dev.station.util.AlertUtils;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -70,18 +70,18 @@ public class MonitoringTabManager {
 
     private Tab createNewTab() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/dev/station/ui/tab/TabContent.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/dev/station/ui/tab/MonitoringTabContent.fxml"));
             loader.setResources(LanguageManager.getResourceBundle());
 
             Node content = loader.load();
-            ClearTabController clearTabController = loader.getController();
+            MonitoringTabController tabController = loader.getController();
 
             String tabId = UUID.randomUUID().toString();
             Tab newTab = new Tab("New tab");
             newTab.setContent(content);
             newTab.setId(tabId);
-            clearTabController.setMyTab(newTab);
-            clearTabController.setupTableColumns();
+            tabController.setMyTab(newTab);
+            //tabController.setupTableColumns();
             newTab.getStyleClass().add("clickable");
 
             MonitoringJsonTabsManager monitoringJsonTabsManager = new MonitoringJsonTabsManager();
@@ -141,11 +141,17 @@ public class MonitoringTabManager {
             MonitoringJsonTabsManager monitoringJsonTabsManager = new MonitoringJsonTabsManager();
             List<MonitoringTabData> tabs = monitoringJsonTabsManager.loadMonitoringTabs(1, screenType);
 
-            tabs.removeIf(t -> t.getId().equals(tab.getId()));
+            boolean isRemoved = tabs.removeIf(t -> t.getId().equals(tab.getId()));
+            if(isRemoved) {
+                monitoringJsonTabsManager.saveMonitoringTabs(1, screenType, tabs);
 
-            monitoringJsonTabsManager.saveMonitoringTabs(1, screenType, tabs);
+                boolean isTabPaneRemoved = tabPane.getTabs().remove(tab);
 
-            tabPane.getTabs().remove(tab);
+                AlertUtils.showSuccessAlert("", controller.getTranslate("monitoringTabManager.deletionSuccess"));
+            }
+
+        } else {
+            AlertUtils.showInformationAlert("", controller.getTranslate("alerts.deletionCancelled"));
         }
     }
 

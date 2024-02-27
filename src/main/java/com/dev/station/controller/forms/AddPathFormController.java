@@ -109,7 +109,7 @@ public class AddPathFormController {
         }
 
         if (saveResult) {
-            AlertUtils.showInformationAlert("Saving successful", "Path saved successfully");
+            AlertUtils.showSuccessAlert("Saving successful", "Path saved successfully");
         } else {
             AlertUtils.showErrorAlert("Saving failed", "Error saving path");
         }
