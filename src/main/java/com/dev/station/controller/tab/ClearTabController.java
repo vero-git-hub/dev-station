@@ -2,9 +2,9 @@ package com.dev.station.controller.tab;
 
 import com.dev.station.Localizable;
 import com.dev.station.controller.forms.AddPathFormController;
-import com.dev.station.file.JsonTabsManager;
-import com.dev.station.file.PathData;
-import com.dev.station.file.TabData;
+import com.dev.station.manager.clear.JsonTabsManager;
+import com.dev.station.manager.clear.PathData;
+import com.dev.station.manager.clear.TabData;
 import com.dev.station.manager.LanguageManager;
 import com.dev.station.manager.NotificationManager;
 import com.dev.station.manager.clear.RecycleBinManager;
@@ -32,7 +32,7 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-public class ClearTabController implements Localizable, TabInterface {
+public class ClearTabController implements Localizable {
 
     @FXML private ToggleButton toggleMoveFiles;
     @FXML private ToggleButton toggleReturnFiles;

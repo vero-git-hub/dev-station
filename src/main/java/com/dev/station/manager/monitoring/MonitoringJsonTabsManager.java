@@ -1,8 +1,7 @@
-package com.dev.station.file;
+package com.dev.station.manager.monitoring;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -10,11 +9,12 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JsonTabsManager {
+public class MonitoringJsonTabsManager {
+
     private static final String FILE_PATH = "tabs_config.json";
 
-    public List<TabData> loadTabs(int userId, String screenType) {
-        List<TabData> tabs = new ArrayList<>();
+    public List<MonitoringTabData> loadMonitoringTabs(int userId, String screenType) {
+        List<MonitoringTabData> tabs = new ArrayList<>();
         try {
             File file = new File(FILE_PATH);
             if (file.exists()) {
@@ -26,7 +26,7 @@ public class JsonTabsManager {
                     if (configObject.getInt("userId") == userId && configObject.getString("screenType").equals(screenType)) {
                         JSONArray tabsArray = configObject.getJSONArray("tabs");
                         for (int j = 0; j < tabsArray.length(); j++) {
-                            tabs.add(TabData.fromJson(tabsArray.getJSONObject(j)));
+                            tabs.add(MonitoringTabData.fromJson(tabsArray.getJSONObject(j)));
                         }
                         break;
                     }
@@ -38,7 +38,7 @@ public class JsonTabsManager {
         return tabs;
     }
 
-    public boolean saveTabs(int userId, String screenType, List<TabData> tabs) {
+    public boolean saveMonitoringTabs(int userId, String screenType, List<MonitoringTabData> tabs) {
         try {
             File file = new File(FILE_PATH);
             JSONArray configArray = file.exists() ? new JSONArray(new String(Files.readAllBytes(file.toPath()))) : new JSONArray();
@@ -48,7 +48,7 @@ public class JsonTabsManager {
                 JSONObject configObject = configArray.getJSONObject(i);
                 if (configObject.getInt("userId") == userId && configObject.getString("screenType").equals(screenType)) {
                     JSONArray tabsArray = new JSONArray();
-                    for (TabData tab : tabs) {
+                    for (MonitoringTabData tab : tabs) {
                         tabsArray.put(tab.toJson());
                     }
                     configObject.put("tabs", tabsArray);
@@ -62,7 +62,7 @@ public class JsonTabsManager {
                 newConfigObject.put("userId", userId);
                 newConfigObject.put("screenType", screenType);
                 JSONArray tabsArray = new JSONArray();
-                for (TabData tab : tabs) {
+                for (MonitoringTabData tab : tabs) {
                     tabsArray.put(tab.toJson());
                 }
                 newConfigObject.put("tabs", tabsArray);

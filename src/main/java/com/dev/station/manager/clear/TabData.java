@@ -1,4 +1,4 @@
-package com.dev.station.file;
+package com.dev.station.manager.clear;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class TabData {
     private String id;

@@ -1,6 +1,5 @@
 package com.dev.station.manager.clear;
 
-import com.dev.station.file.PathData;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;

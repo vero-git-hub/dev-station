@@ -1,4 +1,4 @@
-package com.dev.station.file;
+package com.dev.station.manager.clear;
 
 import org.json.JSONArray;
 import org.json.JSONObject;

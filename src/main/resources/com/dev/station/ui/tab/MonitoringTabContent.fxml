@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.dev.station.controller.tab.MonitoringTabController"
+            prefHeight="400.0" prefWidth="600.0">
+    <children>
+        <Label fx:id="filePathLabel" layoutX="20" layoutY="20" />
+        <TextField fx:id="filePath" layoutX="150" layoutY="20" prefWidth="400" />
+
+        <Label fx:id="fileNameLabel" layoutX="20" layoutY="60" />
+        <TextField fx:id="fileName" layoutX="150" layoutY="60" prefWidth="400" />
+
+        <Label fx:id="monitoringFrequencyLabel" layoutX="20" layoutY="100" />
+        <TextField fx:id="monitoringFrequency" layoutX="150" layoutY="100" prefWidth="400" />
+
+        <ToggleButton fx:id="toggleMonitoring" layoutX="20" layoutY="140" prefWidth="150" onAction="#handleToggleMonitoringAction" styleClass="clickable">
+            <toggleGroup>
+                <ToggleGroup fx:id="monitoringToggleGroup" />
+            </toggleGroup>
+        </ToggleButton>
+
+        <ToggleButton fx:id="openContentButton" layoutX="200" layoutY="140" prefWidth="300" styleClass="clickable"/>
+        <ToggleButton fx:id="parseAsArrayToggle" layoutX="20" layoutY="180" prefWidth="180" styleClass="clickable"/>
+        <ToggleButton fx:id="clearContentToggle" layoutX="210" layoutY="180" prefWidth="340" styleClass="clickable"/>
+
+        <Button fx:id="saveSettingsButton" layoutX="20" layoutY="260" prefWidth="530" onAction="#handleSaveSettingsAction" styleClass="clickable"/>
+    </children>
+</AnchorPane>

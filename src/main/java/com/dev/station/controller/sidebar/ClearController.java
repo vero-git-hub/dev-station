@@ -2,7 +2,6 @@ package com.dev.station.controller.sidebar;
 
 import com.dev.station.Localizable;
 import com.dev.station.controller.tab.ClearTabController;
-import com.dev.station.file.TabData;
 import com.dev.station.manager.LanguageManager;
 import com.dev.station.manager.NotificationManager;
 import com.dev.station.manager.clear.TabManager;
@@ -15,7 +14,7 @@ import javafx.scene.control.TabPane;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-public class ClearController implements Localizable, ClearMonitoringInterface {
+public class ClearController implements Localizable {
 
     @FXML private TabPane tabPane;
     @FXML private Tab addTabButton;
@@ -54,6 +53,10 @@ public class ClearController implements Localizable, ClearMonitoringInterface {
         tabManager.setupTabPane();
     }
 
+    public String getTranslate(String key) {
+        return bundle.getString(key);
+    }
+
     @Override
     public void loadSavedLanguage() {
         String savedLanguage = settingsModel.loadLanguageSetting();
@@ -78,20 +81,5 @@ public class ClearController implements Localizable, ClearMonitoringInterface {
                 clearTabController.updateUI(LanguageManager.getResourceBundle());
             }
         }
-    }
-
-    @Override
-    public String getTranslate(String key) {
-        return bundle.getString(key);
-    }
-
-    @Override
-    public void setupTableColumns() {
-        // Logic for setting up table columns for ClearController
-    }
-
-    @Override
-    public void loadData(TabData tabData) {
-        // Logic for loading data into ClearController if necessary
     }
 }
