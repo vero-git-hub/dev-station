@@ -3,14 +3,16 @@ package com.dev.station.controller;
 import com.dev.station.Localizable;
 import com.dev.station.manager.LanguageManager;
 import com.dev.station.model.SettingsModel;
-import com.dev.station.util.AlertUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
@@ -39,12 +41,12 @@ public class MainController implements Localizable {
     public MainController() {
         LanguageManager.registerForUpdates(this::updateUI);
         settingsModel = new SettingsModel();
+
     }
 
     @FXML
     public void initialize() {
         loadSavedLanguage();
-
         setButtonActions();
         footerLabel.setText("v0.3");
     }
@@ -153,7 +155,22 @@ public class MainController implements Localizable {
         pingButton.setText(getTranslate("pingMenu"));
         monitoringButton.setText(getTranslate("monitoringMenu"));
 
+        setButtonImage(scriptsButton, "/images/sidebar/program-48.png");
+        setButtonImage(driverButton, "/images/sidebar/selenium-webdriver-48.png");
+        setButtonImage(clearButton, "/images/sidebar/clear-48.png");
+        setButtonImage(pingButton, "/images/sidebar/globe-with-meridians-48.png");
+        setButtonImage(monitoringButton, "/images/sidebar/monitoring-48.png");
+
         setTooltips();
+    }
+
+    private void setButtonImage(Button button, String imagePath) {
+        Image monitoringImage = new Image(getClass().getResourceAsStream(imagePath));
+        ImageView monitoringImageView = new ImageView(monitoringImage);
+        monitoringImageView.setFitHeight(25);
+        monitoringImageView.setFitWidth(25);
+        button.setGraphic(monitoringImageView);
+        // button.setContentDisplay(ContentDisplay.RIGHT);
     }
 
     private void setTooltips() {

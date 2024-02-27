@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-
+<?import javafx.scene.layout.AnchorPane?>
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.dev.station.controller.tab.MonitoringTabController"
@@ -30,6 +26,8 @@
         <ToggleButton fx:id="parseAsArrayToggle" layoutX="20" layoutY="180" prefWidth="180" styleClass="clickable"/>
         <ToggleButton fx:id="clearContentToggle" layoutX="210" layoutY="180" prefWidth="340" styleClass="clickable"/>
 
-        <Button fx:id="saveSettingsButton" layoutX="20" layoutY="260" prefWidth="530" onAction="#handleSaveSettingsAction" styleClass="clickable"/>
+        <Button fx:id="saveSettingsButton" layoutX="20" layoutY="220" prefWidth="530" onAction="#handleSaveSettingsAction" styleClass="clickable"/>
+
+        <TextArea fx:id="fileContentArea" layoutX="20" layoutY="260" prefHeight="220" prefWidth="565" wrapText="true" visible="false"/>
     </children>
 </AnchorPane>
