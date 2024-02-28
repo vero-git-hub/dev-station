@@ -7,6 +7,7 @@ import com.dev.station.manager.monitoring.MonitoringJsonTabsManager;
 import com.dev.station.manager.monitoring.MonitoringTabData;
 import com.dev.station.model.SettingsModel;
 import com.dev.station.util.AlertUtils;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -15,9 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.List;
-import java.util.Locale;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class MonitoringTabController implements Localizable {
 
@@ -38,6 +37,7 @@ public class MonitoringTabController implements Localizable {
     private NotificationManager notificationManager;
     private Tab myTab;
     SettingsModel settingsModel;
+    private Timer timer;
 
     public MonitoringTabController() {
         LanguageManager.registerForUpdates(this::updateUI);
@@ -55,24 +55,52 @@ public class MonitoringTabController implements Localizable {
     @FXML public void handleToggleMonitoringAction(ActionEvent actionEvent) {
         if (toggleMonitoring.isSelected()) {
             fileContentArea.setVisible(true);
-            loadAndDisplayFileContent();
+            startMonitoring();
         } else {
+            stopMonitoring();
             fileContentArea.setVisible(false);
         }
     }
 
-    private void loadAndDisplayFileContent() {
-        String filePathStr = filePath.getText();
-        String fileNameStr = fileName.getText();
-        File file = new File(filePathStr, fileNameStr);
-
-        try {
-            String content = new String(Files.readAllBytes(file.toPath()), StandardCharsets.UTF_8);
-            fileContentArea.setText(content);
-        } catch (IOException e) {
-            AlertUtils.showErrorAlert("", e.getMessage());
-            e.printStackTrace();
+    private void startMonitoring() {
+        if (timer != null) {
+            timer.cancel();
         }
+        timer = new Timer();
+        try {
+            long frequency = Long.parseLong(monitoringFrequency.getText()) * 1000;
+            timer.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    loadAndDisplayFileContent();
+                }
+            }, 0, frequency);
+        } catch (NumberFormatException e) {
+            AlertUtils.showErrorAlert("", e.getMessage());
+        }
+    }
+
+    private void stopMonitoring() {
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
+        }
+    }
+
+    private void loadAndDisplayFileContent() {
+        Platform.runLater(() -> {
+            String filePathStr = filePath.getText();
+            String fileNameStr = fileName.getText();
+            File file = new File(filePathStr, fileNameStr);
+
+            try {
+                String content = new String(Files.readAllBytes(file.toPath()), StandardCharsets.UTF_8);
+                fileContentArea.setText(content);
+            } catch (IOException e) {
+                AlertUtils.showErrorAlert("", e.getMessage());
+                e.printStackTrace();
+            }
+        });
     }
 
     @FXML public void handleSaveSettingsAction(ActionEvent actionEvent) {
