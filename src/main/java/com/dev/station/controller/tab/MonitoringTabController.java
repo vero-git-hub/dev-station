@@ -5,6 +5,7 @@ import com.dev.station.manager.LanguageManager;
 import com.dev.station.manager.NotificationManager;
 import com.dev.station.manager.monitoring.MonitoringJsonTabsManager;
 import com.dev.station.manager.monitoring.MonitoringTabData;
+import com.dev.station.manager.monitoring.TimerManager;
 import com.dev.station.model.SettingsModel;
 import com.dev.station.util.AlertUtils;
 import javafx.application.Platform;
@@ -63,26 +64,30 @@ public class MonitoringTabController implements Localizable {
     }
 
     private void startMonitoring() {
-        if (timer != null) {
-            timer.cancel();
-        }
+        stopMonitoring();
+
         timer = new Timer();
+        TimerManager.addTimer(timer);
+
+        long frequency;
         try {
-            long frequency = Long.parseLong(monitoringFrequency.getText()) * 1000;
-            timer.scheduleAtFixedRate(new TimerTask() {
-                @Override
-                public void run() {
-                    loadAndDisplayFileContent();
-                }
-            }, 0, frequency);
+            frequency = Long.parseLong(monitoringFrequency.getText()) * 1000;
         } catch (NumberFormatException e) {
             AlertUtils.showErrorAlert("", e.getMessage());
+            return;
         }
+
+        timer.scheduleAtFixedRate(new TimerTask() {
+        @Override
+        public void run() {
+            loadAndDisplayFileContent();
+        }
+    }, 0, frequency);
     }
 
     private void stopMonitoring() {
         if (timer != null) {
-            timer.cancel();
+            TimerManager.removeTimer(timer);
             timer = null;
         }
     }
@@ -168,6 +173,16 @@ public class MonitoringTabController implements Localizable {
         openContentButton.setSelected(tabData.isOpenContentButton());
         parseAsArrayToggle.setSelected(tabData.isParseAsArrayToggle());
         clearContentToggle.setSelected(tabData.isClearContentToggle());
+
+        if (toggleMonitoring.isSelected()) {
+            fileContentArea.setVisible(true);
+            startMonitoring();
+        } else {
+            fileContentArea.setVisible(false);
+            if (timer != null) {
+                stopMonitoring();
+            }
+        }
     }
 
     public String getTranslate(String key) {
