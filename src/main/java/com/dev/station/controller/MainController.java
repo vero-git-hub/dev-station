@@ -1,12 +1,12 @@
 package com.dev.station.controller;
 
 import com.dev.station.Localizable;
+import com.dev.station.controller.sidebar.DebuggingController;
 import com.dev.station.manager.LanguageManager;
 import com.dev.station.model.SettingsModel;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -31,17 +31,18 @@ public class MainController implements Localizable {
     @FXML private Button settingsButton;
     @FXML private Button pingButton;
     @FXML private Button monitoringButton;
+    @FXML public Button debuggingButton;
     @FXML private Label footerLabel;
     @FXML public Button switchThemeButton;
     @FXML private ComboBox<String> languageComboBox;
     @FXML private VBox menuVBox;
     ResourceBundle bundle;
     private SettingsModel settingsModel;
+    private DebuggingController debuggingController;
 
     public MainController() {
         LanguageManager.registerForUpdates(this::updateUI);
         settingsModel = new SettingsModel();
-
     }
 
     @FXML
@@ -62,33 +63,48 @@ public class MainController implements Localizable {
 
     private void setButtonActions() {
         scriptsButton.setOnAction(event -> {
+            debuggingControllerStopMonitoring();
             loadManuallyContent();
             setActiveButton(scriptsButton);
         });
 
         driverButton.setOnAction(event -> {
+            debuggingControllerStopMonitoring();
             loadSeleniumContent();
             setActiveButton(driverButton);
         });
 
         clearButton.setOnAction(event -> {
+            debuggingControllerStopMonitoring();
             loadClearContent();
             setActiveButton(clearButton);
         });
 
         pingButton.setOnAction(event -> {
+            debuggingControllerStopMonitoring();
             loadPingContent();
             setActiveButton(pingButton);
         });
 
         monitoringButton.setOnAction(event -> {
+            debuggingControllerStopMonitoring();
             loadMonitoringContent();
             setActiveButton(monitoringButton);
         });
+
+        debuggingButton.setOnAction(event -> {
+            loadDebuggingContent();
+            setActiveButton(debuggingButton);
+        });
     }
 
-    @Override
-    public void loadSavedLanguage() {
+    private void debuggingControllerStopMonitoring() {
+        if (debuggingController != null) {
+            debuggingController.stopMonitoring();
+        }
+    }
+
+    @Override public void loadSavedLanguage() {
         setLanguageComboBoxSizes(59, 35);
 
         String savedLanguage = settingsModel.loadLanguageSetting();
@@ -129,8 +145,7 @@ public class MainController implements Localizable {
         languageComboBox.setPrefHeight(height);
     }
 
-    @Override
-    public void switchLanguage(Locale newLocale) {
+    @Override public void switchLanguage(Locale newLocale) {
         String newLanguage;
         if (newLocale.equals(Locale.ENGLISH)) {
             newLanguage = "EN";
@@ -146,20 +161,21 @@ public class MainController implements Localizable {
         updateUI();
     }
 
-    @Override
-    public void updateUI() {
+    @Override public void updateUI() {
         bundle = LanguageManager.getResourceBundle();
         scriptsButton.setText(getTranslate("scriptsMenu"));
         driverButton.setText(getTranslate("driverMenu"));
         clearButton.setText(getTranslate("clearMenu"));
         pingButton.setText(getTranslate("pingMenu"));
         monitoringButton.setText(getTranslate("monitoringMenu"));
+        debuggingButton.setText(getTranslate("mainController.debuggingMenu"));
 
         setButtonImage(scriptsButton, "/images/sidebar/program-48.png");
         setButtonImage(driverButton, "/images/sidebar/selenium-webdriver-48.png");
         setButtonImage(clearButton, "/images/sidebar/clear-48.png");
         setButtonImage(pingButton, "/images/sidebar/globe-with-meridians-48.png");
         setButtonImage(monitoringButton, "/images/sidebar/monitoring-48.png");
+        setButtonImage(debuggingButton, "/images/sidebar/job-48.png");
 
         setTooltips();
     }
@@ -179,6 +195,7 @@ public class MainController implements Localizable {
         Tooltip.install(clearButton, new Tooltip(getTranslate("clearMenuHint")));
         Tooltip.install(pingButton, new Tooltip(getTranslate("pingMenuHint")));
         Tooltip.install(monitoringButton, new Tooltip(getTranslate("monitoringMenuHint")));
+        Tooltip.install(debuggingButton, new Tooltip(getTranslate("mainController.debuggingMenuHint")));
 
         Tooltip.install(homeButton, new Tooltip(getTranslate("homeButtonHint")));
         Tooltip.install(imagesButton, new Tooltip(getTranslate("imagesButtonHint")));
@@ -236,12 +253,24 @@ public class MainController implements Localizable {
         }
     }
 
+    private void loadDebuggingContent() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/dev/station/ui/sidebar/DebuggingLayout.fxml"));
+            Node programLayout = loader.load();
+            debuggingController = loader.getController();
+            contentArea.getChildren().setAll(programLayout);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void setActiveButton(Button activeButton) {
         scriptsButton.getStyleClass().remove("active-button");
         driverButton.getStyleClass().remove("active-button");
         clearButton.getStyleClass().remove("active-button");
         pingButton.getStyleClass().remove("active-button");
         monitoringButton.getStyleClass().remove("active-button");
+        debuggingButton.getStyleClass().remove("active-button");
 
         activeButton.getStyleClass().add("active-button");
     }
@@ -249,6 +278,7 @@ public class MainController implements Localizable {
     @FXML
     private void handleImagesButtonAction() {
         removeActiveButtonClass();
+        debuggingControllerStopMonitoring();
         try {
             Node imagesContent = FXMLLoader.load(getClass().getResource("/com/dev/station/ui/header/ImagesLayout.fxml"));
             contentArea.getChildren().setAll(imagesContent);
@@ -260,6 +290,7 @@ public class MainController implements Localizable {
     @FXML
     private void handleSettingsButtonAction() {
         removeActiveButtonClass();
+        debuggingControllerStopMonitoring();
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/dev/station/ui/header/SettingsLayout.fxml"));
             Node settings = loader.load();
@@ -273,6 +304,7 @@ public class MainController implements Localizable {
     private void returnHome() {
         removeActiveButtonClass();
         contentArea.getChildren().clear();
+        debuggingControllerStopMonitoring();
     }
 
     private String getTranslate(String key) {

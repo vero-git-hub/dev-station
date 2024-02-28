@@ -1,5 +1,6 @@
 package com.dev.station;
 
+import com.dev.station.manager.TimerManager;
 import com.dev.station.manager.WindowManager;
 import com.dev.station.model.SettingsModel;
 import javafx.application.Application;
@@ -7,7 +8,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import com.dev.station.manager.TimerManager;
 
 public class Main extends Application {
     @Override

@@ -65,6 +65,7 @@
             <Button fx:id="clearButton" text="Clear" styleClass="menu-button, clickable"/>
             <Button fx:id="pingButton" text="Ping" styleClass="menu-button, clickable"/>
             <Button fx:id="monitoringButton" text="Monitoring" styleClass="menu-button, clickable"/>
+            <Button fx:id="debuggingButton" text="Debugging" styleClass="menu-button, clickable"/>
         </VBox>
     </left>
 
