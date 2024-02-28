@@ -9,6 +9,8 @@ module com.dev.station {
     requires org.jsoup;
     requires org.json;
     requires java.desktop;
+    requires java.management;
+    requires jdk.management;
 
 
     opens com.dev.station to javafx.fxml;
