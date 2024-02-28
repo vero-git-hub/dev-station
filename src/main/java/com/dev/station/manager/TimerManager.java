@@ -1,4 +1,4 @@
-package com.dev.station.manager.monitoring;
+package com.dev.station.manager;
 
 import java.util.ArrayList;
 import java.util.List;

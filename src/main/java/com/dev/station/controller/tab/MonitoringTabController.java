@@ -5,13 +5,18 @@ import com.dev.station.manager.LanguageManager;
 import com.dev.station.manager.NotificationManager;
 import com.dev.station.manager.monitoring.MonitoringJsonTabsManager;
 import com.dev.station.manager.monitoring.MonitoringTabData;
-import com.dev.station.manager.monitoring.TimerManager;
+import com.dev.station.manager.TimerManager;
+import com.dev.station.manager.WindowManager;
 import com.dev.station.model.SettingsModel;
 import com.dev.station.util.AlertUtils;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
@@ -60,6 +65,32 @@ public class MonitoringTabController implements Localizable {
         } else {
             stopMonitoring();
             fileContentArea.setVisible(false);
+        }
+    }
+
+    @FXML
+    public void handleOpenContentButtonAction(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/dev/station/ui/tab/MonitoringWindow.fxml"));
+            Parent root = loader.load();
+
+            MonitoringWindowController controller = loader.getController();
+            controller.initData(filePath.getText(), fileName.getText(), Integer.parseInt(monitoringFrequency.getText()));
+
+            Scene scene = new Scene(root, 825, 600);
+            Stage monitoringStage = new Stage();
+            monitoringStage.setTitle("Monitoring Window");
+            monitoringStage.setScene(scene);
+
+            monitoringStage.setOnCloseRequest(windowEvent -> {
+                controller.shutdown();
+            });
+
+            WindowManager.addStage(monitoringStage);
+            monitoringStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            AlertUtils.showErrorAlert("", e.getMessage());
         }
     }
 

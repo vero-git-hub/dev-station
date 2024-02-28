@@ -22,7 +22,7 @@
             </toggleGroup>
         </ToggleButton>
 
-        <ToggleButton fx:id="openContentButton" layoutX="200" layoutY="140" prefWidth="300" styleClass="clickable"/>
+        <ToggleButton fx:id="openContentButton" layoutX="200" layoutY="140" prefWidth="300" styleClass="clickable" onAction="#handleOpenContentButtonAction"/>
         <ToggleButton fx:id="parseAsArrayToggle" layoutX="20" layoutY="180" prefWidth="180" styleClass="clickable"/>
         <ToggleButton fx:id="clearContentToggle" layoutX="210" layoutY="180" prefWidth="340" styleClass="clickable"/>
 

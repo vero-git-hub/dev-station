@@ -1,12 +1,13 @@
 package com.dev.station;
 
+import com.dev.station.manager.WindowManager;
 import com.dev.station.model.SettingsModel;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import com.dev.station.manager.monitoring.TimerManager;
+import com.dev.station.manager.TimerManager;
 
 public class Main extends Application {
     @Override
@@ -28,7 +29,12 @@ public class Main extends Application {
                 scene.getStylesheets().add(getClass().getResource("/styles/light-theme.css").toExternalForm());
             }
 
-            stage.setOnCloseRequest(event -> TimerManager.stopAll());
+            WindowManager.addStage(stage);
+
+            stage.setOnCloseRequest(event -> {
+                TimerManager.stopAll();
+                WindowManager.closeAllStages();
+            });
 
             stage.show();
         } catch(Exception e) {
