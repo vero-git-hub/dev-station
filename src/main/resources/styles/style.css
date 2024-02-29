@@ -181,7 +181,43 @@
 /* Alerts */
 .close-button {
     -fx-background-color: transparent;
-    -fx-cursor: hand;
+    -fx-border-color: transparent;
     -fx-padding: 0;
-    -fx-background-insets: 0;
+}
+
+.close-button:hover {
+    -fx-background-color: rgba(200, 200, 200, 0.5);
+}
+
+/* Toggle Monitoring */
+.toggle-switch {
+    -fx-background-color: linear-gradient(to bottom, #dadbdc 0%, #f2f2f2 100%);
+    -fx-background-radius: 30;
+    -fx-border-radius: 30;
+    -fx-border-color: #b2b3b3;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0, 0, 0);
+}
+
+.toggle-switch:selected {
+    -fx-background-color: linear-gradient(to bottom, #ff8f00 0%, #ffbc40 100%);
+}
+
+.toggle-switch .thumb {
+    -fx-background-color: white;
+    -fx-background-radius: 30;
+    -fx-background-insets: 2;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 2, 0, 0, 0);
+}
+
+.toggle-switch:selected .thumb {
+    -fx-translate-x: 22;
+}
+
+.toggle-switch .text {
+    -fx-text-fill: #818181;
+    -fx-font-weight: bold;
+}
+
+.toggle-switch:selected .text {
+    -fx-text-fill: #ffffff;
 }
