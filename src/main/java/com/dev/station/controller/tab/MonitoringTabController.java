@@ -40,6 +40,7 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
     @FXML public ToggleButton clearContentToggle;
     @FXML public Button saveSettingsButton;
     @FXML public TextArea fileContentArea;
+    @FXML public Button viewFileContentButton;
     ResourceBundle bundle;
     private NotificationManager notificationManager;
     private Tab myTab;
@@ -113,6 +114,10 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
             e.printStackTrace();
             AlertUtils.showErrorAlert("", e.getMessage());
         }
+    }
+
+    @FXML public void handleViewFileContentButtonAction(ActionEvent actionEvent) {
+//        TODO: logic for opening file contents
     }
 
     private void startMonitoring() {
@@ -238,6 +243,7 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
 
         toggleMonitoring.setText(getTranslate("monitoringTabController.toggleMonitoring"));
         openContentButton.setText(getTranslate("monitoringTabController.openContentButton"));
+        viewFileContentButton.setText(getTranslate("monitoringTabController.viewFileContentButton"));
         parseAsArrayToggle.setText(getTranslate("monitoringTabController.parseAsArrayToggle"));
         clearContentToggle.setText(getTranslate("monitoringTabController.clearContentToggle"));
         saveSettingsButton.setText(getTranslate("monitoringTabController.saveSettingsButton"));
