@@ -3,11 +3,12 @@ package com.dev.station.controller.tab;
 import com.dev.station.Localizable;
 import com.dev.station.manager.LanguageManager;
 import com.dev.station.manager.NotificationManager;
+import com.dev.station.manager.WindowManager;
 import com.dev.station.manager.monitoring.MonitoringJsonTabsManager;
 import com.dev.station.manager.monitoring.MonitoringTabData;
-import com.dev.station.manager.TimerManager;
-import com.dev.station.manager.WindowManager;
 import com.dev.station.model.SettingsModel;
+import com.dev.station.service.FileChangeListener;
+import com.dev.station.service.FileMonitoringService;
 import com.dev.station.util.AlertUtils;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -18,13 +19,13 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.util.*;
+import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
+import java.util.Timer;
 
-public class MonitoringTabController implements Localizable {
+public class MonitoringTabController implements Localizable, FileChangeListener {
 
     @FXML public Label filePathLabel;
     @FXML public TextField filePath;
@@ -44,6 +45,7 @@ public class MonitoringTabController implements Localizable {
     private Tab myTab;
     SettingsModel settingsModel;
     private Timer timer;
+    FileMonitoringService monitoringService;
 
     public MonitoringTabController() {
         LanguageManager.registerForUpdates(this::updateUI);
@@ -70,12 +72,26 @@ public class MonitoringTabController implements Localizable {
 
     @FXML
     public void handleOpenContentButtonAction(ActionEvent event) {
+        if (toggleMonitoring.isSelected()) {
+            stopMonitoring();
+            fileContentArea.setVisible(false);
+            toggleMonitoring.setSelected(false);
+        }
+
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/dev/station/ui/tab/MonitoringWindow.fxml"));
             Parent root = loader.load();
 
             MonitoringWindowController controller = loader.getController();
-            controller.initData(filePath.getText(), fileName.getText(), Integer.parseInt(monitoringFrequency.getText()));
+            int frequency;
+            try {
+                frequency = Integer.parseInt(monitoringFrequency.getText());
+            } catch (NumberFormatException e) {
+                AlertUtils.showErrorAlert("", "Frequency must be an integer.");
+                return;
+            }
+
+            controller.initData(filePath.getText(), fileName.getText(), frequency);
 
             Scene scene = new Scene(root, 825, 600);
             Stage monitoringStage = new Stage();
@@ -83,6 +99,11 @@ public class MonitoringTabController implements Localizable {
             monitoringStage.setScene(scene);
 
             monitoringStage.setOnCloseRequest(windowEvent -> {
+                if (!toggleMonitoring.isSelected()) {
+                    fileContentArea.setVisible(true);
+                    toggleMonitoring.setSelected(true);
+                    startMonitoring();
+                }
                 controller.shutdown();
             });
 
@@ -95,48 +116,28 @@ public class MonitoringTabController implements Localizable {
     }
 
     private void startMonitoring() {
-        stopMonitoring();
+        if (monitoringService != null) {
+            monitoringService.stopMonitoring();
+        }
 
-        timer = new Timer();
-        TimerManager.addTimer(timer);
-
-        long frequency;
+        String filePathValue = filePath.getText();
+        String fileNameValue = fileName.getText();
+        int frequency;
         try {
-            frequency = Long.parseLong(monitoringFrequency.getText()) * 1000;
+            frequency = Integer.parseInt(monitoringFrequency.getText());
         } catch (NumberFormatException e) {
-            AlertUtils.showErrorAlert("", e.getMessage());
+            AlertUtils.showErrorAlert("", "Frequency must be an integer.");
             return;
         }
 
-        timer.scheduleAtFixedRate(new TimerTask() {
-        @Override
-        public void run() {
-            loadAndDisplayFileContent();
-        }
-    }, 0, frequency);
+        monitoringService = new FileMonitoringService(filePathValue, fileNameValue, this);
+        monitoringService.startMonitoring(frequency);
     }
 
     private void stopMonitoring() {
-        if (timer != null) {
-            TimerManager.removeTimer(timer);
-            timer = null;
+        if (monitoringService != null) {
+            monitoringService.stopMonitoring();
         }
-    }
-
-    private void loadAndDisplayFileContent() {
-        Platform.runLater(() -> {
-            String filePathStr = filePath.getText();
-            String fileNameStr = fileName.getText();
-            File file = new File(filePathStr, fileNameStr);
-
-            try {
-                String content = new String(Files.readAllBytes(file.toPath()), StandardCharsets.UTF_8);
-                fileContentArea.setText(content);
-            } catch (IOException e) {
-                AlertUtils.showErrorAlert("", e.getMessage());
-                e.printStackTrace();
-            }
-        });
     }
 
     @FXML public void handleSaveSettingsAction(ActionEvent actionEvent) {
@@ -240,5 +241,10 @@ public class MonitoringTabController implements Localizable {
         parseAsArrayToggle.setText(getTranslate("monitoringTabController.parseAsArrayToggle"));
         clearContentToggle.setText(getTranslate("monitoringTabController.clearContentToggle"));
         saveSettingsButton.setText(getTranslate("monitoringTabController.saveSettingsButton"));
+    }
+
+    @Override
+    public void onFileChange(String content) {
+        Platform.runLater(() -> fileContentArea.setText(content));
     }
 }
