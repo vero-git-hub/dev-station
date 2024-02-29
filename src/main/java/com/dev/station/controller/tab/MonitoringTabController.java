@@ -17,9 +17,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -88,18 +90,18 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
             try {
                 frequency = Integer.parseInt(monitoringFrequency.getText());
             } catch (NumberFormatException e) {
-                AlertUtils.showErrorAlert("", "Frequency must be an integer.");
+                AlertUtils.showErrorAlert("", getTranslate("monitoringTabController.frequencyError"));
                 return;
             }
 
             controller.initData(filePath.getText(), fileName.getText(), frequency);
 
             Scene scene = new Scene(root, 825, 600);
-            Stage monitoringStage = new Stage();
-            monitoringStage.setTitle("Monitoring Window");
-            monitoringStage.setScene(scene);
+            Stage stage = new Stage();
+            stage.setTitle(getTranslate("monitoringTabController.handleOpenContentButtonAction.stage"));
+            stage.setScene(scene);
 
-            monitoringStage.setOnCloseRequest(windowEvent -> {
+            stage.setOnCloseRequest(windowEvent -> {
                 if (!toggleMonitoring.isSelected()) {
                     fileContentArea.setVisible(true);
                     toggleMonitoring.setSelected(true);
@@ -108,16 +110,56 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
                 controller.shutdown();
             });
 
-            WindowManager.addStage(monitoringStage);
-            monitoringStage.show();
+            WindowManager.addStage(stage);
+            stage.show();
         } catch (IOException e) {
             e.printStackTrace();
             AlertUtils.showErrorAlert("", e.getMessage());
         }
     }
 
-    @FXML public void handleViewFileContentButtonAction(ActionEvent actionEvent) {
-//        TODO: logic for opening file contents
+    @FXML public void handleViewFileAction(ActionEvent actionEvent) {
+        String fullFilePath = filePath.getText() + "/" + fileName.getText();
+
+        try {
+            File file = new File(fullFilePath);
+
+            FileReader fileReader = new FileReader(file);
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+
+            StringBuilder content = new StringBuilder();
+            String line;
+
+            while ((line = bufferedReader.readLine()) != null) {
+                content.append(line).append("\n");
+            }
+
+            bufferedReader.close();
+
+            Stage stage = new Stage();
+            VBox root = new VBox();
+            TextArea textArea = new TextArea();
+            textArea.setText(content.toString());
+            textArea.setEditable(false);
+
+            VBox.setVgrow(textArea, Priority.ALWAYS);
+
+            root.getChildren().add(textArea);
+
+            Scene scene = new Scene(root, 825, 600);
+            stage.setScene(scene);
+            stage.setTitle(getTranslate("monitoringTabController.handleViewFileAction.stage"));
+
+            WindowManager.addStage(stage);
+            stage.show();
+        } catch (FileNotFoundException e) {
+            AlertUtils.showErrorAlert("", getTranslate("alert.fileNotFound") + " " + fullFilePath);
+        } catch (IOException e) {
+            AlertUtils.showErrorAlert("", getTranslate("alert.fileErrorRead") + " " + fullFilePath);
+        } catch (Exception e) {
+            AlertUtils.showErrorAlert("", getTranslate("alert.fileErrorUnknown") + " " + e.getMessage());
+        }
+
     }
 
     private void startMonitoring() {
@@ -131,7 +173,7 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
         try {
             frequency = Integer.parseInt(monitoringFrequency.getText());
         } catch (NumberFormatException e) {
-            AlertUtils.showErrorAlert("", "Frequency must be an integer.");
+            AlertUtils.showErrorAlert("", getTranslate("monitoringTabController.frequencyError"));
             return;
         }
 
@@ -148,7 +190,14 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
     @FXML public void handleSaveSettingsAction(ActionEvent actionEvent) {
         String filePathValue = filePath.getText();
         String fileNameValue = fileName.getText();
-        int monitoringFrequencyValue = Integer.parseInt(monitoringFrequency.getText());
+        int frequency;
+        try {
+            frequency = Integer.parseInt(monitoringFrequency.getText());
+        } catch (NumberFormatException e) {
+            AlertUtils.showErrorAlert("", getTranslate("monitoringTabController.frequencyError"));
+            return;
+        }
+
         boolean toggleMonitoringValue = toggleMonitoring.isSelected();
         boolean openContentButtonValue = openContentButton.isSelected();
         boolean parseAsArrayToggleValue = parseAsArrayToggle.isSelected();
@@ -156,7 +205,7 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
 
         String tabIdToUpdate = myTab.getId();
 
-        updateMonitoringTab(tabIdToUpdate, filePathValue, fileNameValue, monitoringFrequencyValue, toggleMonitoringValue, openContentButtonValue, parseAsArrayToggleValue, clearContentToggleValue);
+        updateMonitoringTab(tabIdToUpdate, filePathValue, fileNameValue, frequency, toggleMonitoringValue, openContentButtonValue, parseAsArrayToggleValue, clearContentToggleValue);
     }
 
     public void initialize() {
@@ -249,8 +298,7 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
         saveSettingsButton.setText(getTranslate("monitoringTabController.saveSettingsButton"));
     }
 
-    @Override
-    public void onFileChange(String content) {
+    @Override public void onFileChange(String content) {
         Platform.runLater(() -> fileContentArea.setText(content));
     }
 }

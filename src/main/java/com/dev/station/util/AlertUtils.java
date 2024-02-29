@@ -25,7 +25,8 @@ public class AlertUtils {
     public static final String PATH_TO_CLOSE_ICON = "/images/alert/close-24.png";
 
     public static void showErrorAlert(String title, String content) {
-        showCustomAlert(title + " - " + content, PATH_TO_ERROR_ICON, 5);
+        String message = (title == null || title.isEmpty()) ? content : title + " - " + content;
+        showCustomAlert(message, PATH_TO_ERROR_ICON, 5);
     }
 
     public static void showSuccessAlert(String title, String content) {
