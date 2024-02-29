@@ -24,7 +24,8 @@
     -fx-background-color: #3b5747 !important;
 }
 
-.footer-label, .menu-button {
+.footer-label, .menu-button,
+#filePathLabel, #fileNameLabel, #monitoringFrequencyLabel, #memoryUsageLabel, #cpuUsageLabel {
     -fx-text-fill: #f5efed !important;
 }
 
