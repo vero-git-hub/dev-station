@@ -21,6 +21,7 @@ public class MonitoringWindowController {
     @FXML private TextArea monitoringTextArea;
 
     private Timer timer;
+    private long lastModified = 0;
 
     public void initData(String filePath, String fileName, int frequency) {
         startMonitoring(filePath, fileName, frequency);
@@ -39,8 +40,12 @@ public class MonitoringWindowController {
             public void run() {
                 File file = new File(filePath, fileName);
                 try {
-                    String content = new String(Files.readAllBytes(file.toPath()), StandardCharsets.UTF_8);
-                    Platform.runLater(() -> monitoringTextArea.setText(content));
+                    long currentModified = file.lastModified();
+                    if (currentModified > lastModified) {
+                        lastModified = currentModified;
+                        String content = new String(Files.readAllBytes(file.toPath()), StandardCharsets.UTF_8);
+                        Platform.runLater(() -> monitoringTextArea.setText(content));
+                    }
                 } catch (IOException e) {
                     Platform.runLater(() -> {
                         AlertUtils.showErrorAlert("", e.getMessage());
