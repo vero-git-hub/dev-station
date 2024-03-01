@@ -59,4 +59,12 @@ public class FileMonitoringService {
             timer = null;
         }
     }
+
+    public void updateLastModified(long newLastModified) {
+        this.lastModified = newLastModified;
+    }
+
+    public void setFileChangeListener(FileChangeListener listener) {
+        this.listener = listener;
+    }
 }
