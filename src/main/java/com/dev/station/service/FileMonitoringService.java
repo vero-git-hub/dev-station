@@ -43,7 +43,7 @@ public class FileMonitoringService {
                         }
                     }
                 } catch (IOException e) {
-                    AlertUtils.showErrorAlert("", "");
+                    AlertUtils.showErrorAlert("", e.getMessage());
                     e.printStackTrace();
                 }
             }

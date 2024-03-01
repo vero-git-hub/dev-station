@@ -100,6 +100,10 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
             MonitoringWindowController controller = loader.getController();
             controller.setInitialContent(fileContentArea.getText());
 
+            controller.setClearFileAfterReading(clearContentToggle.isSelected());
+            controller.setFilePathToClear(filePath.getText() + "/" + fileName.getText());
+            controller.setMonitoringService(monitoringService);
+
             monitoringService.setFileChangeListener(controller);
 
             Scene scene = new Scene(root, 825, 600);
@@ -312,6 +316,8 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
                     PrintWriter writer = new PrintWriter(file);
                     writer.print("");
                     writer.close();
+
+                    boolean success = file.setLastModified(System.currentTimeMillis() + 1000);
 
                     monitoringService.updateLastModified(file.lastModified());
                 } catch (FileNotFoundException e) {

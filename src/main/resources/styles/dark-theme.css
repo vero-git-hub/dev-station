@@ -25,7 +25,9 @@
 }
 
 .footer-label, .menu-button,
-#filePathLabel, #fileNameLabel, #monitoringFrequencyLabel, #memoryUsageLabel, #cpuUsageLabel {
+#filePathLabel, #fileNameLabel, #monitoringFrequencyLabel, #memoryUsageLabel, #cpuUsageLabel
+, #websiteVersionTextLabel, #localVersionTextLabel,
+#websiteVersionLabel, #localVersionLabel {
     -fx-text-fill: #f5efed !important;
 }
 
