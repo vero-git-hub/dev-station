@@ -151,7 +151,7 @@
     -fx-font-weight: bold;
 }
 
-#saveCategoryButton {
+#saveCategoryButton, #saveSettingsButton {
     -fx-background-color: #1763b1;
     -fx-text-fill: #ffffff;
     -fx-font-weight: bold;
@@ -220,4 +220,8 @@
 
 .toggle-switch:selected .text {
     -fx-text-fill: #ffffff;
+}
+
+.largeText {
+    -fx-font-size: 14px;
 }
