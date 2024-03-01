@@ -27,6 +27,10 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class DriverController implements Localizable {
+    @FXML public Label websiteVersionTextLabel;
+    @FXML public Label websiteVersionLabel;
+    @FXML public Label localVersionTextLabel;
+    @FXML public Label localVersionLabel;
     @FXML private ToggleButton toggleSelenium;
     @FXML private Label versionStatusLabel = new Label();
     @FXML private Button updateButton;
@@ -119,6 +123,9 @@ public class DriverController implements Localizable {
         String currentVersion = driverManager.getCurrentVersion(path);
         String websiteVersion = driverManager.getWebsiteVersion(url);
 
+        websiteVersionLabel.setText(websiteVersion);
+        localVersionLabel.setText(currentVersion);
+
         if(currentVersion.equals(websiteVersion)) {
             isUpdateAvailable = false;
             updateVersionStatus(getTranslate("versionSame") + " " + currentVersion);
@@ -176,6 +183,9 @@ public class DriverController implements Localizable {
         updateButtonVisibility(isUpdateAvailable);
 
         toggleSelenium.setText(getTranslate("toggleSelenium"));
+
+        websiteVersionTextLabel.setText(getTranslate("driverController.websiteVersionTextLabel"));
+        localVersionTextLabel.setText(getTranslate("driverController.localVersionTextLabel"));
         setTooltips();
     }
 }
