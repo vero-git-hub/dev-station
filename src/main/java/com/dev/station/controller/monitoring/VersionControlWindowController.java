@@ -76,7 +76,12 @@ public class VersionControlWindowController implements Localizable, FileChangeLi
     }
 
     private void highlightChanges(String oldContent, String newContent) {
-        StringBuilder highlightedText = new StringBuilder("<style>.added { color: green; } .removed { color: red; }</style><pre>");
+        StringBuilder highlightedText = new StringBuilder(
+                "<style>"
+                        + ".added { background-color: #ccffcc; } "
+                        + ".removed { background-color: #ffcccc; } "
+                        + "</style><pre>"
+        );
 
         StringsComparator comp = new StringsComparator(oldContent, newContent);
         EditScript<Character> script = comp.getScript();
