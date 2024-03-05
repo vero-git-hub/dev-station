@@ -11,6 +11,7 @@ module com.dev.station {
     requires java.desktop;
     requires java.management;
     requires jdk.management;
+    requires org.apache.commons.text;
 
 
     opens com.dev.station to javafx.fxml;
