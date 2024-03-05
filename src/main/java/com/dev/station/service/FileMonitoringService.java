@@ -68,4 +68,8 @@ public class FileMonitoringService {
     public void setFileChangeListener(FileChangeListener listener) {
         this.listener = listener;
     }
+
+    public void removeFileChangeListener() {
+        this.listener = null;
+    }
 }

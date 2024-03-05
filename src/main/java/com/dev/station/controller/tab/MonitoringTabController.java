@@ -1,6 +1,7 @@
 package com.dev.station.controller.tab;
 
 import com.dev.station.Localizable;
+import com.dev.station.controller.monitoring.VersionControlWindowController;
 import com.dev.station.manager.LanguageManager;
 import com.dev.station.manager.NotificationManager;
 import com.dev.station.manager.WindowManager;
@@ -40,11 +41,12 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
     @FXML public ToggleButton toggleMonitoring;
     @FXML public ToggleGroup monitoringToggleGroup;
     @FXML public Button openContentButton;
-    @FXML public ToggleButton parseAsArrayToggle;
+    // @FXML public ToggleButton parseAsArrayToggle;
     @FXML public ToggleButton clearContentToggle;
     @FXML public Button saveSettingsButton;
     @FXML public TextArea fileContentArea;
     @FXML public Button viewFileContentButton;
+    @FXML public Button versionControlButton;
     ResourceBundle bundle;
     private NotificationManager notificationManager;
     private Tab myTab;
@@ -53,6 +55,7 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
     FileMonitoringService monitoringService;
     String fullFilePath;
     private Stage monitoringWindowStage;
+    private Stage versionControlWindowStage;
 
     public MonitoringTabController() {
         LanguageManager.registerForUpdates(this::updateUI);
@@ -122,6 +125,54 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
 
             WindowManager.addStage(monitoringWindowStage);
             monitoringWindowStage.show();
+            fileContentArea.setVisible(false);
+        } catch (IOException e) {
+            e.printStackTrace();
+            AlertUtils.showErrorAlert("", e.getMessage());
+        }
+    }
+
+    /**
+     * @param actionEvent
+     * Shows file contents from textArea with changes highlighted (if monitoring is active).
+     * Don't use with clear content button.
+     */
+    @FXML public void handleVersionControlAction(ActionEvent actionEvent) {
+        if (!toggleMonitoring.isSelected()) {
+            AlertUtils.showErrorAlert("", getTranslate("monitoringTabController.monitoringNotEnabled"));
+            return;
+        }
+
+        if(clearContentToggle.isSelected()) {
+            AlertUtils.showErrorAlert("", getTranslate("monitoringTabController.clearContentToggleEnabled"));
+            return;
+        }
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/dev/station/ui/monitoring/VersionControlWindow.fxml"));
+            Parent root = loader.load();
+
+            VersionControlWindowController controller = loader.getController();
+            controller.setInitialContent(fileContentArea.getText());
+
+
+            monitoringService.setFileChangeListener(controller);
+
+            Scene scene = new Scene(root, 825, 600);
+            versionControlWindowStage = new Stage();
+            versionControlWindowStage.setTitle(getTranslate("versionControlWindowController.title"));
+
+            versionControlWindowStage.setScene(scene);
+
+            versionControlWindowStage.setOnCloseRequest(windowEvent -> {
+                if (toggleMonitoring.isSelected()) {
+                    fileContentArea.setVisible(true);
+                    Platform.runLater(() -> fileContentArea.setText(controller.getCurrentContent()));
+                }
+            });
+
+            WindowManager.addStage(versionControlWindowStage);
+            versionControlWindowStage.show();
             fileContentArea.setVisible(false);
         } catch (IOException e) {
             e.printStackTrace();
@@ -210,12 +261,12 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
         }
 
         boolean toggleMonitoringValue = toggleMonitoring.isSelected();
-        boolean parseAsArrayToggleValue = parseAsArrayToggle.isSelected();
+        // boolean parseAsArrayToggleValue = parseAsArrayToggle.isSelected();
         boolean clearContentToggleValue = clearContentToggle.isSelected();
 
         String tabIdToUpdate = myTab.getId();
 
-        updateMonitoringTab(tabIdToUpdate, filePathValue, fileNameValue, frequency, toggleMonitoringValue, false, parseAsArrayToggleValue, clearContentToggleValue);
+        updateMonitoringTab(tabIdToUpdate, filePathValue, fileNameValue, frequency, toggleMonitoringValue, false, false, clearContentToggleValue);
     }
 
     public void initialize() {
@@ -266,7 +317,7 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
         fileName.setText(tabData.getFileName());
         monitoringFrequency.setText(String.valueOf(tabData.getMonitoringFrequency()));
         toggleMonitoring.setSelected(tabData.isToggleMonitoring());
-        parseAsArrayToggle.setSelected(tabData.isParseAsArrayToggle());
+        // parseAsArrayToggle.setSelected(tabData.isParseAsArrayToggle());
         clearContentToggle.setSelected(tabData.isClearContentToggle());
 
         if (toggleMonitoring.isSelected()) {
@@ -302,7 +353,8 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
         toggleMonitoring.setText(getTranslate("monitoringTabController.toggleMonitoring"));
         openContentButton.setText(getTranslate("monitoringTabController.openContentButton"));
         viewFileContentButton.setText(getTranslate("monitoringTabController.viewFileContentButton"));
-        parseAsArrayToggle.setText(getTranslate("monitoringTabController.parseAsArrayToggle"));
+        versionControlButton.setText(getTranslate("monitoringTabController.versionControlButton"));
+        // parseAsArrayToggle.setText(getTranslate("monitoringTabController.parseAsArrayToggle"));
         clearContentToggle.setText(getTranslate("monitoringTabController.clearContentToggle"));
         saveSettingsButton.setText(getTranslate("monitoringTabController.saveSettingsButton"));
     }

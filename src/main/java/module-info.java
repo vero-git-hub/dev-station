@@ -27,4 +27,5 @@ module com.dev.station {
     opens com.dev.station.manager.clear to javafx.fxml;
     exports com.dev.station.manager;
     opens com.dev.station.manager to javafx.fxml;
+    opens com.dev.station.controller.monitoring to javafx.fxml;
 }
