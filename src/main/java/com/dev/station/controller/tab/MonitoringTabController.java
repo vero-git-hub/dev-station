@@ -11,6 +11,7 @@ import com.dev.station.service.FileChangeListener;
 import com.dev.station.service.FileContentProvider;
 import com.dev.station.service.FileMonitoringService;
 import com.dev.station.util.AlertUtils;
+import com.dev.station.util.FileUtils;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -313,27 +314,9 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
                 fileContentArea.setText(content);
 
                 if (clearContentToggle.isSelected()) {
-                    try {
-                        String fullFilePath = filePath.getText() + "/" + fileName.getText();
-                        File file = new File(fullFilePath);
-
-                        PrintWriter writer = new PrintWriter(file);
-                        writer.print("");
-                        writer.close();
-
-                        boolean success = file.setLastModified(System.currentTimeMillis() + 1000);
-                        if (!success) {
-                            AlertUtils.showErrorAlert("", getTranslate("alert.error.setLastModified"));
-                            return;
-                        }
-
-                        if (monitoringService != null) {
-                            monitoringService.updateLastModified(file.lastModified());
-                        }
-
-                    } catch (IOException e) {
-                        AlertUtils.showErrorAlert("", e.getMessage());
-                    }
+                    String fullFilePath = filePath.getText() + "/" + fileName.getText();
+                    String errorMessage = getTranslate("alert.error.setLastModified");
+                    FileUtils.clearFileAndSetLastModified(fullFilePath, monitoringService, errorMessage);
                 }
             } catch (IOException e) {
                 AlertUtils.showErrorAlert("", e.getMessage());

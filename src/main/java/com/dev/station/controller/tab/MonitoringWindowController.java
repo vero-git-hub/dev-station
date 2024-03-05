@@ -7,14 +7,12 @@ import com.dev.station.service.FileChangeListener;
 import com.dev.station.service.FileContentProvider;
 import com.dev.station.service.FileMonitoringService;
 import com.dev.station.util.AlertUtils;
+import com.dev.station.util.FileUtils;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -66,26 +64,8 @@ public class MonitoringWindowController implements Localizable, FileChangeListen
                 monitoringTextArea.setText(content);
 
                 if (clearFileAfterReading) {
-                    try {
-                        File file = new File(filePathToClear);
-
-                        PrintWriter writer = new PrintWriter(file);
-                        writer.print("");
-                        writer.close();
-
-                        boolean success = file.setLastModified(System.currentTimeMillis() + 1000);
-                        if (!success) {
-                            AlertUtils.showErrorAlert("", getTranslate("alert.error.setLastModified"));
-                            return;
-                        }
-
-                        if (monitoringService != null) {
-                            monitoringService.updateLastModified(file.lastModified());
-                        }
-
-                    } catch (IOException e) {
-                        AlertUtils.showErrorAlert("", e.getMessage());
-                    }
+                    String errorMessage = getTranslate("alert.error.setLastModified");
+                    FileUtils.clearFileAndSetLastModified(filePathToClear, monitoringService, errorMessage);
                 }
             } catch (IOException e) {
                 AlertUtils.showErrorAlert("", e.getMessage());
