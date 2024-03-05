@@ -276,6 +276,12 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
 
         setMultilingual();
         loadSavedLanguage();
+
+        updateToggleButtonText();
+
+        toggleMonitoring.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            updateToggleButtonText();
+        });
     }
 
     private void updateMonitoringTab(String tabId, String filePath, String fileName, int monitoringFrequency, boolean toggleMonitoring, boolean openContentButton, boolean parseAsArrayToggle, boolean clearContentToggle) {
@@ -349,13 +355,22 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
         fileNameLabel.setText(getTranslate("monitoringTabController.fileNameLabel"));
         monitoringFrequencyLabel.setText(getTranslate("monitoringTabController.monitoringFrequencyLabel"));
 
-        toggleMonitoring.setText(getTranslate("monitoringTabController.toggleMonitoring"));
+        updateToggleButtonText();
+
         openContentButton.setText(getTranslate("monitoringTabController.openContentButton"));
         viewFileContentButton.setText(getTranslate("monitoringTabController.viewFileContentButton"));
         versionControlButton.setText(getTranslate("monitoringTabController.versionControlButton"));
         // parseAsArrayToggle.setText(getTranslate("monitoringTabController.parseAsArrayToggle"));
         clearContentToggle.setText(getTranslate("monitoringTabController.clearContentToggle"));
         saveSettingsButton.setText(getTranslate("monitoringTabController.saveSettingsButton"));
+    }
+
+    private void updateToggleButtonText() {
+        if (toggleMonitoring.isSelected()) {
+            toggleMonitoring.setText(getTranslate("monitoringTabController.toggleMonitoring.on"));
+        } else {
+            toggleMonitoring.setText(getTranslate("monitoringTabController.toggleMonitoring.off"));
+        }
     }
 
     @Override public void onFileChange(FileContentProvider contentProvider) {
