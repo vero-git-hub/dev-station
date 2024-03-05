@@ -8,7 +8,8 @@ import com.dev.station.service.FileContentProvider;
 import com.dev.station.util.AlertUtils;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.control.TextArea;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -17,7 +18,8 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class VersionControlWindowController implements Localizable, FileChangeListener {
-    @FXML public TextArea versionControlTextArea;
+    @FXML public WebView versionControlWebView;
+    private WebEngine webEngine;
     ResourceBundle bundle;
     SettingsModel settingsModel;
     private String previousContent = "";
@@ -27,17 +29,36 @@ public class VersionControlWindowController implements Localizable, FileChangeLi
         settingsModel = new SettingsModel();
     }
 
+    @FXML
+    private void initialize() {
+        webEngine = versionControlWebView.getEngine();
+    }
+
     public void setInitialContent(String content) {
         previousContent = content;
-        Platform.runLater(() -> versionControlTextArea.setText(content));
+        String htmlContent = String.format("<html><body><pre>%s</pre></body></html>", escapeHtml(content));
+        Platform.runLater(() -> webEngine.loadContent(htmlContent));
     }
+
+    private String escapeHtml(String string) {
+        return string.replace("&", "&amp;")
+                .replace("<", "&lt;")
+                .replace(">", "&gt;")
+                .replace("\n", "<br>")
+                .replace(" ", "&nbsp;");
+    }
+
 
     public String getTranslate(String key) {
         return bundle.getString(key);
     }
 
     public String getCurrentContent() {
-        return versionControlTextArea.getText();
+        final String[] content = new String[1];
+        Platform.runLater(() -> {
+            content[0] = (String) webEngine.executeScript("document.body.querySelector('pre').innerText");
+        });
+        return content[0];
     }
 
     @Override
@@ -69,7 +90,8 @@ public class VersionControlWindowController implements Localizable, FileChangeLi
             }
         }
 
-        versionControlTextArea.setText(highlightedText.toString());
+        String textToHtml = "<html><body>" + highlightedText + "</body></html>";
+        Platform.runLater(() -> webEngine.loadContent(textToHtml));
     }
 
     @Override
