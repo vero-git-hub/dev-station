@@ -29,7 +29,7 @@
 <!--        <ToggleButton fx:id="parseAsArrayToggle" layoutX="20" layoutY="140" prefWidth="160" styleClass="largeText, clickable"/>-->
         <Button fx:id="versionControlButton" layoutX="20" layoutY="140" prefWidth="160" onAction="#handleVersionControlAction" styleClass="largeText, clickable"/>
 
-        <ToggleButton fx:id="clearContentToggle" layoutX="200" layoutY="140" prefWidth="200" styleClass="largeText, clickable"/>
+        <ToggleButton fx:id="clearContentToggle" layoutX="200" layoutY="140" prefWidth="200" styleClass="largeText, clickable, toggle-switch"/>
 
         <Button fx:id="saveSettingsButton" layoutX="420" layoutY="140" prefWidth="160" onAction="#handleSaveSettingsAction" styleClass="largeText, clickable"/>
 
