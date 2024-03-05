@@ -8,6 +8,7 @@ import com.dev.station.manager.monitoring.MonitoringJsonTabsManager;
 import com.dev.station.manager.monitoring.MonitoringTabData;
 import com.dev.station.model.SettingsModel;
 import com.dev.station.service.FileChangeListener;
+import com.dev.station.service.FileContentProvider;
 import com.dev.station.service.FileMonitoringService;
 import com.dev.station.util.AlertUtils;
 import javafx.application.Platform;
@@ -305,26 +306,37 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
         saveSettingsButton.setText(getTranslate("monitoringTabController.saveSettingsButton"));
     }
 
-    @Override public void onFileChange(String content) {
+    @Override public void onFileChange(FileContentProvider contentProvider) {
         Platform.runLater(() -> {
-            fileContentArea.setText(content);
-            if (clearContentToggle.isSelected()) {
-                try {
-                    String fullFilePath = filePath.getText() + "/" + fileName.getText();
-                    File file = new File(fullFilePath);
+            try {
+                String content = contentProvider.getContent();
+                fileContentArea.setText(content);
 
-                    PrintWriter writer = new PrintWriter(file);
-                    writer.print("");
-                    writer.close();
+                if (clearContentToggle.isSelected()) {
+                    try {
+                        String fullFilePath = filePath.getText() + "/" + fileName.getText();
+                        File file = new File(fullFilePath);
 
-                    boolean success = file.setLastModified(System.currentTimeMillis() + 1000);
+                        PrintWriter writer = new PrintWriter(file);
+                        writer.print("");
+                        writer.close();
 
-                    monitoringService.updateLastModified(file.lastModified());
-                } catch (FileNotFoundException e) {
-                    AlertUtils.showErrorAlert("", getTranslate("alert.fileNotFound") + " " + fullFilePath);
-                } catch (IOException e) {
-                    AlertUtils.showErrorAlert("", getTranslate("alert.fileErrorRead") + " " + fullFilePath);
+                        boolean success = file.setLastModified(System.currentTimeMillis() + 1000);
+                        if (!success) {
+                            AlertUtils.showErrorAlert("", getTranslate("alert.error.setLastModified"));
+                            return;
+                        }
+
+                        if (monitoringService != null) {
+                            monitoringService.updateLastModified(file.lastModified());
+                        }
+
+                    } catch (IOException e) {
+                        AlertUtils.showErrorAlert("", e.getMessage());
+                    }
                 }
+            } catch (IOException e) {
+                AlertUtils.showErrorAlert("", e.getMessage());
             }
         });
     }

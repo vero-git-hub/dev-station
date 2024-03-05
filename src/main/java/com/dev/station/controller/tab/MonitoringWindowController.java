@@ -1,7 +1,12 @@
 package com.dev.station.controller.tab;
 
+import com.dev.station.Localizable;
+import com.dev.station.manager.LanguageManager;
+import com.dev.station.model.SettingsModel;
 import com.dev.station.service.FileChangeListener;
+import com.dev.station.service.FileContentProvider;
 import com.dev.station.service.FileMonitoringService;
+import com.dev.station.util.AlertUtils;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
@@ -10,16 +15,25 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 /**
  * Display file content in a new window
  */
-public class MonitoringWindowController implements FileChangeListener {
+public class MonitoringWindowController implements Localizable, FileChangeListener {
 
     @FXML private TextArea monitoringTextArea;
+    ResourceBundle bundle;
+    SettingsModel settingsModel;
     private boolean clearFileAfterReading = false;
     private String filePathToClear;
     private FileMonitoringService monitoringService;
+
+    public MonitoringWindowController() {
+        LanguageManager.registerForUpdates(this::updateUI);
+        settingsModel = new SettingsModel();
+    }
 
     public void setInitialContent(String content) {
         Platform.runLater(() -> monitoringTextArea.setText(content));
@@ -41,29 +55,58 @@ public class MonitoringWindowController implements FileChangeListener {
         this.monitoringService = service;
     }
 
-    @Override public void onFileChange(String content) {
+    public String getTranslate(String key) {
+        return bundle.getString(key);
+    }
+
+    @Override public void onFileChange(FileContentProvider contentProvider) {
         Platform.runLater(() -> {
-            monitoringTextArea.setText(content);
-            if (clearFileAfterReading) {
-                try {
-                    File file = new File(filePathToClear);
+            try {
+                String content = contentProvider.getContent();
+                monitoringTextArea.setText(content);
 
-                    PrintWriter writer = new PrintWriter(file);
-                    writer.print("");
-                    writer.close();
+                if (clearFileAfterReading) {
+                    try {
+                        File file = new File(filePathToClear);
 
-                    boolean success = file.setLastModified(System.currentTimeMillis() + 1000);
+                        PrintWriter writer = new PrintWriter(file);
+                        writer.print("");
+                        writer.close();
 
-                    if (monitoringService != null) {
-                        monitoringService.updateLastModified(file.lastModified());
+                        boolean success = file.setLastModified(System.currentTimeMillis() + 1000);
+                        if (!success) {
+                            AlertUtils.showErrorAlert("", getTranslate("alert.error.setLastModified"));
+                            return;
+                        }
+
+                        if (monitoringService != null) {
+                            monitoringService.updateLastModified(file.lastModified());
+                        }
+
+                    } catch (IOException e) {
+                        AlertUtils.showErrorAlert("", e.getMessage());
                     }
-
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }
+            } catch (IOException e) {
+                AlertUtils.showErrorAlert("", e.getMessage());
             }
         });
+    }
+
+    @Override
+    public void loadSavedLanguage() {
+        String savedLanguage = settingsModel.loadLanguageSetting();
+        Locale locale = LanguageManager.getLocale(savedLanguage);
+        LanguageManager.switchLanguage(locale);
+    }
+
+    @Override
+    public void switchLanguage(Locale newLocale) {
+        bundle = LanguageManager.getResourceBundle();
+    }
+
+    @Override
+    public void updateUI() {
+
     }
 }

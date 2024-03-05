@@ -39,18 +39,13 @@ public class FileMonitoringService {
             @Override
             public void run() {
                 File file = new File(filePath, fileName);
-                try {
-                    long currentModified = file.lastModified();
-                    if (currentModified > lastModified) {
-                        lastModified = currentModified;
-                        String content = new String(Files.readAllBytes(file.toPath()), StandardCharsets.UTF_8);
-                        if (listener != null) {
-                            listener.onFileChange(content);
-                        }
+                long currentModified = file.lastModified();
+                if (currentModified > lastModified) {
+                    lastModified = currentModified;
+                    if (listener != null) {
+                        FileContentProvider contentProvider = () -> new String(Files.readAllBytes(file.toPath()), StandardCharsets.UTF_8);
+                        listener.onFileChange(contentProvider);
                     }
-                } catch (IOException e) {
-                    AlertUtils.showErrorAlert("", e.getMessage());
-                    e.printStackTrace();
                 }
             }
         };
