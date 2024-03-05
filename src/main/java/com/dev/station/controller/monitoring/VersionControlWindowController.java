@@ -54,12 +54,11 @@ public class VersionControlWindowController implements Localizable, FileChangeLi
         return bundle.getString(key);
     }
 
-    public String getCurrentContent() {
-        final String[] content = new String[1];
+    public void getCurrentContent(ContentCallback callback) {
         Platform.runLater(() -> {
-            content[0] = (String) webEngine.executeScript("document.body.querySelector('pre').innerText");
+            String content = (String) webEngine.executeScript("document.body.querySelector('pre').innerText");
+            callback.onContentReceived(content);
         });
-        return content[0];
     }
 
     @Override

@@ -155,7 +155,6 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
             VersionControlWindowController controller = loader.getController();
             controller.setInitialContent(fileContentArea.getText());
 
-
             monitoringService.setFileChangeListener(controller);
 
             Scene scene = new Scene(root, 825, 600);
@@ -167,7 +166,7 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
             versionControlWindowStage.setOnCloseRequest(windowEvent -> {
                 if (toggleMonitoring.isSelected()) {
                     fileContentArea.setVisible(true);
-                    Platform.runLater(() -> fileContentArea.setText(controller.getCurrentContent()));
+                    controller.getCurrentContent(content -> Platform.runLater(() -> fileContentArea.setText(content)));
                 }
             });
 
