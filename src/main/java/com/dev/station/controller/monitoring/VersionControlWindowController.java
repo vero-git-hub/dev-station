@@ -10,10 +10,11 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
+import org.apache.commons.text.diff.CommandVisitor;
+import org.apache.commons.text.diff.EditScript;
+import org.apache.commons.text.diff.StringsComparator;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -75,22 +76,29 @@ public class VersionControlWindowController implements Localizable, FileChangeLi
     }
 
     private void highlightChanges(String oldContent, String newContent) {
-        List<String> oldLines = Arrays.asList(oldContent.split("\n"));
-        List<String> newLines = Arrays.asList(newContent.split("\n"));
+        StringBuilder highlightedText = new StringBuilder("<style>.added { color: green; } .removed { color: red; }</style><pre>");
 
-        StringBuilder highlightedText = new StringBuilder();
-
-        for (int i = 0; i < newLines.size(); i++) {
-            if (i < oldLines.size() && !newLines.get(i).equals(oldLines.get(i))) {
-                highlightedText.append("*").append(newLines.get(i)).append("\n");
-            } else if (i >= oldLines.size()) {
-                highlightedText.append("*").append(newLines.get(i)).append("\n");
-            } else {
-                highlightedText.append(newLines.get(i)).append("\n");
+        StringsComparator comp = new StringsComparator(oldContent, newContent);
+        EditScript<Character> script = comp.getScript();
+        script.visit(new CommandVisitor<Character>() {
+            @Override
+            public void visitInsertCommand(Character object) {
+                highlightedText.append("<span class='added'>").append(object).append("</span>");
             }
-        }
 
-        String textToHtml = "<html><body>" + highlightedText + "</body></html>";
+            @Override
+            public void visitDeleteCommand(Character object) {
+                highlightedText.append("<span class='removed'>").append(object).append("</span>");
+            }
+
+            @Override
+            public void visitKeepCommand(Character object) {
+                highlightedText.append(object);
+            }
+        });
+
+        highlightedText.append("</pre>");
+        String textToHtml = "<html><body>" + highlightedText.toString() + "</body></html>";
         Platform.runLater(() -> webEngine.loadContent(textToHtml));
     }
 
