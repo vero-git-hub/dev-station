@@ -23,10 +23,16 @@ public class FileMonitoringService {
         this.listener = listener;
     }
 
+    private Timer getTimer() {
+        if (timer == null) {
+            timer = new Timer("FileMonitoringServiceTimer", true);
+        }
+        return timer;
+    }
+
     public void startMonitoring(int frequency) {
         stopMonitoring();
 
-        timer = new Timer("FileMonitoringServiceTimer", true);
         long period = frequency * 1000L;
 
         TimerTask task = new TimerTask() {
@@ -49,8 +55,8 @@ public class FileMonitoringService {
             }
         };
 
-        TimerManager.addTimer(timer);
-        timer.scheduleAtFixedRate(task, 0, period);
+        TimerManager.addTimer(getTimer());
+        getTimer().scheduleAtFixedRate(task, 0, period);
     }
 
     public void stopMonitoring() {
