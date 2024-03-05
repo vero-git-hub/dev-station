@@ -1,5 +1,11 @@
 package com.dev.station.util;
 
+import com.dev.station.service.FileMonitoringService;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+
 public class FileUtils {
     /**
      * Returns the file extension from the given path.
@@ -11,5 +17,27 @@ public class FileUtils {
             return filePath.substring(filePath.lastIndexOf('.') + 1);
         }
         return "";
+    }
+
+    public static void clearFileAndSetLastModified(String filePath, FileMonitoringService monitoringService, String errorMessage) {
+        try {
+            File file = new File(filePath);
+
+            PrintWriter writer = new PrintWriter(file);
+            writer.print("");
+            writer.close();
+
+            boolean success = file.setLastModified(System.currentTimeMillis() + 1000);
+            if (!success) {
+                AlertUtils.showErrorAlert("", errorMessage);
+                return;
+            }
+
+            if (monitoringService != null) {
+                monitoringService.updateLastModified(file.lastModified());
+            }
+        } catch (IOException e) {
+            AlertUtils.showErrorAlert("", e.getMessage());
+        }
     }
 }
