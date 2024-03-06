@@ -24,10 +24,15 @@ public class VersionControlWindowController implements Localizable, FileChangeLi
     ResourceBundle bundle;
     SettingsModel settingsModel;
     private String previousContent = "";
+    private VersionControlMode versionControlMode;
 
     public VersionControlWindowController() {
         LanguageManager.registerForUpdates(this::updateUI);
         settingsModel = new SettingsModel();
+    }
+
+    public void setVersionControlMode(VersionControlMode mode) {
+        this.versionControlMode = mode;
     }
 
     @FXML
@@ -48,7 +53,6 @@ public class VersionControlWindowController implements Localizable, FileChangeLi
                 .replace("\n", "<br>")
                 .replace(" ", "&nbsp;");
     }
-
 
     public String getTranslate(String key) {
         return bundle.getString(key);
@@ -75,35 +79,43 @@ public class VersionControlWindowController implements Localizable, FileChangeLi
     }
 
     private void highlightChanges(String oldContent, String newContent) {
-        StringBuilder highlightedText = new StringBuilder(
-                "<style>"
-                        + ".added { background-color: #ccffcc; } "
-                        + ".removed { background-color: #ffcccc; } "
-                        + "</style><pre>"
-        );
+        switch (versionControlMode) {
+            case SYMBOL:
+                StringBuilder highlightedText = new StringBuilder(
+                        "<style>"
+                                + ".added { background-color: #ccffcc; } "
+                                + ".removed { background-color: #ffcccc; } "
+                                + "</style><pre>"
+                );
 
-        StringsComparator comp = new StringsComparator(oldContent, newContent);
-        EditScript<Character> script = comp.getScript();
-        script.visit(new CommandVisitor<Character>() {
-            @Override
-            public void visitInsertCommand(Character object) {
-                highlightedText.append("<span class='added'>").append(object).append("</span>");
-            }
+                StringsComparator comp = new StringsComparator(oldContent, newContent);
+                EditScript<Character> script = comp.getScript();
+                script.visit(new CommandVisitor<Character>() {
+                    @Override
+                    public void visitInsertCommand(Character object) {
+                        highlightedText.append("<span class='added'>").append(object).append("</span>");
+                    }
 
-            @Override
-            public void visitDeleteCommand(Character object) {
-                highlightedText.append("<span class='removed'>").append(object).append("</span>");
-            }
+                    @Override
+                    public void visitDeleteCommand(Character object) {
+                        highlightedText.append("<span class='removed'>").append(object).append("</span>");
+                    }
 
-            @Override
-            public void visitKeepCommand(Character object) {
-                highlightedText.append(object);
-            }
-        });
+                    @Override
+                    public void visitKeepCommand(Character object) {
+                        highlightedText.append(object);
+                    }
+                });
 
-        highlightedText.append("</pre>");
-        String textToHtml = "<html><body>" + highlightedText.toString() + "</body></html>";
-        Platform.runLater(() -> webEngine.loadContent(textToHtml));
+                highlightedText.append("</pre>");
+                String textToHtml = "<html><body>" + highlightedText.toString() + "</body></html>";
+                Platform.runLater(() -> webEngine.loadContent(textToHtml));
+                break;
+            case WORD:
+                // other logic
+                break;
+            // other modes
+        }
     }
 
     @Override

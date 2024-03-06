@@ -1,6 +1,7 @@
 package com.dev.station.controller.tab;
 
 import com.dev.station.Localizable;
+import com.dev.station.controller.monitoring.VersionControlMode;
 import com.dev.station.controller.monitoring.VersionControlWindowController;
 import com.dev.station.manager.LanguageManager;
 import com.dev.station.manager.NotificationManager;
@@ -61,6 +62,7 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
     String fullFilePath;
     private Stage monitoringWindowStage;
     private Stage versionControlWindowStage;
+    VersionControlMode mode;
 
     public MonitoringTabController() {
         LanguageManager.registerForUpdates(this::updateUI);
@@ -160,6 +162,9 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
             VersionControlWindowController controller = loader.getController();
             controller.setInitialContent(fileContentArea.getText());
 
+            // Set version control mode
+            controller.setVersionControlMode(getSelectedVersionControlMode());
+
             monitoringService.setFileChangeListener(controller);
 
             Scene scene = new Scene(root, 825, 600);
@@ -182,6 +187,23 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
             e.printStackTrace();
             AlertUtils.showErrorAlert("", e.getMessage());
         }
+    }
+
+    private VersionControlMode getSelectedVersionControlMode() {
+        String selectedMode = versionControlModeComboBox.getSelectionModel().getSelectedItem().toString();
+        switch (selectedMode) {
+            case "символ":
+            case "symbol":
+                mode = VersionControlMode.SYMBOL;
+                break;
+            case "слово":
+            case "word":
+                mode = VersionControlMode.WORD;
+                break;
+            default:
+                mode = VersionControlMode.SYMBOL;
+        }
+        return mode;
     }
 
     @FXML public void handleViewFileAction(ActionEvent actionEvent) {
