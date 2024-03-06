@@ -322,7 +322,6 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
                 getTranslate("monitoringTabController.versionControlModeComboBox.line")
         );
         versionControlModeComboBox.setItems(versionControlModes);
-        versionControlModeComboBox.setValue(getTranslate("monitoringTabController.versionControlModeComboBox.symbol"));
         versionControlModeComboBox.setOnMouseEntered(event -> versionControlModeComboBox.getScene().setCursor(Cursor.HAND));
         versionControlModeComboBox.setOnMouseExited(event -> versionControlModeComboBox.getScene().setCursor(Cursor.DEFAULT));
     }

@@ -12,6 +12,7 @@ module com.dev.station {
     requires java.management;
     requires jdk.management;
     requires org.apache.commons.text;
+    requires io.github.javadiffutils;
 
 
     opens com.dev.station to javafx.fxml;
