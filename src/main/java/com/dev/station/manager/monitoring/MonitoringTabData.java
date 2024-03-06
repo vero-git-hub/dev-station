@@ -14,12 +14,14 @@ public class MonitoringTabData {
     private boolean openContentButton;
     private boolean parseAsArrayToggle;
     private boolean clearContentToggle;
+    private String versionControlMode;
 
     public MonitoringTabData() {}
 
     public MonitoringTabData(boolean isDefault, String name, String id, String filePath, String fileName,
                              int monitoringFrequency, boolean toggleMonitoring, boolean openContentButton,
-                             boolean parseAsArrayToggle, boolean clearContentToggle) {
+                             boolean parseAsArrayToggle, boolean clearContentToggle,
+                             String versionControlMode) {
         this.isDefault = isDefault;
         this.name = name;
         this.id = id;
@@ -30,6 +32,7 @@ public class MonitoringTabData {
         this.openContentButton = openContentButton;
         this.parseAsArrayToggle = parseAsArrayToggle;
         this.clearContentToggle = clearContentToggle;
+        this.versionControlMode = versionControlMode;
     }
 
     public boolean isDefault() {
@@ -39,7 +42,6 @@ public class MonitoringTabData {
     public void setDefault(boolean aDefault) {
         isDefault = aDefault;
     }
-
 
     public String getName() {
         return name;
@@ -113,6 +115,14 @@ public class MonitoringTabData {
         this.clearContentToggle = clearContentToggle;
     }
 
+    public String getVersionControlMode() {
+        return versionControlMode;
+    }
+
+    public void setVersionControlMode(String versionControlMode) {
+        this.versionControlMode = versionControlMode;
+    }
+
     /**
      * Method for creating an object from JSON
      * @param jsonObject
@@ -129,7 +139,8 @@ public class MonitoringTabData {
                 jsonObject.getBoolean("toggleMonitoring"),
                 jsonObject.getBoolean("openContentButton"),
                 jsonObject.getBoolean("parseAsArrayToggle"),
-                jsonObject.getBoolean("clearContentToggle")
+                jsonObject.getBoolean("clearContentToggle"),
+                jsonObject.getString("versionControlMode")
         );
     }
 
@@ -149,6 +160,7 @@ public class MonitoringTabData {
         jsonObject.put("openContentButton", this.openContentButton);
         jsonObject.put("parseAsArrayToggle", this.parseAsArrayToggle);
         jsonObject.put("clearContentToggle", this.clearContentToggle);
+        jsonObject.put("versionControlMode", this.versionControlMode);
         return jsonObject;
     }
 }
