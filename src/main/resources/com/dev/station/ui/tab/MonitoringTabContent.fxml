@@ -2,19 +2,32 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.dev.station.controller.tab.MonitoringTabController"
             prefHeight="400.0" prefWidth="600.0">
     <children>
         <Label fx:id="filePathLabel" layoutX="20" layoutY="20" styleClass="largeText"/>
-        <TextField fx:id="filePath" layoutX="150" layoutY="20" prefWidth="430" styleClass="largeText"/>
+        <TextField fx:id="filePath" layoutX="135" layoutY="20" prefWidth="170" styleClass="largeText"/>
 
         <Label fx:id="fileNameLabel" layoutX="20" layoutY="60" styleClass="largeText"/>
-        <TextField fx:id="fileName" layoutX="150" layoutY="60" prefWidth="200" styleClass="largeText"/>
+        <TextField fx:id="fileName" layoutX="135" layoutY="60" prefWidth="170" styleClass="largeText"/>
 
-        <Label fx:id="monitoringFrequencyLabel" layoutX="370" layoutY="60" styleClass="largeText"/>
-        <TextField fx:id="monitoringFrequency" layoutX="535" layoutY="60" prefWidth="45" styleClass="largeText"/>
+        <Label fx:id="monitoringFrequencyLabel" layoutX="320" layoutY="20" styleClass="largeText"/>
+        <TextField fx:id="monitoringFrequency" layoutX="485" layoutY="20" prefWidth="97" styleClass="largeText"/>
+
+        <Label fx:id="versionControlModeLabel" layoutX="320" layoutY="60" styleClass="largeText"/>
+        <ComboBox fx:id="versionControlModeComboBox" layoutX="485" layoutY="60" styleClass="largeText">
+            <items>
+                <FXCollections fx:factory="observableArrayList">
+                    <String fx:value="symbol"/>
+                    <String fx:value="word"/>
+                    <String fx:value="line"/>
+                </FXCollections>
+            </items>
+        </ComboBox>
 
         <ToggleButton fx:id="toggleMonitoring" layoutX="20" layoutY="100" prefWidth="160" onAction="#handleMonitoringAction" styleClass="largeText, clickable, toggle-switch">
             <toggleGroup>
@@ -24,12 +37,15 @@
 
         <Button fx:id="openContentButton" layoutX="200" layoutY="100" prefWidth="200" styleClass="largeText, clickable" onAction="#handleOpenContentAction"/>
 
-        <Button fx:id="viewFileContentButton" layoutX="420" layoutY="100" prefWidth="160" styleClass="largeText, clickable" onAction="#handleViewFileAction"/>
+<!--        <Button fx:id="viewFileContentButton" layoutX="420" layoutY="100" prefWidth="160" styleClass="largeText, clickable" onAction="#handleViewFileAction"/>-->
+
+        <ToggleButton fx:id="clearContentToggle" layoutX="420" layoutY="100" prefWidth="160" styleClass="largeText, clickable, toggle-switch"/>
 
 <!--        <ToggleButton fx:id="parseAsArrayToggle" layoutX="20" layoutY="140" prefWidth="160" styleClass="largeText, clickable"/>-->
         <Button fx:id="versionControlButton" layoutX="20" layoutY="140" prefWidth="160" onAction="#handleVersionControlAction" styleClass="largeText, clickable"/>
 
-        <ToggleButton fx:id="clearContentToggle" layoutX="200" layoutY="140" prefWidth="200" styleClass="largeText, clickable, toggle-switch"/>
+<!--        <ToggleButton fx:id="clearContentToggle" layoutX="200" layoutY="140" prefWidth="200" styleClass="largeText, clickable, toggle-switch"/>-->
+        <Button fx:id="viewFileContentButton" layoutX="200" layoutY="140" prefWidth="200" styleClass="largeText, clickable" onAction="#handleViewFileAction"/>
 
         <Button fx:id="saveSettingsButton" layoutX="420" layoutY="140" prefWidth="160" onAction="#handleSaveSettingsAction" styleClass="largeText, clickable"/>
 
