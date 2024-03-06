@@ -369,6 +369,13 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
         // parseAsArrayToggle.setSelected(tabData.isParseAsArrayToggle());
         clearContentToggle.setSelected(tabData.isClearContentToggle());
 
+        // Code to set the selected version control mode
+        String versionControlMode = tabData.getVersionControlMode();
+        if (versionControlMode != null && !versionControlMode.isEmpty()) {
+            versionControlModeComboBox.getSelectionModel().select(versionControlMode);
+        }
+
+        // Code to start or stop monitoring
         if (toggleMonitoring.isSelected()) {
             fileContentArea.setVisible(true);
             startMonitoring();
