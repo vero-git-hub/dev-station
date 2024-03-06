@@ -6,6 +6,8 @@ import com.dev.station.model.SettingsModel;
 import com.dev.station.service.FileChangeListener;
 import com.dev.station.service.FileContentProvider;
 import com.dev.station.util.AlertUtils;
+import com.github.difflib.patch.AbstractDelta;
+import com.github.difflib.patch.DeltaType;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.web.WebEngine;
@@ -13,8 +15,13 @@ import javafx.scene.web.WebView;
 import org.apache.commons.text.diff.CommandVisitor;
 import org.apache.commons.text.diff.EditScript;
 import org.apache.commons.text.diff.StringsComparator;
+import com.github.difflib.patch.AbstractDelta;
+import com.github.difflib.DiffUtils;
+import com.github.difflib.patch.Patch;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -35,8 +42,7 @@ public class VersionControlWindowController implements Localizable, FileChangeLi
         this.versionControlMode = mode;
     }
 
-    @FXML
-    private void initialize() {
+    @FXML private void initialize() {
         webEngine = versionControlWebView.getEngine();
     }
 
@@ -112,9 +118,51 @@ public class VersionControlWindowController implements Localizable, FileChangeLi
                 Platform.runLater(() -> webEngine.loadContent(textToHtml));
                 break;
             case WORD:
-                // other logic
+                try {
+                    String[] oldTokens = oldContent.split("(?<=\\s)|(?=\\s+)");
+                    String[] newTokens = newContent.split("(?<=\\s)|(?=\\s+)");
+
+                    Patch<String> patch = DiffUtils.diff(Arrays.asList(oldTokens), Arrays.asList(newTokens));
+                    StringBuilder wordHighlightedText = new StringBuilder("<style>.added { background-color: #ccffcc; } .removed { background-color: #ffcccc; }</style><pre>");
+
+                    int startOfChangeIndex = 0;
+                    for (AbstractDelta<String> delta : patch.getDeltas()) {
+                        while (startOfChangeIndex < delta.getSource().getPosition()) {
+                            wordHighlightedText.append(oldTokens[startOfChangeIndex]);
+                            startOfChangeIndex++;
+                        }
+
+                        if (delta.getType() == DeltaType.DELETE || delta.getType() == DeltaType.CHANGE) {
+                            wordHighlightedText.append("<span class='removed'>");
+                            for (String line : delta.getSource().getLines()) {
+                                wordHighlightedText.append(escapeHtml(line));
+                            }
+                            wordHighlightedText.append("</span>");
+                        }
+
+                        if (delta.getType() == DeltaType.INSERT || delta.getType() == DeltaType.CHANGE) {
+                            wordHighlightedText.append("<span class='added'>");
+                            for (String line : delta.getTarget().getLines()) {
+                                wordHighlightedText.append(escapeHtml(line));
+                            }
+                            wordHighlightedText.append("</span>");
+                        }
+
+                        startOfChangeIndex += delta.getSource().size();
+                    }
+
+                    while (startOfChangeIndex < oldTokens.length) {
+                        wordHighlightedText.append(oldTokens[startOfChangeIndex++]);
+                    }
+
+                    wordHighlightedText.append("</pre>");
+                    String wordTextToHtml = "<html><body>" + wordHighlightedText.toString() + "</body></html>";
+                    Platform.runLater(() -> webEngine.loadContent(wordTextToHtml));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Platform.runLater(() -> webEngine.loadContent("<html><body><p>Error processing the content.</p></body></html>"));
+                }
                 break;
-            // other modes
         }
     }
 
