@@ -268,7 +268,7 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
         updateMonitoringTab(tabIdToUpdate, filePathValue, fileNameValue, frequency, toggleMonitoringValue, false, false, clearContentToggleValue);
     }
 
-    public void initialize() {
+    @FXML public void initialize() {
         bundle = LanguageManager.getResourceBundle();
 
         notificationManager = new NotificationManager(bundle);
@@ -282,6 +282,7 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
         toggleMonitoring.selectedProperty().addListener((observable, oldValue, newValue) -> {
             updateToggleButtonText();
         });
+        setTooltips();
     }
 
     private void updateMonitoringTab(String tabId, String filePath, String fileName, int monitoringFrequency, boolean toggleMonitoring, boolean openContentButton, boolean parseAsArrayToggle, boolean clearContentToggle) {
@@ -340,6 +341,15 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
         return bundle.getString(key);
     }
 
+    private void setTooltips() {
+        Tooltip.install(toggleMonitoring, new Tooltip(getTranslate("monitoringTabController.toggleMonitoring.tooltip")));
+        Tooltip.install(openContentButton, new Tooltip(getTranslate("monitoringTabController.openContentButton.tooltip")));
+        Tooltip.install(viewFileContentButton, new Tooltip(getTranslate("monitoringTabController.viewFileContentButton.tooltip")));
+        Tooltip.install(versionControlButton, new Tooltip(getTranslate("monitoringTabController.versionControlButton.tooltip")));
+        Tooltip.install(clearContentToggle, new Tooltip(getTranslate("monitoringTabController.clearContentToggle.tooltip")));
+        Tooltip.install(saveSettingsButton, new Tooltip(getTranslate("monitoringTabController.saveSettingsButton.tooltip")));
+    }
+
     @Override public void loadSavedLanguage() {
         String savedLanguage = settingsModel.loadLanguageSetting();
         Locale locale = LanguageManager.getLocale(savedLanguage);
@@ -363,6 +373,7 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
         // parseAsArrayToggle.setText(getTranslate("monitoringTabController.parseAsArrayToggle"));
         clearContentToggle.setText(getTranslate("monitoringTabController.clearContentToggle"));
         saveSettingsButton.setText(getTranslate("monitoringTabController.saveSettingsButton"));
+        setTooltips();
     }
 
     private void updateToggleButtonText() {
