@@ -27,6 +27,10 @@
     -fx-cursor: hand;
 }
 
+.clickable:hover {
+    -fx-background-color: #c3c3c3;
+}
+
 .footer {
     -fx-background-color: #f0f0f0;
 }
@@ -155,6 +159,10 @@
     -fx-background-color: #1763b1;
     -fx-text-fill: #ffffff;
     -fx-font-weight: bold;
+}
+
+#saveCategoryButton:hover, #saveSettingsButton:hover {
+    -fx-background-color: #1470b1;
 }
 
 /* dark-theme.css */

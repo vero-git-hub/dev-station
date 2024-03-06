@@ -14,9 +14,12 @@ import com.dev.station.service.FileMonitoringService;
 import com.dev.station.util.AlertUtils;
 import com.dev.station.util.FileUtils;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -47,6 +50,8 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
     @FXML public TextArea fileContentArea;
     @FXML public Button viewFileContentButton;
     @FXML public Button versionControlButton;
+    @FXML public Label versionControlModeLabel;
+    @FXML public ComboBox versionControlModeComboBox;
     ResourceBundle bundle;
     private NotificationManager notificationManager;
     private Tab myTab;
@@ -283,6 +288,19 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
             updateToggleButtonText();
         });
         setTooltips();
+        setComboBox();
+    }
+
+    private void setComboBox() {
+        ObservableList<String> versionControlModes = FXCollections.observableArrayList(
+                getTranslate("monitoringTabController.versionControlModeComboBox.symbol"),
+                getTranslate("monitoringTabController.versionControlModeComboBox.word"),
+                getTranslate("monitoringTabController.versionControlModeComboBox.line")
+        );
+        versionControlModeComboBox.setItems(versionControlModes);
+        versionControlModeComboBox.setValue(getTranslate("monitoringTabController.versionControlModeComboBox.symbol"));
+        versionControlModeComboBox.setOnMouseEntered(event -> versionControlModeComboBox.getScene().setCursor(Cursor.HAND));
+        versionControlModeComboBox.setOnMouseExited(event -> versionControlModeComboBox.getScene().setCursor(Cursor.DEFAULT));
     }
 
     private void updateMonitoringTab(String tabId, String filePath, String fileName, int monitoringFrequency, boolean toggleMonitoring, boolean openContentButton, boolean parseAsArrayToggle, boolean clearContentToggle) {
@@ -364,6 +382,7 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
         filePathLabel.setText(getTranslate("monitoringTabController.filePathLabel"));
         fileNameLabel.setText(getTranslate("monitoringTabController.fileNameLabel"));
         monitoringFrequencyLabel.setText(getTranslate("monitoringTabController.monitoringFrequencyLabel"));
+        versionControlModeLabel.setText(getTranslate("monitoringTabController.versionControlModeLabel"));
 
         updateToggleButtonText();
 
@@ -374,6 +393,7 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
         clearContentToggle.setText(getTranslate("monitoringTabController.clearContentToggle"));
         saveSettingsButton.setText(getTranslate("monitoringTabController.saveSettingsButton"));
         setTooltips();
+        setComboBox();
     }
 
     private void updateToggleButtonText() {
