@@ -292,7 +292,9 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
 
         String tabIdToUpdate = myTab.getId();
 
-        updateMonitoringTab(tabIdToUpdate, filePathValue, fileNameValue, frequency, toggleMonitoringValue, false, false, clearContentToggleValue);
+        String versionControlMode = versionControlModeComboBox.getValue().toString();
+
+        updateMonitoringTab(tabIdToUpdate, filePathValue, fileNameValue, frequency, toggleMonitoringValue, false, false, clearContentToggleValue, versionControlMode);
     }
 
     @FXML public void initialize() {
@@ -325,7 +327,7 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
         versionControlModeComboBox.setOnMouseExited(event -> versionControlModeComboBox.getScene().setCursor(Cursor.DEFAULT));
     }
 
-    private void updateMonitoringTab(String tabId, String filePath, String fileName, int monitoringFrequency, boolean toggleMonitoring, boolean openContentButton, boolean parseAsArrayToggle, boolean clearContentToggle) {
+    private void updateMonitoringTab(String tabId, String filePath, String fileName, int monitoringFrequency, boolean toggleMonitoring, boolean openContentButton, boolean parseAsArrayToggle, boolean clearContentToggle, String versionControlMode) {
         MonitoringJsonTabsManager jsonTabsManager = new MonitoringJsonTabsManager();
         List<MonitoringTabData> tabs = jsonTabsManager.loadMonitoringTabs(1, "Monitoring");
 
@@ -338,6 +340,7 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
                 tab.setOpenContentButton(openContentButton);
                 tab.setParseAsArrayToggle(parseAsArrayToggle);
                 tab.setClearContentToggle(clearContentToggle);
+                tab.setVersionControlMode(versionControlMode);
                 break;
             }
         }
