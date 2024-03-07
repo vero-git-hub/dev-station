@@ -87,83 +87,98 @@ public class VersionControlWindowController implements Localizable, FileChangeLi
     private void highlightChanges(String oldContent, String newContent) {
         switch (versionControlMode) {
             case SYMBOL:
-                StringBuilder highlightedText = new StringBuilder(
-                        "<style>"
-                                + ".added { background-color: #ccffcc; } "
-                                + ".removed { background-color: #ffcccc; } "
-                                + "</style><pre>"
-                );
-
-                StringsComparator comp = new StringsComparator(oldContent, newContent);
-                EditScript<Character> script = comp.getScript();
-                script.visit(new CommandVisitor<Character>() {
-                    @Override
-                    public void visitInsertCommand(Character object) {
-                        highlightedText.append("<span class='added'>").append(object).append("</span>");
-                    }
-
-                    @Override
-                    public void visitDeleteCommand(Character object) {
-                        highlightedText.append("<span class='removed'>").append(object).append("</span>");
-                    }
-
-                    @Override
-                    public void visitKeepCommand(Character object) {
-                        highlightedText.append(object);
-                    }
-                });
-
-                highlightedText.append("</pre>");
-                String textToHtml = "<html><body>" + highlightedText.toString() + "</body></html>";
-                Platform.runLater(() -> webEngine.loadContent(textToHtml));
+                highlightChangesBySymbol(oldContent, newContent);
                 break;
             case WORD:
-                try {
-                    String[] oldTokens = oldContent.split("(?<=\\s)|(?=\\s+)");
-                    String[] newTokens = newContent.split("(?<=\\s)|(?=\\s+)");
-
-                    Patch<String> patch = DiffUtils.diff(Arrays.asList(oldTokens), Arrays.asList(newTokens));
-                    StringBuilder wordHighlightedText = new StringBuilder("<style>.added { background-color: #ccffcc; } .removed { background-color: #ffcccc; }</style><pre>");
-
-                    int startOfChangeIndex = 0;
-                    for (AbstractDelta<String> delta : patch.getDeltas()) {
-                        while (startOfChangeIndex < delta.getSource().getPosition()) {
-                            wordHighlightedText.append(oldTokens[startOfChangeIndex]);
-                            startOfChangeIndex++;
-                        }
-
-                        if (delta.getType() == DeltaType.DELETE || delta.getType() == DeltaType.CHANGE) {
-                            wordHighlightedText.append("<span class='removed'>");
-                            for (String line : delta.getSource().getLines()) {
-                                wordHighlightedText.append(escapeHtml(line));
-                            }
-                            wordHighlightedText.append("</span>");
-                        }
-
-                        if (delta.getType() == DeltaType.INSERT || delta.getType() == DeltaType.CHANGE) {
-                            wordHighlightedText.append("<span class='added'>");
-                            for (String line : delta.getTarget().getLines()) {
-                                wordHighlightedText.append(escapeHtml(line));
-                            }
-                            wordHighlightedText.append("</span>");
-                        }
-
-                        startOfChangeIndex += delta.getSource().size();
-                    }
-
-                    while (startOfChangeIndex < oldTokens.length) {
-                        wordHighlightedText.append(oldTokens[startOfChangeIndex++]);
-                    }
-
-                    wordHighlightedText.append("</pre>");
-                    String wordTextToHtml = "<html><body>" + wordHighlightedText.toString() + "</body></html>";
-                    Platform.runLater(() -> webEngine.loadContent(wordTextToHtml));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Platform.runLater(() -> webEngine.loadContent("<html><body><p>Error processing the content.</p></body></html>"));
-                }
+                highlightChangesByWord(oldContent, newContent);
+                break;
+            case LINE:
+                highlightChangesByLine(oldContent, newContent);
                 break;
         }
+    }
+
+    private void highlightChangesBySymbol(String oldContent, String newContent) {
+        StringBuilder highlightedText = new StringBuilder(
+                "<style>"
+                        + ".added { background-color: #ccffcc; } "
+                        + ".removed { background-color: #ffcccc; } "
+                        + "</style><pre>"
+        );
+
+        StringsComparator comp = new StringsComparator(oldContent, newContent);
+        EditScript<Character> script = comp.getScript();
+        script.visit(new CommandVisitor<Character>() {
+            @Override
+            public void visitInsertCommand(Character object) {
+                highlightedText.append("<span class='added'>").append(escapeHtml(String.valueOf(object))).append("</span>");
+            }
+
+            @Override
+            public void visitDeleteCommand(Character object) {
+                highlightedText.append("<span class='removed'>").append(escapeHtml(String.valueOf(object))).append("</span>");
+            }
+
+            @Override
+            public void visitKeepCommand(Character object) {
+                highlightedText.append(escapeHtml(String.valueOf(object)));
+            }
+        });
+
+        highlightedText.append("</pre>");
+        String textToHtml = "<html><body>" + highlightedText.toString() + "</body></html>";
+        Platform.runLater(() -> webEngine.loadContent(textToHtml));
+    }
+
+    private void highlightChangesByWord(String oldContent, String newContent) {
+        try {
+            String[] oldTokens = oldContent.split("(?<=\\s)|(?=\\s+)");
+            String[] newTokens = newContent.split("(?<=\\s)|(?=\\s+)");
+
+            Patch<String> patch = DiffUtils.diff(Arrays.asList(oldTokens), Arrays.asList(newTokens));
+            StringBuilder wordHighlightedText = new StringBuilder("<style>.added { background-color: #ccffcc; } .removed { background-color: #ffcccc; }</style><pre>");
+
+            int startOfChangeIndex = 0;
+            for (AbstractDelta<String> delta : patch.getDeltas()) {
+                while (startOfChangeIndex < delta.getSource().getPosition()) {
+                    wordHighlightedText.append(oldTokens[startOfChangeIndex]);
+                    startOfChangeIndex++;
+                }
+
+                if (delta.getType() == DeltaType.DELETE || delta.getType() == DeltaType.CHANGE) {
+                    wordHighlightedText.append("<span class='removed'>");
+                    for (String line : delta.getSource().getLines()) {
+                        wordHighlightedText.append(escapeHtml(line));
+                    }
+                    wordHighlightedText.append("</span>");
+                }
+
+                if (delta.getType() == DeltaType.INSERT || delta.getType() == DeltaType.CHANGE) {
+                    wordHighlightedText.append("<span class='added'>");
+                    for (String line : delta.getTarget().getLines()) {
+                        wordHighlightedText.append(escapeHtml(line));
+                    }
+                    wordHighlightedText.append("</span>");
+                }
+
+                startOfChangeIndex += delta.getSource().size();
+            }
+
+            while (startOfChangeIndex < oldTokens.length) {
+                wordHighlightedText.append(oldTokens[startOfChangeIndex++]);
+            }
+
+            wordHighlightedText.append("</pre>");
+            String wordTextToHtml = "<html><body>" + wordHighlightedText.toString() + "</body></html>";
+            Platform.runLater(() -> webEngine.loadContent(wordTextToHtml));
+        } catch (Exception e) {
+            e.printStackTrace();
+            Platform.runLater(() -> webEngine.loadContent("<html><body><p>Error processing the content.</p></body></html>"));
+        }
+    }
+
+    private void highlightChangesByLine(String oldContent, String newContent) {
+        // TODO: write logic
     }
 
     @Override
