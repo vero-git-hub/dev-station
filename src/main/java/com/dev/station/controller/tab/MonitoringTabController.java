@@ -29,10 +29,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.*;
-import java.util.List;
-import java.util.Locale;
-import java.util.ResourceBundle;
-import java.util.Timer;
+import java.util.*;
 
 public class MonitoringTabController implements Localizable, FileChangeListener {
 
@@ -62,6 +59,8 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
     private Stage monitoringWindowStage;
     private Stage versionControlWindowStage;
     VersionControlMode mode;
+    private String selectedVersionControlMode;
+    MonitoringTabData tabData;
 
     public MonitoringTabController() {
         LanguageManager.registerForUpdates(this::updateUI);
@@ -74,6 +73,14 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
 
     public void setMyTab(Tab myTab) {
         this.myTab = myTab;
+    }
+
+    public MonitoringTabData getTabData() {
+        return tabData;
+    }
+
+    public void setTabData(MonitoringTabData tabData) {
+        this.tabData = tabData;
     }
 
     /**
@@ -373,6 +380,8 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
      * Loading user values
      */
     public void loadData(MonitoringTabData tabData) {
+        setTabData(tabData);
+
         filePath.setText(tabData.getFilePath());
         fileName.setText(tabData.getFileName());
         monitoringFrequency.setText(String.valueOf(tabData.getMonitoringFrequency()));
@@ -380,31 +389,7 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
         clearContentToggle.setSelected(tabData.isClearContentToggle());
 
         // Code to set the selected version control mode
-        String versionControlMode = tabData.getVersionControlMode();
-        if (versionControlMode != null && !versionControlMode.isEmpty()) {
-            switch (versionControlMode) {
-                case "символ":
-                case "symbol":
-                    versionControlMode = getTranslate("monitoringTabController.versionControlModeComboBox.symbol");
-                    break;
-                case "слово":
-                case "word":
-                    versionControlMode = getTranslate("monitoringTabController.versionControlModeComboBox.word");
-                    break;
-                case "строка":
-                case "line":
-                    versionControlMode = getTranslate("monitoringTabController.versionControlModeComboBox.line");
-                    break;
-                case "подсказка":
-                case "tooltip":
-                    versionControlMode = getTranslate("monitoringTabController.versionControlModeComboBox.tooltip");
-                    break;
-                default:
-                    versionControlMode = getTranslate("monitoringTabController.versionControlModeComboBox.symbol");
-            }
-
-            versionControlModeComboBox.getSelectionModel().select(versionControlMode);
-        }
+        setSelectedVersion(tabData.getVersionControlMode());
 
         // Code to start or stop monitoring
         if (toggleMonitoring.isSelected()) {
@@ -415,6 +400,34 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
             if (timer != null) {
                 stopMonitoring();
             }
+        }
+    }
+
+    private void setSelectedVersion(String versionControlMode) {
+        if (versionControlMode != null && !versionControlMode.isEmpty()) {
+            String translatedMode = "";
+            switch (versionControlMode) {
+                case "символ":
+                case "symbol":
+                    translatedMode = getTranslate("monitoringTabController.versionControlModeComboBox.symbol");
+                    break;
+                case "слово":
+                case "word":
+                    translatedMode = getTranslate("monitoringTabController.versionControlModeComboBox.word");
+                    break;
+                case "строка":
+                case "line":
+                    translatedMode = getTranslate("monitoringTabController.versionControlModeComboBox.line");
+                    break;
+                case "подсказка":
+                case "tooltip":
+                    translatedMode = getTranslate("monitoringTabController.versionControlModeComboBox.tooltip");
+                    break;
+                default:
+                    translatedMode = getTranslate("monitoringTabController.versionControlModeComboBox.symbol");
+            }
+
+            versionControlModeComboBox.getSelectionModel().select(translatedMode);
         }
     }
 
@@ -455,7 +468,17 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
         clearContentToggle.setText(getTranslate("monitoringTabController.clearContentToggle"));
         saveSettingsButton.setText(getTranslate("monitoringTabController.saveSettingsButton"));
         setTooltips();
-        setComboBox();
+
+        ObservableList<String> versionControlModes = FXCollections.observableArrayList(
+                getTranslate("monitoringTabController.versionControlModeComboBox.symbol"),
+                getTranslate("monitoringTabController.versionControlModeComboBox.word"),
+                getTranslate("monitoringTabController.versionControlModeComboBox.line"),
+                getTranslate("monitoringTabController.versionControlModeComboBox.tooltip")
+        );
+        versionControlModeComboBox.setItems(versionControlModes);
+        if(getTabData()!= null){
+            setSelectedVersion(getTabData().getVersionControlMode());
+        }
     }
 
     private void updateToggleButtonText() {
