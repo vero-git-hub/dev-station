@@ -45,7 +45,6 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
     @FXML public ToggleButton toggleMonitoring;
     @FXML public ToggleGroup monitoringToggleGroup;
     @FXML public Button openContentButton;
-    // @FXML public ToggleButton parseAsArrayToggle;
     @FXML public ToggleButton clearContentToggle;
     @FXML public Button saveSettingsButton;
     @FXML public TextArea fileContentArea;
@@ -204,6 +203,10 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
             case "line":
                 mode = VersionControlMode.LINE;
                 break;
+            case "подсказка":
+            case "tooltip":
+                mode = VersionControlMode.TOOLTIP;
+                break;
             default:
                 mode = VersionControlMode.SYMBOL;
         }
@@ -323,7 +326,8 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
         ObservableList<String> versionControlModes = FXCollections.observableArrayList(
                 getTranslate("monitoringTabController.versionControlModeComboBox.symbol"),
                 getTranslate("monitoringTabController.versionControlModeComboBox.word"),
-                getTranslate("monitoringTabController.versionControlModeComboBox.line")
+                getTranslate("monitoringTabController.versionControlModeComboBox.line"),
+                getTranslate("monitoringTabController.versionControlModeComboBox.tooltip")
         );
         versionControlModeComboBox.setItems(versionControlModes);
         versionControlModeComboBox.setOnMouseEntered(event -> versionControlModeComboBox.getScene().setCursor(Cursor.HAND));
@@ -364,17 +368,41 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
 
     public void updateUI(ResourceBundle bundle) {}
 
+    /**
+     * @param tabData
+     * Loading user values
+     */
     public void loadData(MonitoringTabData tabData) {
         filePath.setText(tabData.getFilePath());
         fileName.setText(tabData.getFileName());
         monitoringFrequency.setText(String.valueOf(tabData.getMonitoringFrequency()));
         toggleMonitoring.setSelected(tabData.isToggleMonitoring());
-        // parseAsArrayToggle.setSelected(tabData.isParseAsArrayToggle());
         clearContentToggle.setSelected(tabData.isClearContentToggle());
 
         // Code to set the selected version control mode
         String versionControlMode = tabData.getVersionControlMode();
         if (versionControlMode != null && !versionControlMode.isEmpty()) {
+            switch (versionControlMode) {
+                case "символ":
+                case "symbol":
+                    versionControlMode = getTranslate("monitoringTabController.versionControlModeComboBox.symbol");
+                    break;
+                case "слово":
+                case "word":
+                    versionControlMode = getTranslate("monitoringTabController.versionControlModeComboBox.word");
+                    break;
+                case "строка":
+                case "line":
+                    versionControlMode = getTranslate("monitoringTabController.versionControlModeComboBox.line");
+                    break;
+                case "подсказка":
+                case "tooltip":
+                    versionControlMode = getTranslate("monitoringTabController.versionControlModeComboBox.tooltip");
+                    break;
+                default:
+                    versionControlMode = getTranslate("monitoringTabController.versionControlModeComboBox.symbol");
+            }
+
             versionControlModeComboBox.getSelectionModel().select(versionControlMode);
         }
 
@@ -424,7 +452,6 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
         openContentButton.setText(getTranslate("monitoringTabController.openContentButton"));
         viewFileContentButton.setText(getTranslate("monitoringTabController.viewFileContentButton"));
         versionControlButton.setText(getTranslate("monitoringTabController.versionControlButton"));
-        // parseAsArrayToggle.setText(getTranslate("monitoringTabController.parseAsArrayToggle"));
         clearContentToggle.setText(getTranslate("monitoringTabController.clearContentToggle"));
         saveSettingsButton.setText(getTranslate("monitoringTabController.saveSettingsButton"));
         setTooltips();
