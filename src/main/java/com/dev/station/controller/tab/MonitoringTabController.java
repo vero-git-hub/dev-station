@@ -200,6 +200,10 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
             case "word":
                 mode = VersionControlMode.WORD;
                 break;
+            case "строка":
+            case "line":
+                mode = VersionControlMode.LINE;
+                break;
             default:
                 mode = VersionControlMode.SYMBOL;
         }
