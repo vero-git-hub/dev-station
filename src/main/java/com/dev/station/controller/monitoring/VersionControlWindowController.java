@@ -6,8 +6,10 @@ import com.dev.station.model.SettingsModel;
 import com.dev.station.service.FileChangeListener;
 import com.dev.station.service.FileContentProvider;
 import com.dev.station.util.AlertUtils;
+import com.github.difflib.DiffUtils;
 import com.github.difflib.patch.AbstractDelta;
 import com.github.difflib.patch.DeltaType;
+import com.github.difflib.patch.Patch;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.web.WebEngine;
@@ -15,13 +17,9 @@ import javafx.scene.web.WebView;
 import org.apache.commons.text.diff.CommandVisitor;
 import org.apache.commons.text.diff.EditScript;
 import org.apache.commons.text.diff.StringsComparator;
-import com.github.difflib.patch.AbstractDelta;
-import com.github.difflib.DiffUtils;
-import com.github.difflib.patch.Patch;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -178,7 +176,51 @@ public class VersionControlWindowController implements Localizable, FileChangeLi
     }
 
     private void highlightChangesByLine(String oldContent, String newContent) {
-        // TODO: write logic
+        StringBuilder highlightedText = new StringBuilder("<style>");
+        highlightedText.append(".added { background-color: #ccffcc; } ");
+        highlightedText.append(".removed { background-color: #ffcccc; }</style><pre>");
+
+        String[] oldLines = oldContent.split("\\r?\\n");
+        String[] newLines = newContent.split("\\r?\\n");
+
+        int minLength = Math.min(oldLines.length, newLines.length);
+        for (int i = 0; i < minLength; i++) {
+            String oldLine = oldLines[i];
+            String newLine = newLines[i];
+
+            if (oldLine.equals(newLine)) {
+                highlightedText.append(escapeHtml(oldLine) + "\n");
+            } else {
+                if (i < oldLines.length) {
+                    highlightedText.append("<span class='removed'>");
+                    highlightedText.append(escapeHtml(oldLine) + "\n");
+                    highlightedText.append("</span>");
+                }
+                if (i < newLines.length) {
+                    highlightedText.append("<span class='added'>");
+                    highlightedText.append(escapeHtml(newLine) + "\n");
+                    highlightedText.append("</span>");
+                }
+            }
+        }
+
+        if (oldLines.length > newLines.length) {
+            for (int i = minLength; i < oldLines.length; i++) {
+                highlightedText.append("<span class='removed'>");
+                highlightedText.append(escapeHtml(oldLines[i]) + "\n");
+                highlightedText.append("</span>");
+            }
+        } else if (newLines.length > oldLines.length) {
+            for (int i = minLength; i < newLines.length; i++) {
+                highlightedText.append("<span class='added'>");
+                highlightedText.append(escapeHtml(newLines[i]) + "\n");
+                highlightedText.append("</span>");
+            }
+        }
+
+        highlightedText.append("</pre>");
+        String textToHtml = "<html><body>" + highlightedText.toString() + "</body></html>";
+        Platform.runLater(() -> webEngine.loadContent(textToHtml));
     }
 
     @Override
