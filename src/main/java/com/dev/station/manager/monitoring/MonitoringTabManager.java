@@ -87,28 +87,35 @@ public class MonitoringTabManager {
             MonitoringJsonTabsManager monitoringJsonTabsManager = new MonitoringJsonTabsManager();
             List<MonitoringTabData> currentTabs = monitoringJsonTabsManager.loadMonitoringTabs(1, screenType);
 
-            MonitoringTabData tabData = new MonitoringTabData();
-            tabData.setDefault(false);
-            tabData.setName("New Monitoring Tab");
-            tabData.setId(UUID.randomUUID().toString());
-            tabData.setFilePath("/path/to/file");
-            tabData.setFileName("monitoring_file.txt");
-            tabData.setMonitoringFrequency(1);
-            tabData.setToggleMonitoring(true);
-            tabData.setOpenContentButton(true);
-            tabData.setParseAsArrayToggle(false);
-            tabData.setClearContentToggle(true);
-
+            MonitoringTabData tabData = createEmptyMonitoringTabData();
             currentTabs.add(tabData);
+
             monitoringJsonTabsManager.saveMonitoringTabs(1, screenType, currentTabs);
 
             setupTabContextMenu(newTab);
 
             return newTab;
         } catch (IOException e) {
+            AlertUtils.showErrorAlert("", e.getMessage());
             e.printStackTrace();
             return null;
         }
+    }
+
+    private MonitoringTabData createEmptyMonitoringTabData() {
+        return new MonitoringTabData(
+                false,
+                "New tab",
+                UUID.randomUUID().toString(),
+                "/path/to/file",
+                "monitoring_file.txt",
+                1,
+                false,
+                false,
+                false,
+                false,
+                "symbol"
+        );
     }
 
     private void setupTabContextMenu(Tab tab) {

@@ -124,9 +124,9 @@ public class MonitoringTabData {
     }
 
     /**
-     * Method for creating an object from JSON
      * @param jsonObject
      * @return
+     * Method for creating an object from JSON
      */
     public static MonitoringTabData fromJson(JSONObject jsonObject) {
         return new MonitoringTabData(
@@ -162,5 +162,22 @@ public class MonitoringTabData {
         jsonObject.put("clearContentToggle", this.clearContentToggle);
         jsonObject.put("versionControlMode", this.versionControlMode);
         return jsonObject;
+    }
+
+    @Override
+    public String toString() {
+        return "MonitoringTabData{" +
+                "isDefault=" + isDefault +
+                ", name='" + name + '\'' +
+                ", id='" + id + '\'' +
+                ", filePath='" + filePath + '\'' +
+                ", fileName='" + fileName + '\'' +
+                ", monitoringFrequency=" + monitoringFrequency +
+                ", toggleMonitoring=" + toggleMonitoring +
+                ", openContentButton=" + openContentButton +
+                ", parseAsArrayToggle=" + parseAsArrayToggle +
+                ", clearContentToggle=" + clearContentToggle +
+                ", versionControlMode='" + versionControlMode + '\'' +
+                '}';
     }
 }
