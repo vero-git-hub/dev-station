@@ -77,17 +77,18 @@ public class MonitoringTabManager {
             MonitoringTabController tabController = loader.getController();
 
             String tabId = UUID.randomUUID().toString();
-            Tab newTab = new Tab("New tab");
+            String tabText = "New tab";
+
+            Tab newTab = new Tab(tabText);
             newTab.setContent(content);
             newTab.setId(tabId);
             tabController.setMyTab(newTab);
-            //tabController.setupTableColumns();
             newTab.getStyleClass().add("clickable");
 
             MonitoringJsonTabsManager monitoringJsonTabsManager = new MonitoringJsonTabsManager();
             List<MonitoringTabData> currentTabs = monitoringJsonTabsManager.loadMonitoringTabs(1, screenType);
 
-            MonitoringTabData tabData = createEmptyMonitoringTabData();
+            MonitoringTabData tabData = createEmptyMonitoringTabData(tabText, tabId);
             currentTabs.add(tabData);
 
             monitoringJsonTabsManager.saveMonitoringTabs(1, screenType, currentTabs);
@@ -102,11 +103,11 @@ public class MonitoringTabManager {
         }
     }
 
-    private MonitoringTabData createEmptyMonitoringTabData() {
+    private MonitoringTabData createEmptyMonitoringTabData(String tabText, String tabId) {
         return new MonitoringTabData(
                 false,
-                "New tab",
-                UUID.randomUUID().toString(),
+                tabText,
+                tabId,
                 "/path/to/file",
                 "monitoring_file.txt",
                 1,
