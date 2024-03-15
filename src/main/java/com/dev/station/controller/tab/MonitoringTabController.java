@@ -301,7 +301,6 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
         }
 
         boolean toggleMonitoringValue = toggleMonitoring.isSelected();
-        // boolean parseAsArrayToggleValue = parseAsArrayToggle.isSelected();
         boolean clearContentToggleValue = clearContentToggle.isSelected();
 
         String tabIdToUpdate = myTab.getId();
@@ -345,8 +344,10 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
         MonitoringJsonTabsManager jsonTabsManager = new MonitoringJsonTabsManager();
         List<MonitoringTabData> tabs = jsonTabsManager.loadMonitoringTabs(1, "Monitoring");
 
+        boolean isTabExists = false;
+
         for (MonitoringTabData tab : tabs) {
-            if (tab.getId().equals(tabId)) {
+            if (tab.getId().equals(getMyTab().getId())) {
                 tab.setFilePath(filePath);
                 tab.setFileName(fileName);
                 tab.setMonitoringFrequency(monitoringFrequency);
@@ -355,15 +356,21 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
                 tab.setParseAsArrayToggle(parseAsArrayToggle);
                 tab.setClearContentToggle(clearContentToggle);
                 tab.setVersionControlMode(versionControlMode);
+
+                isTabExists = true;
                 break;
             }
         }
 
-        boolean success = jsonTabsManager.saveMonitoringTabs(1, "Monitoring", tabs);
-        if (success) {
-            AlertUtils.showSuccessAlert("",getTranslate("alerts.successSaving"));
+        if(!isTabExists) {
+            AlertUtils.showErrorAlert("", "No update tab found.");
         } else {
-            AlertUtils.showErrorAlert("", getTranslate("alerts.errorSaving"));
+            boolean success = jsonTabsManager.saveMonitoringTabs(1, "Monitoring", tabs);
+            if (success) {
+                AlertUtils.showSuccessAlert("",getTranslate("alerts.successSaving"));
+            } else {
+                AlertUtils.showErrorAlert("", getTranslate("alerts.errorSaving"));
+            }
         }
     }
 
