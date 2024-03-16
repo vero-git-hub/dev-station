@@ -1,6 +1,6 @@
 package com.dev.station.entity.driver;
 
-import com.dev.station.util.AlertUtils;
+import com.dev.station.util.alert.AlertUtils;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

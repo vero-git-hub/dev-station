@@ -63,3 +63,7 @@
 #categoryContainer {
     -fx-background-color: #3c3f41;
 }
+
+#notificationMessageLabel {
+    -fx-text-fill: #f5efed !important;
+}

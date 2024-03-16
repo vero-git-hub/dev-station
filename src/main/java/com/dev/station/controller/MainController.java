@@ -2,6 +2,7 @@ package com.dev.station.controller;
 
 import com.dev.station.Localizable;
 import com.dev.station.controller.sidebar.DebuggingController;
+import com.dev.station.util.alert.HeaderAlertUtils;
 import com.dev.station.manager.LanguageManager;
 import com.dev.station.model.SettingsModel;
 import javafx.event.ActionEvent;
@@ -13,6 +14,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
@@ -22,6 +24,7 @@ import java.util.ResourceBundle;
 
 public class MainController implements Localizable {
 
+    @FXML public HBox notificationArea;
     @FXML private StackPane contentArea;
     @FXML private Button scriptsButton;
     @FXML private Button clearButton;
@@ -39,6 +42,7 @@ public class MainController implements Localizable {
     ResourceBundle bundle;
     private SettingsModel settingsModel;
     private DebuggingController debuggingController;
+    private HeaderAlertUtils notificationManager;
 
     public MainController() {
         LanguageManager.registerForUpdates(this::updateUI);
@@ -49,7 +53,9 @@ public class MainController implements Localizable {
     public void initialize() {
         loadSavedLanguage();
         setButtonActions();
+        notificationManager = new HeaderAlertUtils(notificationArea);
         footerLabel.setText("v0.4");
+        notificationManager.showSuccessMessage(getTranslate("helloMessage"));
     }
 
     private void removeActiveButtonClass() {
@@ -312,6 +318,8 @@ public class MainController implements Localizable {
     }
 
     @FXML public void switchTheme(ActionEvent actionEvent) {
+        notificationArea.getChildren().clear();
+
         Scene scene = switchThemeButton.getScene();
         boolean isDark = scene.getStylesheets().stream().anyMatch(s -> s.contains("dark-theme.css"));
         scene.getStylesheets().clear();

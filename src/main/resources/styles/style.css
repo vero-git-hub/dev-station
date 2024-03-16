@@ -233,3 +233,9 @@
 .largeText {
     -fx-font-size: 14px;
 }
+
+#notificationMessageLabel {
+    -fx-text-fill: black ;
+    -fx-font-weight: bold;
+    -fx-font-size: 20px;
+}

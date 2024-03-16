@@ -2,7 +2,7 @@ package com.dev.station.controller.header;
 
 import com.dev.station.entity.ImageSettings;
 import com.dev.station.model.SettingsModel;
-import com.dev.station.util.AlertUtils;
+import com.dev.station.util.alert.AlertUtils;
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;

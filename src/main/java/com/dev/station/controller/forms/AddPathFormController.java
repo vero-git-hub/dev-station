@@ -6,7 +6,7 @@ import com.dev.station.manager.clear.PathData;
 import com.dev.station.manager.clear.TabData;
 import com.dev.station.manager.LanguageManager;
 
-import com.dev.station.util.AlertUtils;
+import com.dev.station.util.alert.AlertUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
