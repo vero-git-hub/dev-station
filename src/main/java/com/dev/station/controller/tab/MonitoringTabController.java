@@ -88,6 +88,16 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
      * Start and stop monitoring in textArea
      */
     @FXML public void handleMonitoringAction(ActionEvent actionEvent) {
+        String filePathValue = filePath.getText();
+        String fileNameValue = fileName.getText();
+
+        if (!fileExists(filePathValue, fileNameValue)) {
+            AlertUtils.showErrorAlert("", getTranslate("alert.fileNotFound") + " " + filePathValue + File.separator + fileNameValue);
+            doIfFileNotExists();
+
+            return;
+        }
+
         if (toggleMonitoring.isSelected()) {
             fileContentArea.setVisible(true);
             startMonitoring();
@@ -106,6 +116,15 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
      * Shows file contents from textArea in new window (if monitoring is active)
      */
     @FXML public void handleOpenContentAction(ActionEvent event) {
+        String filePathValue = filePath.getText();
+        String fileNameValue = fileName.getText();
+
+        if (!fileExists(filePathValue, fileNameValue)) {
+            AlertUtils.showErrorAlert("", getTranslate("alert.fileNotFound") + " " + filePathValue + File.separator + fileNameValue);
+            doIfFileNotExists();
+            return;
+        }
+
         if (!toggleMonitoring.isSelected()) {
             AlertUtils.showErrorAlert("", getTranslate("monitoringTabController.monitoringNotEnabled"));
             return;
@@ -151,6 +170,15 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
      * Don't use with clear content button.
      */
     @FXML public void handleVersionControlAction(ActionEvent actionEvent) {
+        String filePathValue = filePath.getText();
+        String fileNameValue = fileName.getText();
+
+        if (!fileExists(filePathValue, fileNameValue)) {
+            AlertUtils.showErrorAlert("", getTranslate("alert.fileNotFound") + " " + filePathValue + File.separator + fileNameValue);
+            doIfFileNotExists();
+            return;
+        }
+
         if (!toggleMonitoring.isSelected()) {
             AlertUtils.showErrorAlert("", getTranslate("monitoringTabController.monitoringNotEnabled"));
             return;
@@ -190,8 +218,19 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
             versionControlWindowStage.show();
             fileContentArea.setVisible(false);
         } catch (IOException e) {
-            e.printStackTrace();
             AlertUtils.showErrorAlert("", e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private void doIfFileNotExists() {
+        toggleMonitoring.setSelected(false);
+
+        stopMonitoring();
+        fileContentArea.setVisible(false);
+        if (monitoringWindowStage != null) {
+            monitoringWindowStage.close();
+            monitoringWindowStage = null;
         }
     }
 
@@ -221,7 +260,7 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
     }
 
     @FXML public void handleViewFileAction(ActionEvent actionEvent) {
-        fullFilePath = filePath.getText() + "/" + fileName.getText();
+        fullFilePath = filePath.getText() + "\\" + fileName.getText();
 
         try {
             File file = new File(fullFilePath);
@@ -307,7 +346,18 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
 
         String versionControlMode = versionControlModeComboBox.getValue().toString();
 
+        if (!fileExists(filePathValue, fileNameValue)) {
+            AlertUtils.showErrorAlert("", getTranslate("alert.fileNotFound") + " " + filePathValue + File.separator + fileNameValue);
+            return;
+        }
+
         updateMonitoringTab(tabIdToUpdate, filePathValue, fileNameValue, frequency, toggleMonitoringValue, false, false, clearContentToggleValue, versionControlMode);
+    }
+
+    private boolean fileExists(String filePath, String fileName) {
+        String fullFilePath = filePath + File.separator + fileName;
+        File file = new File(fullFilePath);
+        return file.exists();
     }
 
     @FXML public void initialize() {
