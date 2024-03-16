@@ -322,8 +322,13 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
         updateToggleButtonText();
 
         toggleMonitoring.selectedProperty().addListener((observable, oldValue, newValue) -> {
-            updateToggleButtonText();
+            updateToggleMonitoring();
         });
+
+        clearContentToggle.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            updateClearContentToggle();
+        });
+
         setTooltips();
         setComboBox();
     }
@@ -472,7 +477,7 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
         openContentButton.setText(getTranslate("monitoringTabController.openContentButton"));
         viewFileContentButton.setText(getTranslate("monitoringTabController.viewFileContentButton"));
         versionControlButton.setText(getTranslate("monitoringTabController.versionControlButton"));
-        clearContentToggle.setText(getTranslate("monitoringTabController.clearContentToggle"));
+
         saveSettingsButton.setText(getTranslate("monitoringTabController.saveSettingsButton"));
         setTooltips();
 
@@ -489,10 +494,23 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
     }
 
     private void updateToggleButtonText() {
+        updateToggleMonitoring();
+        updateClearContentToggle();
+    }
+
+    private void updateToggleMonitoring() {
         if (toggleMonitoring.isSelected()) {
             toggleMonitoring.setText(getTranslate("monitoringTabController.toggleMonitoring.on"));
         } else {
             toggleMonitoring.setText(getTranslate("monitoringTabController.toggleMonitoring.off"));
+        }
+    }
+
+    private void updateClearContentToggle() {
+        if(clearContentToggle.isSelected()) {
+            clearContentToggle.setText(getTranslate("monitoringTabController.clearContentToggle.on"));
+        } else {
+            clearContentToggle.setText(getTranslate("monitoringTabController.clearContentToggle.off"));
         }
     }
 
