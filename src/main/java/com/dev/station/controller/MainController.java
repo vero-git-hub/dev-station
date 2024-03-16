@@ -49,7 +49,7 @@ public class MainController implements Localizable {
     public void initialize() {
         loadSavedLanguage();
         setButtonActions();
-        footerLabel.setText("v0.3");
+        footerLabel.setText("v0.4");
     }
 
     private void removeActiveButtonClass() {
