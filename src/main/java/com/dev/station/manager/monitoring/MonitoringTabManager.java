@@ -3,7 +3,7 @@ package com.dev.station.manager.monitoring;
 import com.dev.station.controller.sidebar.MonitoringController;
 import com.dev.station.controller.tab.MonitoringTabController;
 import com.dev.station.manager.LanguageManager;
-import com.dev.station.util.AlertUtils;
+import com.dev.station.util.alert.AlertUtils;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.*;

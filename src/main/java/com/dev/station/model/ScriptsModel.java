@@ -2,7 +2,7 @@ package com.dev.station.model;
 
 import com.dev.station.entity.CategoryData;
 import com.dev.station.entity.ProgramData;
-import com.dev.station.util.AlertUtils;
+import com.dev.station.util.alert.AlertUtils;
 import javafx.event.ActionEvent;
 import org.json.JSONArray;
 import org.json.JSONObject;

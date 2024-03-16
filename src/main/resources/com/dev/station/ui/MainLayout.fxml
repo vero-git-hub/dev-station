@@ -21,7 +21,8 @@
                 </graphic>
             </Button>
 
-            <Region HBox.hgrow="ALWAYS"/>
+<!--            <Region HBox.hgrow="ALWAYS"/>-->
+            <HBox fx:id="notificationArea" HBox.hgrow="ALWAYS" alignment="CENTER" />
 
             <ComboBox fx:id="languageComboBox" styleClass="language-combo-box, clickable">
                 <items>

@@ -8,7 +8,7 @@ import com.dev.station.manager.LaunchManager;
 import com.dev.station.manager.NotificationManager;
 import com.dev.station.model.ScriptsModel;
 import com.dev.station.model.SettingsModel;
-import com.dev.station.util.AlertUtils;
+import com.dev.station.util.alert.AlertUtils;
 import com.dev.station.util.FileUtils;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;

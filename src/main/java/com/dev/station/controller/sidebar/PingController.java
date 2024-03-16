@@ -3,7 +3,7 @@ package com.dev.station.controller.sidebar;
 import com.dev.station.Localizable;
 import com.dev.station.manager.LanguageManager;
 import com.dev.station.model.SettingsModel;
-import com.dev.station.util.AlertUtils;
+import com.dev.station.util.alert.AlertUtils;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;

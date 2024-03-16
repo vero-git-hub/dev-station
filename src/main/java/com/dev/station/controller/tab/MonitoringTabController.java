@@ -12,7 +12,7 @@ import com.dev.station.model.SettingsModel;
 import com.dev.station.service.FileChangeListener;
 import com.dev.station.service.FileContentProvider;
 import com.dev.station.service.FileMonitoringService;
-import com.dev.station.util.AlertUtils;
+import com.dev.station.util.alert.AlertUtils;
 import com.dev.station.util.FileUtils;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;

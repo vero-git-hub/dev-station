@@ -1,4 +1,4 @@
-package com.dev.station.util;
+package com.dev.station.util.alert;
 
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;

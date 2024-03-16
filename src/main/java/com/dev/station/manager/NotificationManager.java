@@ -1,6 +1,6 @@
 package com.dev.station.manager;
 
-import com.dev.station.util.AlertUtils;
+import com.dev.station.util.alert.AlertUtils;
 
 import java.util.ResourceBundle;
 

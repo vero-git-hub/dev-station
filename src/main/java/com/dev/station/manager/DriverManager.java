@@ -2,7 +2,7 @@ package com.dev.station.manager;
 
 import com.dev.station.entity.WebParser;
 import com.dev.station.entity.driver.VersionExtractor;
-import com.dev.station.util.AlertUtils;
+import com.dev.station.util.alert.AlertUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
