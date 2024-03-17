@@ -3,6 +3,7 @@ package com.dev.station.controller.tab;
 import com.dev.station.Localizable;
 import com.dev.station.controller.monitoring.VersionControlMode;
 import com.dev.station.controller.monitoring.VersionControlWindowController;
+import com.dev.station.logs.JsonLogger;
 import com.dev.station.manager.LanguageManager;
 import com.dev.station.manager.NotificationManager;
 import com.dev.station.manager.WindowManager;
@@ -189,22 +190,30 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
             return;
         }
 
+        JsonLogger.log("INFO", "1. Let's start loading FXML.");
+
         try {
+            JsonLogger.log("INFO", "2. Create FXMLLoader.");
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/dev/station/ui/monitoring/VersionControlWindow.fxml"));
+
+            JsonLogger.log("INFO", "3. Loading FXML.");
             Parent root = loader.load();
 
+            JsonLogger.log("INFO", "4. FXML loaded successfully.");
             VersionControlWindowController controller = loader.getController();
             controller.setInitialContent(fileContentArea.getText());
 
+            JsonLogger.log("INFO", "5. Setting up version control mode.");
             // Set version control mode
             controller.setVersionControlMode(getSelectedVersionControlMode());
 
+            JsonLogger.log("INFO", "6. Setting up a file change listener.");
             monitoringService.setFileChangeListener(controller);
 
+            JsonLogger.log("INFO", "7. Displaying the version control window.");
             Scene scene = new Scene(root, 825, 600);
             versionControlWindowStage = new Stage();
             versionControlWindowStage.setTitle(getTranslate("versionControlWindowController.title"));
-
             versionControlWindowStage.setScene(scene);
 
             versionControlWindowStage.setOnCloseRequest(windowEvent -> {
@@ -215,9 +224,13 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
             });
 
             WindowManager.addStage(versionControlWindowStage);
+
+            JsonLogger.log("INFO", "8. The version control window has been successfully created. Displaying...");
             versionControlWindowStage.show();
             fileContentArea.setVisible(false);
-        } catch (IOException e) {
+
+            JsonLogger.log("INFO", "9. The window is successfully opened for: " + filePathValue + " -> " + fileNameValue);
+        } catch (Throwable e) {
             AlertUtils.showErrorAlert("", e.getMessage());
             e.printStackTrace();
         }
