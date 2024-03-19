@@ -9,6 +9,8 @@ import com.dev.station.manager.LanguageManager;
 import com.dev.station.manager.NotificationManager;
 import com.dev.station.model.SettingsModel;
 import com.dev.station.util.ValidUtils;
+import com.dev.station.util.alert.AlertUtils;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
@@ -26,6 +28,7 @@ public class SettingsController implements Localizable {
     @FXML private CheckBox useOriginalSizeCheckbox;
     @FXML private TextField websiteUrl;
     @FXML private TextField driverFolderPathField;
+    @FXML public Tab generalTab;
     @FXML private Tab driverTab;
     @FXML private Tab imagesTab;
     @FXML private TitledPane driverSettingsAccordion;
@@ -38,16 +41,20 @@ public class SettingsController implements Localizable {
     @FXML public Label imageWidthLabel;
     @FXML public Label imageHeightLabel;
     @FXML private Button cleanRegistry;
+    @FXML public CheckBox developerModeCheckbox;
     private NotificationManager notificationManager;
     private SettingsModel settingsModel;
+    ResourceBundle bundle;
 
     public SettingsController() {
         LanguageManager.registerForUpdates(this::updateUI);
-        settingsModel = new SettingsModel();
+        settingsModel = new SettingsModel(this);
     }
 
     @FXML public void initialize() {
-        notificationManager = new NotificationManager(LanguageManager.getResourceBundle());
+        bundle = LanguageManager.getResourceBundle();
+
+        notificationManager = new NotificationManager(bundle);
         LanguageManager.registerNotificationManager(notificationManager);
 
         loadSavedLanguage();
@@ -107,6 +114,19 @@ public class SettingsController implements Localizable {
         RegistryCleaner.deleteAppRegistryFolder("Software\\JavaSoft\\Prefs\\com\\dev");
     }
 
+    @FXML
+    protected void toggleDeveloperMode(ActionEvent event) {
+        if (developerModeCheckbox.isSelected()) {
+            // TODO: Logic to enable developer mode
+        } else {
+            // TODO: Logic to disable developer mode
+        }
+    }
+
+    @FXML public void saveGeneralSettings(ActionEvent actionEvent) {
+        settingsModel.saveDeveloperModeSetting(developerModeCheckbox.isSelected());
+    }
+
     private void downloadUserValues() {
         downloadSeleniumValues();
         downloadImagesValues();
@@ -114,6 +134,9 @@ public class SettingsController implements Localizable {
         DriverSettings driverSettings = settingsModel.readDriverSettings();
         websiteUrl.setText(driverSettings.getWebsiteUrl());
         driverFolderPathField.setText(driverSettings.getPath());
+
+        boolean isDeveloperModeEnabled = settingsModel.loadDeveloperModeSetting();
+        developerModeCheckbox.setSelected(isDeveloperModeEnabled);
     }
 
     private void downloadImagesValues() {
@@ -143,6 +166,10 @@ public class SettingsController implements Localizable {
         }
     }
 
+    public String getTranslate(String key) {
+        return bundle.getString(key);
+    }
+
     @Override public void loadSavedLanguage() {
         String savedLanguage = settingsModel.loadLanguageSetting();
         Locale locale = LanguageManager.getLocale(savedLanguage);
@@ -159,6 +186,7 @@ public class SettingsController implements Localizable {
 
         this.notificationManager = new NotificationManager(bundle);
         
+        generalTab.setText(bundle.getString("settingsTabGeneral"));
         driverTab.setText(bundle.getString("settingsTabDriver"));
         imagesTab.setText(bundle.getString("settingsTabImages"));
 
@@ -177,5 +205,6 @@ public class SettingsController implements Localizable {
         imageHeightLabel.setText(bundle.getString("imageHeightLabel"));
 
         cleanRegistry.setText(bundle.getString("cleanRegistry"));
+        developerModeCheckbox.setText(bundle.getString("developerModeCheckbox"));
     }
 }

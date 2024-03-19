@@ -1,16 +1,27 @@
 package com.dev.station.model;
 
+import com.dev.station.controller.header.SettingsController;
 import com.dev.station.entity.DriverSettings;
 import com.dev.station.entity.ImageSettings;
 import com.dev.station.entity.SeleniumSettings;
+import com.dev.station.util.alert.AlertUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 public class SettingsModel {
     private static final String JSON_FILE_PATH = "ds_settings.json";
+    SettingsController settingsController;
+
+    public SettingsModel() {
+    }
+
+    public SettingsModel(SettingsController settingsController) {
+        this.settingsController = settingsController;
+    }
 
     public void handleSaveDriverSettings(String websiteUrlText, String pathFieldText) {
         try {
@@ -252,6 +263,74 @@ public class SettingsModel {
             e.printStackTrace();
         }
         return null;
+    }
+
+    /**
+     * @param isEnabled
+     * Saving developer mode settings
+     */
+    public void saveDeveloperModeSetting(boolean isEnabled) {
+        try {
+            JSONArray settingsArray;
+            // Load an existing JSON file
+            try {
+                String content = new String(Files.readAllBytes(Paths.get(JSON_FILE_PATH)));
+                settingsArray = new JSONArray(content);
+            } catch (Exception e) {
+                settingsArray = new JSONArray();
+            }
+
+            boolean found = false;
+            for (int i = 0; i < settingsArray.length(); i++) {
+                JSONObject settings = settingsArray.getJSONObject(i);
+                if (settings.getInt("id") == 1) {
+                    // Update developer mode settings
+                    settings.put("developerMode", isEnabled);
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) {
+                // If settings for id=1 are not found, create a new settings object
+                JSONObject newSettings = new JSONObject();
+                newSettings.put("id", 1);
+                newSettings.put("developerMode", isEnabled);
+                settingsArray.put(newSettings);
+            }
+
+            // Save updated JSON back to file
+            Files.write(Paths.get(JSON_FILE_PATH), settingsArray.toString(4).getBytes(StandardCharsets.UTF_8));
+            AlertUtils.showSuccessAlert("", settingsController.getTranslate("successSaveSettings"));
+        } catch (IOException e) {
+            AlertUtils.showErrorAlert("", e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * @return boolean
+     *
+     */
+    public boolean loadDeveloperModeSetting() {
+        try {
+            // Load the contents of the JSON file
+            String content = new String(Files.readAllBytes(Paths.get(JSON_FILE_PATH)));
+            JSONArray settingsArray = new JSONArray(content);
+
+            // Search for settings for user with id=1
+            for (int i = 0; i < settingsArray.length(); i++) {
+                JSONObject settings = settingsArray.getJSONObject(i);
+                if (settings.getInt("id") == 1) {
+                    // Return the developer mode state if the setting is found
+                    return settings.optBoolean("developerMode", false); // Return false by default if the key is missing
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // In case of any errors or if settings for id=1 are not found, return false
+        return false;
     }
 
 }
