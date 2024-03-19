@@ -15,6 +15,8 @@ import java.nio.charset.StandardCharsets;
 public class SettingsModel {
     private static final String JSON_FILE_PATH = "ds_settings.json";
     SettingsController settingsController;
+    // Cache for developer mode status
+    private static Boolean developerModeCached = null;
 
     public SettingsModel() {
     }
@@ -266,8 +268,8 @@ public class SettingsModel {
     }
 
     /**
-     * @param isEnabled
-     * Saving developer mode settings
+     * Saving developer mode settings and updating the cache
+     * @param isEnabled The new state of developer mode to be saved
      */
     public void saveDeveloperModeSetting(boolean isEnabled) {
         try {
@@ -301,6 +303,10 @@ public class SettingsModel {
 
             // Save updated JSON back to file
             Files.write(Paths.get(JSON_FILE_PATH), settingsArray.toString(4).getBytes(StandardCharsets.UTF_8));
+
+            // Update the cache with the new value
+            developerModeCached = isEnabled;
+
             AlertUtils.showSuccessAlert("", settingsController.getTranslate("successSaveSettings"));
         } catch (IOException e) {
             AlertUtils.showErrorAlert("", e.getMessage());
@@ -309,28 +315,34 @@ public class SettingsModel {
     }
 
     /**
-     * @return boolean
+     * Loading the developer mode state and caching its value.
      *
+     * @return true if developer mode is enabled, false otherwise.
      */
-    public boolean loadDeveloperModeSetting() {
-        try {
-            // Load the contents of the JSON file
-            String content = new String(Files.readAllBytes(Paths.get(JSON_FILE_PATH)));
-            JSONArray settingsArray = new JSONArray(content);
+    public static boolean loadDeveloperModeSetting() {
+        if (developerModeCached == null) {
+            try {
+                // Load the contents of the JSON file
+                String content = new String(Files.readAllBytes(Paths.get(JSON_FILE_PATH)));
+                JSONArray settingsArray = new JSONArray(content);
 
-            // Search for settings for user with id=1
-            for (int i = 0; i < settingsArray.length(); i++) {
-                JSONObject settings = settingsArray.getJSONObject(i);
-                if (settings.getInt("id") == 1) {
-                    // Return the developer mode state if the setting is found
-                    return settings.optBoolean("developerMode", false); // Return false by default if the key is missing
+                // Search for settings for user with id=1
+                for (int i = 0; i < settingsArray.length(); i++) {
+                    JSONObject settings = settingsArray.getJSONObject(i);
+                    if (settings.getInt("id") == 1) {
+                        // Return the developer mode state if the setting is found
+                        return settings.optBoolean("developerMode", false); // Return false by default if the key is missing
+                    }
                 }
+            } catch (IOException e) {
+                e.printStackTrace();
+                // Set default value in case of error
+                developerModeCached = false;
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
+
         // In case of any errors or if settings for id=1 are not found, return false
-        return false;
+        return developerModeCached;
     }
 
 }

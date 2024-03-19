@@ -16,9 +16,7 @@ public class JsonLogger {
     private static final String LOG_FILE = "ds_logs.json";
 
     public static synchronized void log(String level, String message) {
-        boolean isDeveloperModeEnabled = new SettingsModel().loadDeveloperModeSetting();
-
-        if (!isDeveloperModeEnabled) {
+        if (!SettingsModel.loadDeveloperModeSetting()) {
             // If developer mode is disabled, then we do not perform logging
             return;
         }
