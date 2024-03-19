@@ -5,6 +5,7 @@ import com.dev.station.entity.DriverSettings;
 import com.dev.station.entity.ImageSettings;
 import com.dev.station.entity.RegistryCleaner;
 import com.dev.station.entity.SeleniumSettings;
+import com.dev.station.logs.JsonLogger;
 import com.dev.station.manager.LanguageManager;
 import com.dev.station.manager.NotificationManager;
 import com.dev.station.model.SettingsModel;
@@ -15,11 +16,16 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class SettingsController implements Localizable {
 
+    @FXML public Button cleanLogsButton;
     @FXML private TextField seleniumPathField;
     @FXML private TextField seleniumJARPathField;
     @FXML private TextField imagesFolderPathField;
@@ -127,6 +133,10 @@ public class SettingsController implements Localizable {
         settingsModel.saveDeveloperModeSetting(developerModeCheckbox.isSelected());
     }
 
+    @FXML public void cleanLogsAction(ActionEvent actionEvent) {
+        JsonLogger.clearLogs(bundle);
+    }
+
     private void downloadUserValues() {
         downloadSeleniumValues();
         downloadImagesValues();
@@ -206,5 +216,7 @@ public class SettingsController implements Localizable {
 
         cleanRegistry.setText(bundle.getString("cleanRegistry"));
         developerModeCheckbox.setText(bundle.getString("developerModeCheckbox"));
+        cleanLogsButton.setText(bundle.getString("cleanLogsButton"));
     }
+
 }

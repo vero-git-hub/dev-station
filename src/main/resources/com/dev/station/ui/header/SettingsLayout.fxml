@@ -16,6 +16,7 @@
                     </padding>
                     <Button fx:id="cleanRegistry" onAction="#cleanRegistryAction" styleClass="clickable"/>
                     <CheckBox fx:id="developerModeCheckbox" onAction="#toggleDeveloperMode"/>
+                    <Button fx:id="cleanLogsButton" onAction="#cleanLogsAction" styleClass="clickable"/>
                     <Button onAction="#saveGeneralSettings" styleClass="button-save, clickable"/>
                 </VBox>
             </ScrollPane>
