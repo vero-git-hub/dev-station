@@ -1,5 +1,6 @@
 package com.dev.station.logs;
 
+import com.dev.station.model.SettingsModel;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -15,6 +16,13 @@ public class JsonLogger {
     private static final String LOG_FILE = "ds_logs.json";
 
     public static synchronized void log(String level, String message) {
+        boolean isDeveloperModeEnabled = new SettingsModel().loadDeveloperModeSetting();
+
+        if (!isDeveloperModeEnabled) {
+            // If developer mode is disabled, then we do not perform logging
+            return;
+        }
+
         try {
             JSONArray logArray;
             File file = new File(LOG_FILE);
