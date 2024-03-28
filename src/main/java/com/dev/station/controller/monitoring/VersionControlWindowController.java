@@ -5,6 +5,8 @@ import com.dev.station.manager.LanguageManager;
 import com.dev.station.model.SettingsModel;
 import com.dev.station.service.FileChangeListener;
 import com.dev.station.service.FileContentProvider;
+import com.dev.station.service.FileMonitoringService;
+import com.dev.station.util.FileUtils;
 import com.dev.station.util.alert.AlertUtils;
 import com.github.difflib.DiffUtils;
 import com.github.difflib.patch.AbstractDelta;
@@ -20,6 +22,7 @@ import org.apache.commons.text.diff.StringsComparator;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -30,6 +33,9 @@ public class VersionControlWindowController implements Localizable, FileChangeLi
     SettingsModel settingsModel;
     private String previousContent = "";
     private VersionControlMode versionControlMode;
+    private boolean clearFileAfterReading = false;
+    private String filePathToClear;
+    private FileMonitoringService monitoringService;
 
     public VersionControlWindowController() {
         LanguageManager.registerForUpdates(this::updateUI);
@@ -40,7 +46,14 @@ public class VersionControlWindowController implements Localizable, FileChangeLi
         this.versionControlMode = mode;
     }
 
+    public void setMonitoringService(FileMonitoringService service) {
+        this.monitoringService = service;
+//         Add the current controller to the list of file change listeners
+        this.monitoringService.addFileChangeListener(this);
+    }
+
     @FXML private void initialize() {
+        bundle = LanguageManager.getResourceBundle();
         webEngine = versionControlWebView.getEngine();
     }
 
@@ -66,19 +79,6 @@ public class VersionControlWindowController implements Localizable, FileChangeLi
         Platform.runLater(() -> {
             String content = (String) webEngine.executeScript("document.body.querySelector('pre').innerText");
             callback.onContentReceived(content);
-        });
-    }
-
-    @Override
-    public void onFileChange(FileContentProvider contentProvider) {
-        Platform.runLater(() -> {
-            try {
-                String newContent = contentProvider.getContent();
-                highlightChanges(previousContent, newContent);
-                previousContent = newContent;
-            } catch (IOException e) {
-                AlertUtils.showErrorAlert("", e.getMessage());
-            }
         });
     }
 
@@ -131,53 +131,87 @@ public class VersionControlWindowController implements Localizable, FileChangeLi
         Platform.runLater(() -> webEngine.loadContent(textToHtml));
     }
 
+    /**
+     * Identifying differences & changes by words
+     * @param oldContent
+     * @param newContent
+     */
     private void highlightChangesByWord(String oldContent, String newContent) {
         try {
-            String[] oldTokens = oldContent.split("(?<=\\s)|(?=\\s+)");
-            String[] newTokens = newContent.split("(?<=\\s)|(?=\\s+)");
+            // Initializing styles and text preprocessing for HTML.
+            StringBuilder wordHighlightedText = new StringBuilder(initialHtmlStyles());
 
-            Patch<String> patch = DiffUtils.diff(Arrays.asList(oldTokens), Arrays.asList(newTokens));
-            StringBuilder wordHighlightedText = new StringBuilder("<style>.added { background-color: #ccffcc; } .removed { background-color: #ffcccc; }</style><pre>");
+            // Get differences between old and new content.
+            List<AbstractDelta<String>> deltas = computeDeltas(oldContent, newContent);
 
-            int startOfChangeIndex = 0;
-            for (AbstractDelta<String> delta : patch.getDeltas()) {
-                while (startOfChangeIndex < delta.getSource().getPosition()) {
-                    wordHighlightedText.append(oldTokens[startOfChangeIndex]);
-                    startOfChangeIndex++;
-                }
+            // Building an HTML string with highlighting of changes.
+            buildHighlightedHtml(wordHighlightedText, deltas, oldContent);
 
-                if (delta.getType() == DeltaType.DELETE || delta.getType() == DeltaType.CHANGE) {
-                    wordHighlightedText.append("<span class='removed'>");
-                    for (String line : delta.getSource().getLines()) {
-                        wordHighlightedText.append(escapeHtml(line));
-                    }
-                    wordHighlightedText.append("</span>");
-                }
-
-                if (delta.getType() == DeltaType.INSERT || delta.getType() == DeltaType.CHANGE) {
-                    wordHighlightedText.append("<span class='added'>");
-                    for (String line : delta.getTarget().getLines()) {
-                        wordHighlightedText.append(escapeHtml(line));
-                    }
-                    wordHighlightedText.append("</span>");
-                }
-
-                startOfChangeIndex += delta.getSource().size();
-            }
-
-            while (startOfChangeIndex < oldTokens.length) {
-                wordHighlightedText.append(oldTokens[startOfChangeIndex++]);
-            }
-
-            wordHighlightedText.append("</pre>");
-            String wordTextToHtml = "<html><body>" + wordHighlightedText.toString() + "</body></html>";
-            Platform.runLater(() -> webEngine.loadContent(wordTextToHtml));
+            // HTML completion and display.
+            displayHtmlContent(wordHighlightedText.toString());
         } catch (Exception e) {
-            e.printStackTrace();
-            Platform.runLater(() -> webEngine.loadContent("<html><body><p>Error processing the content.</p></body></html>"));
+            displayErrorMessage();
         }
     }
 
+    private String initialHtmlStyles() {
+        return "<style>.added { background-color: #ccffcc; } .removed { background-color: #ffcccc; }</style><pre>";
+    }
+
+    private List<AbstractDelta<String>> computeDeltas(String oldContent, String newContent) {
+        String[] oldTokens = oldContent.split("(?<=\\s)|(?=\\s+)");
+        String[] newTokens = newContent.split("(?<=\\s)|(?=\\s+)");
+        return DiffUtils.diff(Arrays.asList(oldTokens), Arrays.asList(newTokens)).getDeltas();
+    }
+
+    private void buildHighlightedHtml(StringBuilder wordHighlightedText, List<AbstractDelta<String>> deltas, String oldContent) {
+        String[] oldTokens = oldContent.split("(?<=\\s)|(?=\\s+)");
+        int startOfChangeIndex = 0;
+        for (AbstractDelta<String> delta : deltas) {
+            // Adding tokens before the change begins.
+            while (startOfChangeIndex < delta.getSource().getPosition()) {
+                wordHighlightedText.append(oldTokens[startOfChangeIndex++]);
+            }
+
+            // Processing changes.
+            highlightDelta(wordHighlightedText, delta);
+
+            // Move to next change.
+            startOfChangeIndex += delta.getSource().size();
+        }
+
+        // Adding remaining tokens.
+        for (int i = startOfChangeIndex; i < oldTokens.length; i++) {
+            wordHighlightedText.append(oldTokens[i]);
+        }
+
+        wordHighlightedText.append("</pre>");
+    }
+
+    private void highlightDelta(StringBuilder wordHighlightedText, AbstractDelta<String> delta) {
+        if (delta.getType() == DeltaType.DELETE || delta.getType() == DeltaType.CHANGE) {
+            wordHighlightedText.append("<span class='removed'>").append(escapeHtml(String.join("", delta.getSource().getLines()))).append("</span>");
+        }
+        if (delta.getType() == DeltaType.INSERT || delta.getType() == DeltaType.CHANGE) {
+            wordHighlightedText.append("<span class='added'>").append(escapeHtml(String.join("", delta.getTarget().getLines()))).append("</span>");
+        }
+    }
+
+    private void displayHtmlContent(String htmlContent) {
+        Platform.runLater(() -> webEngine.loadContent("<html><body>" + htmlContent + "</body></html>"));
+    }
+
+    private void displayErrorMessage() {
+        Platform.runLater(() -> webEngine.loadContent("<html><body><p>Error processing the content.</p></body></html>"));
+    }
+
+//    ====================================================
+
+    /**
+     * For highlight changes by line
+     * @param oldContent
+     * @param newContent
+     */
     private void highlightChangesByLine(String oldContent, String newContent) {
         StringBuilder highlightedText = new StringBuilder("<style>");
         highlightedText.append(".added { background-color: #ccffcc; } ");
@@ -267,20 +301,47 @@ public class VersionControlWindowController implements Localizable, FileChangeLi
         Platform.runLater(() -> webEngine.loadContent(textToHtml));
     }
 
-    @Override
-    public void loadSavedLanguage() {
+    public void setClearFileAfterReading(boolean clearFileAfterReading) {
+        this.clearFileAfterReading = clearFileAfterReading;
+    }
+
+    public void setFilePathToClear(String filePath) {
+        this.filePathToClear = filePath;
+    }
+
+    /**
+     * @param contentProvider
+     * Overriding onFileChange to handle file changes
+     */
+    @Override public void onFileChange(FileContentProvider contentProvider) {
+        Platform.runLater(() -> {
+            try {
+                String newContent = contentProvider.getContent();
+                // Call a method to highlight changes
+                highlightChanges(previousContent, newContent);
+                previousContent = newContent;
+
+                // If clear button enable
+                if (clearFileAfterReading) {
+                    FileUtils.clearFileAndSetLastModified(filePathToClear, monitoringService, getTranslate("alert.error.setLastModified"));
+                }
+            } catch (IOException e) {
+                AlertUtils.showErrorAlert("", e.getMessage());
+            }
+        });
+    }
+
+    @Override public void loadSavedLanguage() {
         String savedLanguage = settingsModel.loadLanguageSetting();
         Locale locale = LanguageManager.getLocale(savedLanguage);
         LanguageManager.switchLanguage(locale);
     }
 
-    @Override
-    public void switchLanguage(Locale newLocale) {
+    @Override public void switchLanguage(Locale newLocale) {
         bundle = LanguageManager.getResourceBundle();
     }
 
-    @Override
-    public void updateUI() {
+    @Override public void updateUI() {
 
     }
 }
