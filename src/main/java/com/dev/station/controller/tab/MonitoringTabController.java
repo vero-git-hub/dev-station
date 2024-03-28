@@ -4,6 +4,7 @@ import com.dev.station.Localizable;
 import com.dev.station.controller.monitoring.VersionControlMode;
 import com.dev.station.controller.monitoring.VersionControlWindowController;
 import com.dev.station.logs.JsonLogger;
+import com.dev.station.logs.Loggable;
 import com.dev.station.manager.LanguageManager;
 import com.dev.station.manager.NotificationManager;
 import com.dev.station.manager.WindowManager;
@@ -32,7 +33,7 @@ import javafx.stage.Stage;
 import java.io.*;
 import java.util.*;
 
-public class MonitoringTabController implements Localizable, FileChangeListener {
+public class MonitoringTabController implements Localizable, FileChangeListener, Loggable {
 
     @FXML public Label filePathLabel;
     @FXML public TextField filePath;
@@ -62,6 +63,7 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
     VersionControlMode mode;
     private String selectedVersionControlMode;
     MonitoringTabData tabData;
+    private boolean isLogging = true;
 
     public MonitoringTabController() {
         LanguageManager.registerForUpdates(this::updateUI);
@@ -142,7 +144,7 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
             controller.setFilePathToClear(filePath.getText() + "/" + fileName.getText());
             controller.setMonitoringService(monitoringService);
 
-            monitoringService.setFileChangeListener(controller);
+            monitoringService.addFileChangeListener(controller);
 
             Scene scene = new Scene(root, 825, 600);
             monitoringWindowStage = new Stage();
@@ -185,51 +187,59 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
             return;
         }
 
-        if(clearContentToggle.isSelected()) {
-            AlertUtils.showErrorAlert("", getTranslate("monitoringTabController.clearContentToggleEnabled"));
-            return;
-        }
-
-        JsonLogger.log("INFO", "1. Let's start loading FXML.");
+        setLogging("INFO", "1. Let's start loading FXML.");
 
         try {
-            JsonLogger.log("INFO", "2. Create FXMLLoader.");
+            setLogging("INFO", "2. Create FXMLLoader.");
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/dev/station/ui/monitoring/VersionControlWindow.fxml"));
 
-            JsonLogger.log("INFO", "3. Loading FXML.");
+            setLogging("INFO", "3. Loading FXML.");
             Parent root = loader.load();
 
-            JsonLogger.log("INFO", "4. FXML loaded successfully.");
+            setLogging("INFO", "4. FXML loaded successfully.");
             VersionControlWindowController controller = loader.getController();
             controller.setInitialContent(fileContentArea.getText());
 
-            JsonLogger.log("INFO", "5. Setting up version control mode.");
+            boolean isClearEnable = clearContentToggle.isSelected();
+            // Set clearContentToggle value
+            controller.setClearFileAfterReading(isClearEnable);
+            if(isClearEnable){
+                // Set file for cleaning
+                //controller.setFilePathToClear(filePathValue + "/" + fileNameValue);
+            }
+
+            setLogging("INFO", "5. Setting up version control mode.");
             // Set version control mode
             controller.setVersionControlMode(getSelectedVersionControlMode());
+            // Set monitoring service for using same monitoring action
+            controller.setMonitoringService(monitoringService);
 
-            JsonLogger.log("INFO", "6. Setting up a file change listener.");
-            monitoringService.setFileChangeListener(controller);
+            setLogging("INFO", "6. Setting up a file change listener.");
+            monitoringService.addFileChangeListener(controller);
 
-            JsonLogger.log("INFO", "7. Displaying the version control window.");
+            setLogging("INFO", "7. Displaying the version control window.");
             Scene scene = new Scene(root, 825, 600);
             versionControlWindowStage = new Stage();
             versionControlWindowStage.setTitle(getTranslate("versionControlWindowController.title"));
             versionControlWindowStage.setScene(scene);
 
             versionControlWindowStage.setOnCloseRequest(windowEvent -> {
+                // If monitoring is enabled, save the current contents of the file in the main UI
                 if (toggleMonitoring.isSelected()) {
                     fileContentArea.setVisible(true);
                     controller.getCurrentContent(content -> Platform.runLater(() -> fileContentArea.setText(content)));
                 }
+                // Remove the controller from the list of file change listeners in FileMonitoringService
+                monitoringService.removeFileChangeListener(controller);
             });
 
             WindowManager.addStage(versionControlWindowStage);
 
-            JsonLogger.log("INFO", "8. The version control window has been successfully created. Displaying...");
+            setLogging("INFO", "8. The version control window has been successfully created. Displaying...");
             versionControlWindowStage.show();
             fileContentArea.setVisible(false);
 
-            JsonLogger.log("INFO", "9. The window is successfully opened for: " + filePathValue + " -> " + fileNameValue);
+            setLogging("INFO", "9. The window is successfully opened for: " + filePathValue + " -> " + fileNameValue);
         } catch (Throwable e) {
             AlertUtils.showErrorAlert("", e.getMessage());
             e.printStackTrace();
@@ -592,5 +602,11 @@ public class MonitoringTabController implements Localizable, FileChangeListener 
                 AlertUtils.showErrorAlert("", e.getMessage());
             }
         });
+    }
+
+    @Override public void setLogging(String level, String message) {
+        if(isLogging) {
+            JsonLogger.log(level, message);
+        }
     }
 }

@@ -5,20 +5,22 @@ import com.dev.station.manager.TimerManager;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class FileMonitoringService {
     private Timer timer;
-    private FileChangeListener listener;
     private long lastModified = 0;
     private String filePath;
     private String fileName;
+    private List<FileChangeListener> listeners = new ArrayList<>();
 
-    public FileMonitoringService(String filePath, String fileName, FileChangeListener listener) {
+    public FileMonitoringService(String filePath, String fileName, FileChangeListener initialListener) {
         this.filePath = filePath;
         this.fileName = fileName;
-        this.listener = listener;
+        this.listeners.add(initialListener); // Add an initial listener to the list
     }
 
     private Timer getTimer() {
@@ -40,10 +42,8 @@ public class FileMonitoringService {
                 long currentModified = file.lastModified();
                 if (currentModified > lastModified) {
                     lastModified = currentModified;
-                    if (listener != null) {
-                        FileContentProvider contentProvider = () -> new String(Files.readAllBytes(file.toPath()), StandardCharsets.UTF_8);
-                        listener.onFileChange(contentProvider);
-                    }
+                    FileContentProvider contentProvider = () -> new String(Files.readAllBytes(file.toPath()), StandardCharsets.UTF_8);
+                    notifyFileChange(contentProvider); // Notify all listeners
                 }
             }
         };
@@ -55,6 +55,7 @@ public class FileMonitoringService {
     public void stopMonitoring() {
         if (timer != null) {
             TimerManager.removeTimer(timer);
+            timer.cancel(); // Explicitly stopping the timer
             timer = null;
         }
     }
@@ -63,11 +64,33 @@ public class FileMonitoringService {
         this.lastModified = newLastModified;
     }
 
-    public void setFileChangeListener(FileChangeListener listener) {
-        this.listener = listener;
+    /**
+     * @param listener
+     * Add a listener
+     */
+    public void addFileChangeListener(FileChangeListener listener) {
+        if (!listeners.contains(listener)) {
+            listeners.add(listener);
+        }
     }
 
-    public void removeFileChangeListener() {
-        this.listener = null;
+    /**
+     * @param listener
+     * Remove listener
+     */
+    public void removeFileChangeListener(FileChangeListener listener) {
+        listeners.remove(listener);
+    }
+
+    /**
+     * @param contentProvider
+     * Notifying listeners about changes
+     */
+    protected void notifyFileChange(FileContentProvider contentProvider) {
+        for (FileChangeListener listener : listeners) {
+            if (listener != null) {
+                listener.onFileChange(contentProvider);
+            }
+        }
     }
 }
