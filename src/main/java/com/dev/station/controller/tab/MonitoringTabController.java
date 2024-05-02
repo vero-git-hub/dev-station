@@ -63,7 +63,7 @@ public class MonitoringTabController implements Localizable, FileChangeListener,
     VersionControlMode mode;
     private String selectedVersionControlMode;
     MonitoringTabData tabData;
-    private boolean isLogging = true;
+    private boolean isLogging = false;
 
     public MonitoringTabController() {
         LanguageManager.registerForUpdates(this::updateUI);
@@ -87,7 +87,6 @@ public class MonitoringTabController implements Localizable, FileChangeListener,
     }
 
     /**
-     * @param actionEvent
      * Start and stop monitoring in textArea
      */
     @FXML public void handleMonitoringAction(ActionEvent actionEvent) {
@@ -187,37 +186,20 @@ public class MonitoringTabController implements Localizable, FileChangeListener,
             return;
         }
 
-        setLogging("INFO", "1. Let's start loading FXML.");
+        setLogging("INFO", "[handleVersionControlAction] 1. Let's start loading FXML.");
 
         try {
-            setLogging("INFO", "2. Create FXMLLoader.");
+            setLogging("INFO", "[handleVersionControlAction] 2. Create FXMLLoader.");
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/dev/station/ui/monitoring/VersionControlWindow.fxml"));
 
-            setLogging("INFO", "3. Loading FXML.");
             Parent root = loader.load();
+            setLogging("INFO", "[handleVersionControlAction] 3. FXML loaded successfully.");
 
-            setLogging("INFO", "4. FXML loaded successfully.");
             VersionControlWindowController controller = loader.getController();
-            controller.setInitialContent(fileContentArea.getText());
-
-            boolean isClearEnable = clearContentToggle.isSelected();
-            // Set clearContentToggle value
-            controller.setClearFileAfterReading(isClearEnable);
-            if(isClearEnable){
-                // Set file for cleaning
-                //controller.setFilePathToClear(filePathValue + "/" + fileNameValue);
-            }
-
-            setLogging("INFO", "5. Setting up version control mode.");
-            // Set version control mode
-            controller.setVersionControlMode(getSelectedVersionControlMode());
-            // Set monitoring service for using same monitoring action
-            controller.setMonitoringService(monitoringService);
-
-            setLogging("INFO", "6. Setting up a file change listener.");
+            controller.prepareToVersionControl(fileContentArea.getText(), getSelectedVersionControlMode(), monitoringService);
             monitoringService.addFileChangeListener(controller);
 
-            setLogging("INFO", "7. Displaying the version control window.");
+            setLogging("INFO", "[handleVersionControlAction] 4. Display the version control window.");
             Scene scene = new Scene(root, 825, 600);
             versionControlWindowStage = new Stage();
             versionControlWindowStage.setTitle(getTranslate("versionControlWindowController.title"));
@@ -235,11 +217,10 @@ public class MonitoringTabController implements Localizable, FileChangeListener,
 
             WindowManager.addStage(versionControlWindowStage);
 
-            setLogging("INFO", "8. The version control window has been successfully created. Displaying...");
             versionControlWindowStage.show();
             fileContentArea.setVisible(false);
 
-            setLogging("INFO", "9. The window is successfully opened for: " + filePathValue + " -> " + fileNameValue);
+            setLogging("INFO", "[handleVersionControlAction] 5. The window is successfully opened for: " + filePathValue + " -> " + fileNameValue);
         } catch (Throwable e) {
             AlertUtils.showErrorAlert("", e.getMessage());
             e.printStackTrace();
@@ -257,6 +238,10 @@ public class MonitoringTabController implements Localizable, FileChangeListener,
         }
     }
 
+    /**
+     * Get version control mode from dropdown list
+     * @return object of version control mode
+     */
     private VersionControlMode getSelectedVersionControlMode() {
         String selectedMode = versionControlModeComboBox.getSelectionModel().getSelectedItem().toString();
         switch (selectedMode) {
