@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.collections.FXCollections?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.collections.FXCollections?>
-<?import java.lang.String?>
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.dev.station.controller.tab.MonitoringTabController"
@@ -21,20 +20,11 @@
         <Label fx:id="versionControlModeLabel" layoutX="320" layoutY="60" styleClass="largeText"/>
         <ComboBox fx:id="versionControlModeComboBox" layoutX="465" layoutY="60" prefWidth="115.0" styleClass="largeText">
             <items>
-                <FXCollections fx:factory="observableArrayList">
-                    <String fx:value="symbol"/>
-                    <String fx:value="word"/>
-                    <String fx:value="line"/>
-                    <String fx:value="tooltip"/>
-                </FXCollections>
+                <FXCollections fx:factory="observableArrayList"/>
             </items>
         </ComboBox>
 
-        <ToggleButton fx:id="toggleMonitoring" layoutX="20" layoutY="100" prefWidth="160" onAction="#handleMonitoringAction" styleClass="largeText, clickable, toggle-switch">
-            <toggleGroup>
-                <ToggleGroup fx:id="monitoringToggleGroup" />
-            </toggleGroup>
-        </ToggleButton>
+        <ToggleButton fx:id="toggleMonitoring" layoutX="20" layoutY="100" prefWidth="160" onAction="#handleMonitoringAction" styleClass="largeText, clickable, toggle-switch"/>
 
         <Button fx:id="openContentButton" layoutX="200" layoutY="100" prefWidth="200" styleClass="largeText, clickable" onAction="#handleOpenContentAction"/>
 

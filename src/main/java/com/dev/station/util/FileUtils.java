@@ -41,4 +41,10 @@ public class FileUtils {
             AlertUtils.showErrorAlert("", e.getMessage());
         }
     }
+
+    public static boolean fileExists(String filePath, String fileName) {
+        String fullFilePath = filePath + File.separator + fileName;
+        File file = new File(fullFilePath);
+        return file.exists();
+    }
 }
