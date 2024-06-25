@@ -25,20 +25,15 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Timer;
-
-import static com.dev.station.util.FileUtils.fileExists;
 
 public class MonitoringTabController implements Localizable, FileChangeListener, Loggable {
 
@@ -68,7 +63,16 @@ public class MonitoringTabController implements Localizable, FileChangeListener,
     @FXML public VBox root;
 
     private NotificationManager notificationManager; // For alerts
+    private FileMonitoringHandler fileMonitoringHandler;
+    private UIUpdater uiUpdater;
+    //private FileHandler fileHandler;
+    private FileUtils fileUtils;
+    //private TabManager tabManager;
+    private ResourceBundle bundle; // For localization
+
     private Tab myTab; // Current tab in user interface for saving
+    private MonitoringTabData monitoringTabData; // Monitoring tab
+
     private final SettingsModel settingsModel;
     private Timer timer;
     // Regularly checks the last modification time of the specified file.
@@ -76,10 +80,6 @@ public class MonitoringTabController implements Localizable, FileChangeListener,
     private FileMonitoringService monitoringService;
     private String fullFilePath;
     private Stage monitoringWindowStage; // Show content in other window
-    private MonitoringTabData monitoringTabData; // Monitoring tab
-    private FileMonitoringHandler fileMonitoringHandler;
-    private UIUpdater uiUpdater;
-    private ResourceBundle bundle; // For localization
 
     public MonitoringTabController() {
         LanguageManager.registerForUpdates(this::updateUI);
@@ -111,7 +111,7 @@ public class MonitoringTabController implements Localizable, FileChangeListener,
         String file = fileName.getText();
 
         // If the file does not exist, the path to which is taken from the fields
-        if (!fileExists(path, file)) {
+        if (!fileUtils.fileExists(path, file)) {
             showAlertFileNotFound(path, file);
             //doIfFileNotExists();
             return;
@@ -164,7 +164,7 @@ public class MonitoringTabController implements Localizable, FileChangeListener,
 
         monitoringService.addFileChangeListener(controller);
 
-        monitoringWindowStage = createStage(root, "monitoringTabController.handleOpenContentButtonAction.stage");
+        monitoringWindowStage = uiUpdater.createStage(root, "monitoringTabController.handleOpenContentButtonAction.stage");
         monitoringWindowStage.setOnCloseRequest(windowEvent -> {
             if (toggleMonitoring.isSelected()) {
                 fileContentArea.setVisible(true);
@@ -177,16 +177,8 @@ public class MonitoringTabController implements Localizable, FileChangeListener,
         fileContentArea.setVisible(false);
     }
 
-    private Stage createStage(Parent root, String titleKey) {
-        Stage stage = new Stage();
-        Scene scene = new Scene(root, 825, 600);
-        stage.setTitle(getTranslate(titleKey));
-        stage.setScene(scene);
-        return stage;
-    }
-
     @FXML public void handleViewFileAction(ActionEvent actionEvent) {
-        displayFileContent();
+        fileUtils.displayFileContent(getFullFilePath(), uiUpdater);
     }
 
     @FXML public void handleSaveSettingsAction(ActionEvent actionEvent) {
@@ -200,6 +192,7 @@ public class MonitoringTabController implements Localizable, FileChangeListener,
         LanguageManager.registerNotificationManager(notificationManager);
         fileMonitoringHandler = new FileMonitoringHandler(fileContentArea, getFullFilePath());
         uiUpdater = new UIUpdater(bundle);
+        fileUtils = new FileUtils();
 
         setMultilingual();
         loadSavedLanguage();
@@ -242,7 +235,7 @@ public class MonitoringTabController implements Localizable, FileChangeListener,
         String filePathValue = filePath.getText();
         String fileNameValue = fileName.getText();
 
-        if (!fileExists(filePathValue, fileNameValue)) {
+        if (!fileUtils.fileExists(filePathValue, fileNameValue)) {
             AlertUtils.showErrorAlert("", getTranslate("alert.fileNotFound") + " " + filePathValue + File.separator + fileNameValue);
             return false;
         }
@@ -272,7 +265,7 @@ public class MonitoringTabController implements Localizable, FileChangeListener,
         String filePathValue = filePath.getText();
         String fileNameValue = fileName.getText();
 
-        if (!fileExists(filePathValue, fileNameValue)) {
+        if (!fileUtils.fileExists(filePathValue, fileNameValue)) {
             showAlertFileNotFound(filePathValue, fileNameValue);
             return false;
         }
@@ -303,41 +296,6 @@ public class MonitoringTabController implements Localizable, FileChangeListener,
             stage.close();
             stage = null;
         }
-    }
-
-    private void displayFileContent() {
-        String fullFilePath = getFullFilePath();
-        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(fullFilePath))) {
-            StringBuilder content = new StringBuilder();
-            String line;
-
-            while ((line = bufferedReader.readLine()) != null) {
-                content.append(line).append("\n");
-            }
-
-            Stage stage = createContentDisplayStage(content.toString());
-            WindowManager.addStage(stage);
-            stage.show();
-        } catch (IOException e) {
-            handleException(e);
-        }
-    }
-
-    private Stage createContentDisplayStage(String content) {
-        Stage stage = new Stage();
-        VBox root = new VBox();
-        TextArea textArea = new TextArea();
-        textArea.setText(content);
-        textArea.setEditable(false);
-
-        VBox.setVgrow(textArea, Priority.ALWAYS);
-        root.getChildren().add(textArea);
-
-        Scene scene = new Scene(root, 825, 600);
-        stage.setScene(scene);
-        stage.setTitle(getTranslate("monitoringTabController.handleViewFileAction.stage"));
-
-        return stage;
     }
 
     private void handleException(Exception e) {

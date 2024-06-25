@@ -1,11 +1,12 @@
 package com.dev.station.util;
 
+import com.dev.station.manager.WindowManager;
 import com.dev.station.service.FileMonitoringService;
 import com.dev.station.util.alert.AlertUtils;
+import javafx.scene.control.TextArea;
+import javafx.stage.Stage;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 
 public class FileUtils {
     /**
@@ -42,9 +43,27 @@ public class FileUtils {
         }
     }
 
-    public static boolean fileExists(String filePath, String fileName) {
+    public boolean fileExists(String filePath, String fileName) {
         String fullFilePath = filePath + File.separator + fileName;
         File file = new File(fullFilePath);
         return file.exists();
+    }
+
+    public void displayFileContent(String fullFilePath, UIUpdater uiUpdater) {
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(fullFilePath))) {
+            StringBuilder content = new StringBuilder();
+            String line;
+
+            while ((line = bufferedReader.readLine()) != null) {
+                content.append(line).append("\n");
+            }
+
+            Stage stage = uiUpdater.createContentDisplayStage(content.toString());
+            WindowManager.addStage(stage);
+            stage.show();
+        } catch (IOException e) {
+            AlertUtils.showErrorAlert("", e.getMessage());
+            e.printStackTrace();
+        }
     }
 }
