@@ -4,7 +4,7 @@ import com.dev.station.Localizable;
 import com.dev.station.controller.tab.ClearTabController;
 import com.dev.station.manager.LanguageManager;
 import com.dev.station.manager.NotificationManager;
-import com.dev.station.manager.clear.TabManager;
+import com.dev.station.manager.clear.TabClearManager;
 import com.dev.station.model.SettingsModel;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -20,7 +20,7 @@ public class ClearController implements Localizable {
     @FXML private Tab addTabButton;
     @FXML private Label addTabLabel;
     private NotificationManager notificationManager;
-    private TabManager tabManager;
+    private TabClearManager tabClearManager;
     private ResourceBundle bundle;
     private SettingsModel settingsModel;
 
@@ -35,7 +35,7 @@ public class ClearController implements Localizable {
         loadSavedLanguage();
         definitionManagers();
 
-        tabManager.loadTabsFromJson();
+        tabClearManager.loadTabsFromJson();
         setupTabPane();
     }
 
@@ -46,11 +46,11 @@ public class ClearController implements Localizable {
     }
 
     private void definitionManagers() {
-        tabManager = new TabManager(this, tabPane, addTabButton, addTabLabel, "Clear");
+        tabClearManager = new TabClearManager(this, tabPane, addTabButton, addTabLabel, "Clear");
     }
 
     private void setupTabPane() {
-        tabManager.setupTabPane();
+        tabClearManager.setupTabPane();
     }
 
     public String getTranslate(String key) {
