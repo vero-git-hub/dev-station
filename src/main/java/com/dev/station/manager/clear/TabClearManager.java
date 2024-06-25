@@ -13,14 +13,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public class TabManager {
+public class TabClearManager {
     private ClearController controller;
     private TabPane tabPane;
     private Tab addTabButton;
     private Label addTabLabel;
     private String screenType;
 
-    public TabManager(ClearController controller, TabPane tabPane, Tab addTabButton, Label addTabLabel, String screenType) {
+    public TabClearManager(ClearController controller, TabPane tabPane, Tab addTabButton, Label addTabLabel, String screenType) {
         this.controller = controller;
         this.tabPane = tabPane;
         this.addTabButton = addTabButton;

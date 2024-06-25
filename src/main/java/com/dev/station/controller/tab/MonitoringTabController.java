@@ -7,8 +7,8 @@ import com.dev.station.logs.JsonLogger;
 import com.dev.station.logs.Loggable;
 import com.dev.station.manager.LanguageManager;
 import com.dev.station.manager.NotificationManager;
+import com.dev.station.manager.TabManager;
 import com.dev.station.manager.WindowManager;
-import com.dev.station.manager.monitoring.MonitoringJsonTabsManager;
 import com.dev.station.manager.monitoring.MonitoringTabData;
 import com.dev.station.model.SettingsModel;
 import com.dev.station.service.FileChangeListener;
@@ -30,7 +30,6 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Timer;
@@ -67,7 +66,7 @@ public class MonitoringTabController implements Localizable, FileChangeListener,
     private UIUpdater uiUpdater;
     //private FileHandler fileHandler;
     private FileUtils fileUtils;
-    //private TabManager tabManager;
+    private TabManager tabManager;
     private ResourceBundle bundle; // For localization
 
     private Tab myTab; // Current tab in user interface for saving
@@ -193,6 +192,7 @@ public class MonitoringTabController implements Localizable, FileChangeListener,
         fileMonitoringHandler = new FileMonitoringHandler(fileContentArea, getFullFilePath());
         uiUpdater = new UIUpdater(bundle);
         fileUtils = new FileUtils();
+        tabManager = new TabManager();
 
         setMultilingual();
         loadSavedLanguage();
@@ -251,6 +251,7 @@ public class MonitoringTabController implements Localizable, FileChangeListener,
     }
 
     private void saveSettings() {
+        String tabId = myTab.getId();
         String filePathValue = filePath.getText();
         String fileNameValue = fileName.getText();
         int frequency = Integer.parseInt(monitoringFrequency.getText());
@@ -258,7 +259,18 @@ public class MonitoringTabController implements Localizable, FileChangeListener,
         boolean clearContentToggleValue = clearContentToggle.isSelected();
         String versionControlMode = versionControlModeComboBox.getValue(); // .toString();
 
-        updateMonitoringTab(myTab.getId(), filePathValue, fileNameValue, frequency, toggleMonitoringValue, false, false, clearContentToggleValue, versionControlMode);
+        tabManager.updateMonitoringTab(
+                tabId,
+                filePathValue,
+                fileNameValue,
+                frequency,
+                toggleMonitoringValue,
+                false,
+                false,
+                clearContentToggleValue,
+                versionControlMode,
+                bundle
+        );
     }
 
     public boolean validateMonitoringState() {
@@ -318,43 +330,6 @@ public class MonitoringTabController implements Localizable, FileChangeListener,
             case "color" -> VersionControlMode.COLOR;
             default -> VersionControlMode.SYMBOL;
         };
-    }
-
-    private void updateMonitoringTab(String tabId, String filePath, String fileName, int monitoringFrequency, boolean toggleMonitoring, boolean openContentButton, boolean parseAsArrayToggle, boolean clearContentToggle, String versionControlMode) {
-        MonitoringJsonTabsManager jsonTabsManager = new MonitoringJsonTabsManager();
-        List<MonitoringTabData> tabs = jsonTabsManager.loadMonitoringTabs(1, "Monitoring");
-
-        boolean isTabExists = false;
-
-        for (MonitoringTabData tab : tabs) {
-            if (tab.getId().equals(tabId)) {
-                updateTabData(tab, filePath, fileName, monitoringFrequency, toggleMonitoring, openContentButton, parseAsArrayToggle, clearContentToggle, versionControlMode);
-                isTabExists = true;
-                break;
-            }
-        }
-
-        if(!isTabExists) {
-            AlertUtils.showErrorAlert("", "No update tab found.");
-        } else {
-            boolean success = jsonTabsManager.saveMonitoringTabs(1, "Monitoring", tabs);
-            if (success) {
-                AlertUtils.showSuccessAlert("",getTranslate("alerts.successSaving"));
-            } else {
-                AlertUtils.showErrorAlert("", getTranslate("alerts.errorSaving"));
-            }
-        }
-    }
-
-    private void updateTabData(MonitoringTabData tab, String filePath, String fileName, int monitoringFrequency, boolean toggleMonitoring, boolean openContentButton, boolean parseAsArrayToggle, boolean clearContentToggle, String versionControlMode) {
-        tab.setFilePath(filePath);
-        tab.setFileName(fileName);
-        tab.setMonitoringFrequency(monitoringFrequency);
-        tab.setToggleMonitoring(toggleMonitoring);
-        tab.setOpenContentButton(openContentButton);
-        tab.setParseAsArrayToggle(parseAsArrayToggle);
-        tab.setClearContentToggle(clearContentToggle);
-        tab.setVersionControlMode(versionControlMode);
     }
 
     public String getTranslate(String key) {
