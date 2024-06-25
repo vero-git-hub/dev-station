@@ -13,6 +13,7 @@ module com.dev.station {
     requires jdk.management;
     requires org.apache.commons.text;
     requires io.github.javadiffutils;
+    requires org.fxmisc.richtext;
 
 
     opens com.dev.station to javafx.fxml;
@@ -34,4 +35,6 @@ module com.dev.station {
     opens com.dev.station.util to javafx.fxml;
     exports com.dev.station.util.alert;
     opens com.dev.station.util.alert to javafx.fxml;
+    exports com.dev.station.controller.monitoring to javafx.graphics;
+
 }
