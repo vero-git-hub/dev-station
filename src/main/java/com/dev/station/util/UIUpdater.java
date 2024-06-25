@@ -1,7 +1,12 @@
 package com.dev.station.util;
 
 import javafx.collections.FXCollections;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 import java.util.ResourceBundle;
 
@@ -50,5 +55,30 @@ public class UIUpdater {
                 bundle.getString("monitoringTabController.versionControlModeComboBox.tooltip"),
                 bundle.getString("monitoringTabController.versionControlModeComboBox.color")
         ));
+    }
+
+    public Stage createContentDisplayStage(String content) {
+        Stage stage = new Stage();
+        VBox root = new VBox();
+        TextArea textArea = new TextArea();
+        textArea.setText(content);
+        textArea.setEditable(false);
+
+        VBox.setVgrow(textArea, Priority.ALWAYS);
+        root.getChildren().add(textArea);
+
+        Scene scene = new Scene(root, 825, 600);
+        stage.setScene(scene);
+        stage.setTitle(bundle.getString("monitoringTabController.handleViewFileAction.stage"));
+
+        return stage;
+    }
+
+    public Stage createStage(Parent root, String titleKey) {
+        Stage stage = new Stage();
+        Scene scene = new Scene(root, 825, 600);
+        stage.setTitle(bundle.getString(titleKey));
+        stage.setScene(scene);
+        return stage;
     }
 }
