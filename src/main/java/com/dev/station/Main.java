@@ -18,7 +18,7 @@ public class Main extends Application {
 
             stage.setTitle("DevStation");
 
-            Scene scene = new Scene(root, 825, 600); // width, height
+            Scene scene = new Scene(root, 900, 600); // width, height
             stage.setScene(scene);
 
             SettingsModel settingsModel = new SettingsModel();

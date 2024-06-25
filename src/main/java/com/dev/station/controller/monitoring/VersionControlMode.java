@@ -4,5 +4,6 @@ public enum VersionControlMode {
     SYMBOL,
     WORD,
     LINE,
-    TOOLTIP
+    TOOLTIP,
+    COLOR
 }
