@@ -89,7 +89,7 @@ public class UIUpdater {
                 case "слово", "word" -> bundle.getString("monitoringTabController.versionControlModeComboBox.word");
                 case "строка", "line" -> bundle.getString("monitoringTabController.versionControlModeComboBox.line");
                 case "подсказка", "tooltip" -> bundle.getString("monitoringTabController.versionControlModeComboBox.tooltip");
-                case "color" -> bundle.getString("monitoringTabController.versionControlModeComboBox.color");
+                case "цвет", "color" -> bundle.getString("monitoringTabController.versionControlModeComboBox.color");
                 default -> bundle.getString("monitoringTabController.versionControlModeComboBox.symbol");
             };
             versionControlModeComboBox.getSelectionModel().select(translatedMode);

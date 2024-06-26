@@ -5,7 +5,6 @@ import com.dev.station.service.FileContentProvider;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
@@ -28,23 +27,45 @@ public class FileMonitorAppColor extends Application implements FileChangeListen
     private TextFlow file1Content;
     private FileTime lastModifiedTime;
     private Stage stage;
+    private String initialContent;
 
     public FileMonitorAppColor() {}
+
+    public void setInitialContent(String content) {
+        this.initialContent = content;
+    }
 
     @Override
     public void start(Stage stage) {
         this.stage = stage;
         file1Content = new TextFlow();
 
-        Button startButton = new Button("Start Monitoring");
-        startButton.setOnAction(e -> startMonitoring());
+        if (initialContent != null) {
+            Platform.runLater(() -> {
+                file1Content.getChildren().clear();
+                file1Content.getChildren().add(new Text(initialContent));
+            });
+        }
 
-        VBox root = new VBox(10, file1Content, startButton);
+        VBox root = new VBox(10, file1Content);
         Scene scene = new Scene(root, 600, 400);
 
         stage.setScene(scene);
         stage.setTitle("File Monitor");
         stage.show();
+        startMonitoring();
+    }
+
+    public void getCurrentContent(ContentConsumer consumer) {
+        Platform.runLater(() -> {
+            StringBuilder currentContent = new StringBuilder();
+            for (var node : file1Content.getChildren()) {
+                if (node instanceof Text) {
+                    currentContent.append(((Text) node).getText());
+                }
+            }
+            consumer.accept(currentContent.toString());
+        });
     }
 
     private void startMonitoring() {
