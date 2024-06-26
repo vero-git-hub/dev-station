@@ -3,7 +3,10 @@ package com.dev.station.controller.tab;
 import com.dev.station.Localizable;
 import com.dev.station.logs.JsonLogger;
 import com.dev.station.logs.Loggable;
-import com.dev.station.manager.*;
+import com.dev.station.manager.LanguageManager;
+import com.dev.station.manager.NotificationManager;
+import com.dev.station.manager.SettingsManager;
+import com.dev.station.manager.TabManager;
 import com.dev.station.manager.monitoring.MonitoringTabData;
 import com.dev.station.service.FileChangeListener;
 import com.dev.station.service.FileContentProvider;
@@ -14,8 +17,6 @@ import com.dev.station.util.alert.AlertUtils;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -55,13 +56,13 @@ public class MonitoringTabController implements Localizable, FileChangeListener,
     private NotificationManager notificationManager; // For alerts
     private FileMonitoringHandler fileMonitoringHandler;
     private UIUpdater uiUpdater;
-    //private FileHandler fileHandler;
     private FileUtils fileUtils;
     private TabManager tabManager;
     private SettingsManager settingsManager;
     private FileValidationHandler fileValidationHandler;
     private VersionControlWindowHandler versionControlWindowHandler;
     private TabDataLoader tabDataLoader;
+    private ContentWindowHandler contentWindowHandler;
     private ResourceBundle bundle; // For localization
 
     private Tab myTab; // Current tab in user interface for saving
@@ -84,7 +85,7 @@ public class MonitoringTabController implements Localizable, FileChangeListener,
     }
 
     /**
-     * Start and stop monitoring in textArea - кнопка ВКЛ мониторинг
+     * Start and stop monitoring in textArea - button ON/OFF monitoring
      */
     @FXML public void handleMonitoringAction(ActionEvent actionEvent) {
         String path = filePath.getText();
@@ -105,16 +106,18 @@ public class MonitoringTabController implements Localizable, FileChangeListener,
         }
     }
 
+    /** Open monitoring in another window */
     @FXML public void handleOpenContentAction(ActionEvent event) {
         if (!validateMonitoringState()) return;
         try {
-            openContentWindow();
+            contentWindowHandler.openContentWindow();
         } catch (IOException e) {
             AlertUtils.showErrorAlert("", e.getMessage());
         }
     }
 
     /**
+     * Open monitoring with Version Control.
      * Shows file contents from textArea with changes highlighted (if monitoring is active).
      */
     @FXML public void handleVersionControlAction(ActionEvent actionEvent) {
@@ -126,55 +129,30 @@ public class MonitoringTabController implements Localizable, FileChangeListener,
         }
     }
 
-    /**
-     * Shows file contents from textArea in new window (if monitoring is active)
-     */
-    private void openContentWindow() throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/dev/station/ui/tab/MonitoringWindow.fxml"));
-        Parent root = loader.load();
-
-        MonitoringWindowController controller = loader.getController();
-        controller.setInitialContent(fileContentArea.getText());
-
-        controller.setClearFileAfterReading(clearContentToggle.isSelected());
-        controller.setFilePathToClear(fullFilePath);
-        controller.setMonitoringService(monitoringService);
-
-        monitoringService.addFileChangeListener(controller);
-
-        monitoringWindowStage = uiUpdater.createStage(root, "monitoringTabController.handleOpenContentButtonAction.stage");
-        monitoringWindowStage.setOnCloseRequest(windowEvent -> {
-            if (toggleMonitoring.isSelected()) {
-                fileContentArea.setVisible(true);
-                Platform.runLater(() -> fileContentArea.setText(controller.getCurrentContent()));
-            }
-        });
-
-        WindowManager.addStage(monitoringWindowStage);
-        monitoringWindowStage.show();
-        fileContentArea.setVisible(false);
-    }
-
+    /** Show file content in another window */
     @FXML public void handleViewFileAction(ActionEvent actionEvent) {
-        fileUtils.displayFileContent(getFullFilePath(), uiUpdater);
+        fileUtils.displayFileContent(fileUtils.getFullFilePath(filePath, fileName), uiUpdater);
     }
 
+    /** Save data from fields to file */
     @FXML public void handleSaveSettingsAction(ActionEvent actionEvent) {
         if (!validateSettings()) return;
         saveSettings();
     }
 
     @FXML public void initialize() {
+        String filePathValue = fileUtils.getFullFilePath(filePath, fileName);
         bundle = LanguageManager.getResourceBundle();
         notificationManager = new NotificationManager(bundle);
         LanguageManager.registerNotificationManager(notificationManager);
-        fileMonitoringHandler = new FileMonitoringHandler(fileContentArea, getFullFilePath());
+        fileMonitoringHandler = new FileMonitoringHandler(fileContentArea, filePathValue);
         uiUpdater = new UIUpdater(bundle);
         fileUtils = new FileUtils();
         tabManager = new TabManager();
         fileValidationHandler = new FileValidationHandler(fileUtils, toggleMonitoring, fileContentArea);
         versionControlWindowHandler = new VersionControlWindowHandler(bundle, fileMonitoringHandler.getMonitoringService(), toggleMonitoring, fileContentArea);
         tabDataLoader = new TabDataLoader(uiUpdater, fileMonitoringHandler);
+        contentWindowHandler = new ContentWindowHandler(uiUpdater, fileContentArea, toggleMonitoring, clearContentToggle, monitoringService, filePathValue);
 
         setMultilingual();
         loadSavedLanguage();
@@ -186,10 +164,6 @@ public class MonitoringTabController implements Localizable, FileChangeListener,
 
         uiUpdater.setTooltips(toggleMonitoring, openContentButton, viewFileContentButton, versionControlButton, clearContentToggle, saveSettingsButton);
         uiUpdater.setComboBoxItems(versionControlModeComboBox);
-    }
-
-    private String getFullFilePath() {
-        return filePath.getText() + "\\" + fileName.getText();
     }
 
     private boolean validateSettings() {
@@ -266,9 +240,7 @@ public class MonitoringTabController implements Localizable, FileChangeListener,
         LanguageManager.registerNotificationManager(notificationManager);
     }
 
-    /**
-     * Using in MonitoringTabManager
-     */
+    /** Using in MonitoringTabManager */
     public void loadData(MonitoringTabData tabData) {
         tabDataLoader.loadData(tabData, filePath, fileName, monitoringFrequency, toggleMonitoring, clearContentToggle, versionControlModeComboBox, fileContentArea);
     }
