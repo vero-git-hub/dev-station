@@ -1,34 +1,25 @@
 package com.dev.station.controller.tab;
 
 import com.dev.station.Localizable;
-import com.dev.station.controller.monitoring.VersionControlMode;
-import com.dev.station.controller.monitoring.VersionControlWindowController;
 import com.dev.station.logs.JsonLogger;
 import com.dev.station.logs.Loggable;
-import com.dev.station.manager.LanguageManager;
-import com.dev.station.manager.NotificationManager;
-import com.dev.station.manager.TabManager;
-import com.dev.station.manager.WindowManager;
+import com.dev.station.manager.*;
 import com.dev.station.manager.monitoring.MonitoringTabData;
-import com.dev.station.model.SettingsModel;
 import com.dev.station.service.FileChangeListener;
 import com.dev.station.service.FileContentProvider;
 import com.dev.station.service.FileMonitoringHandler;
 import com.dev.station.service.FileMonitoringService;
-import com.dev.station.util.FileUtils;
-import com.dev.station.util.UIUpdater;
+import com.dev.station.util.*;
 import com.dev.station.util.alert.AlertUtils;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -67,12 +58,15 @@ public class MonitoringTabController implements Localizable, FileChangeListener,
     //private FileHandler fileHandler;
     private FileUtils fileUtils;
     private TabManager tabManager;
+    private SettingsManager settingsManager;
+    private FileValidationHandler fileValidationHandler;
+    private VersionControlWindowHandler versionControlWindowHandler;
+    private TabDataLoader tabDataLoader;
     private ResourceBundle bundle; // For localization
 
     private Tab myTab; // Current tab in user interface for saving
     private MonitoringTabData monitoringTabData; // Monitoring tab
 
-    private final SettingsModel settingsModel;
     private Timer timer;
     // Regularly checks the last modification time of the specified file.
     // If the file has been modified (last modified time has changed), notifies listeners that changes have occurred.
@@ -82,24 +76,11 @@ public class MonitoringTabController implements Localizable, FileChangeListener,
 
     public MonitoringTabController() {
         LanguageManager.registerForUpdates(this::updateUI);
-        this.settingsModel = new SettingsModel();
-    }
-
-    // Getting tab
-    public Tab getMyTab() {
-        return myTab;
+        this.settingsManager = new SettingsManager();
     }
 
     public void setMyTab(Tab myTab) {
         this.myTab = myTab;
-    }
-
-    public MonitoringTabData getMonitoringTabData() {
-        return monitoringTabData;
-    }
-
-    public void setMonitoringTabData(MonitoringTabData monitoringTabData) {
-        this.monitoringTabData = monitoringTabData;
     }
 
     /**
@@ -110,9 +91,7 @@ public class MonitoringTabController implements Localizable, FileChangeListener,
         String file = fileName.getText();
 
         // If the file does not exist, the path to which is taken from the fields
-        if (!fileUtils.fileExists(path, file)) {
-            showAlertFileNotFound(path, file);
-            //doIfFileNotExists();
+        if (!fileValidationHandler.validateFile(path, file, bundle)) {
             return;
         }
 
@@ -131,7 +110,7 @@ public class MonitoringTabController implements Localizable, FileChangeListener,
         try {
             openContentWindow();
         } catch (IOException e) {
-            handleException(e);
+            AlertUtils.showErrorAlert("", e.getMessage());
         }
     }
 
@@ -141,9 +120,9 @@ public class MonitoringTabController implements Localizable, FileChangeListener,
     @FXML public void handleVersionControlAction(ActionEvent actionEvent) {
         if (!validateMonitoringState()) return;
         try {
-            openVersionControlWindow();
+            versionControlWindowHandler.openVersionControlWindow(fileContentArea.getText(), versionControlWindowHandler.getSelectedVersionControlMode(versionControlModeComboBox));
         } catch (Exception e) {
-            handleException(e);
+            AlertUtils.showErrorAlert("", e.getMessage());
         }
     }
 
@@ -193,11 +172,14 @@ public class MonitoringTabController implements Localizable, FileChangeListener,
         uiUpdater = new UIUpdater(bundle);
         fileUtils = new FileUtils();
         tabManager = new TabManager();
+        fileValidationHandler = new FileValidationHandler(fileUtils, toggleMonitoring, fileContentArea);
+        versionControlWindowHandler = new VersionControlWindowHandler(bundle, fileMonitoringHandler.getMonitoringService(), toggleMonitoring, fileContentArea);
+        tabDataLoader = new TabDataLoader(uiUpdater, fileMonitoringHandler);
 
         setMultilingual();
         loadSavedLanguage();
 
-        updateToggleButtonText();
+        uiUpdater.updateToggleButtonText(toggleMonitoring, clearContentToggle);
 
         toggleMonitoring.selectedProperty().addListener((observable, oldValue, newValue) -> uiUpdater.updateToggleMonitoringText(toggleMonitoring));
         clearContentToggle.selectedProperty().addListener((observable, oldValue, newValue) ->uiUpdater.updateClearContentToggleText(clearContentToggle));
@@ -210,33 +192,11 @@ public class MonitoringTabController implements Localizable, FileChangeListener,
         return filePath.getText() + "\\" + fileName.getText();
     }
 
-    private void updateToggleButtonText() {
-        updateToggleMonitoring();
-        updateClearContentToggle();
-    }
-
-    private void updateToggleMonitoring() {
-        if (toggleMonitoring.isSelected()) {
-            toggleMonitoring.setText(getTranslate("monitoringTabController.toggleMonitoring.on"));
-        } else {
-            toggleMonitoring.setText(getTranslate("monitoringTabController.toggleMonitoring.off"));
-        }
-    }
-
-    private void updateClearContentToggle() {
-        if(clearContentToggle.isSelected()) {
-            clearContentToggle.setText(getTranslate("monitoringTabController.clearContentToggle.on"));
-        } else {
-            clearContentToggle.setText(getTranslate("monitoringTabController.clearContentToggle.off"));
-        }
-    }
-
     private boolean validateSettings() {
         String filePathValue = filePath.getText();
         String fileNameValue = fileName.getText();
 
-        if (!fileUtils.fileExists(filePathValue, fileNameValue)) {
-            AlertUtils.showErrorAlert("", getTranslate("alert.fileNotFound") + " " + filePathValue + File.separator + fileNameValue);
+        if (!fileValidationHandler.validateFile(filePathValue, fileNameValue, bundle)) {
             return false;
         }
 
@@ -257,7 +217,7 @@ public class MonitoringTabController implements Localizable, FileChangeListener,
         int frequency = Integer.parseInt(monitoringFrequency.getText());
         boolean toggleMonitoringValue = toggleMonitoring.isSelected();
         boolean clearContentToggleValue = clearContentToggle.isSelected();
-        String versionControlMode = versionControlModeComboBox.getValue(); // .toString();
+        String versionControlMode = versionControlModeComboBox.getValue();
 
         tabManager.updateMonitoringTab(
                 tabId,
@@ -277,8 +237,7 @@ public class MonitoringTabController implements Localizable, FileChangeListener,
         String filePathValue = filePath.getText();
         String fileNameValue = fileName.getText();
 
-        if (!fileUtils.fileExists(filePathValue, fileNameValue)) {
-            showAlertFileNotFound(filePathValue, fileNameValue);
+        if (!fileValidationHandler.validateFile(filePathValue, fileNameValue, bundle)) {
             return false;
         }
 
@@ -290,19 +249,6 @@ public class MonitoringTabController implements Localizable, FileChangeListener,
         return true;
     }
 
-    private void showAlertFileNotFound(String filePathValue, String fileNameValue) {
-        AlertUtils.showErrorAlert("", getTranslate("alert.fileNotFound") + " " + filePathValue);
-        AlertUtils.showErrorAlert("", getTranslate("alert.fileNotFound") + " " + filePathValue + " " + fileNameValue);
-        doIfFileNotExists();
-    }
-
-    private void doIfFileNotExists() {
-        toggleMonitoring.setSelected(false);
-        fileMonitoringHandler.stopMonitoring();
-        fileContentArea.setVisible(false);
-        closeStage(monitoringWindowStage);
-    }
-
     private void closeStage(Stage stage) {
         if (stage != null) {
             stage.close();
@@ -310,36 +256,29 @@ public class MonitoringTabController implements Localizable, FileChangeListener,
         }
     }
 
-    private void handleException(Exception e) {
-        AlertUtils.showErrorAlert("", e.getMessage());
-        e.printStackTrace();
-    }
-
-    /**
-     * Get version control mode from dropdown list
-     * @return object of version control mode
-     */
-    private VersionControlMode getSelectedVersionControlMode() {
-        String selectedMode = versionControlModeComboBox.getSelectionModel().getSelectedItem();
-
-        return switch (selectedMode) {
-            case "символ", "symbol" -> VersionControlMode.SYMBOL;
-            case "слово", "word" -> VersionControlMode.WORD;
-            case "строка", "line" -> VersionControlMode.LINE;
-            case "подсказка", "tooltip" -> VersionControlMode.TOOLTIP;
-            case "color" -> VersionControlMode.COLOR;
-            default -> VersionControlMode.SYMBOL;
-        };
-    }
-
     public String getTranslate(String key) {
         return bundle.getString(key);
     }
 
+    private void setMultilingual() {
+        bundle = LanguageManager.getResourceBundle();
+        notificationManager = new NotificationManager(bundle);
+        LanguageManager.registerNotificationManager(notificationManager);
+    }
+
+    /**
+     * Using in MonitoringTabManager
+     */
+    public void loadData(MonitoringTabData tabData) {
+        tabDataLoader.loadData(tabData, filePath, fileName, monitoringFrequency, toggleMonitoring, clearContentToggle, versionControlModeComboBox, fileContentArea);
+    }
+
+    public void updateUI(ResourceBundle bundle) {}
+
     @Override public void loadSavedLanguage() {
-        String savedLanguage = settingsModel.loadLanguageSetting();
-        Locale locale = LanguageManager.getLocale(savedLanguage);
-        LanguageManager.switchLanguage(locale);
+        String savedLanguage = settingsManager.loadLanguageSetting();
+        Locale locale = settingsManager.getLocale(savedLanguage);
+        settingsManager.switchLanguage(locale);
     }
 
     @Override public void switchLanguage(Locale newLocale) {}
@@ -351,21 +290,7 @@ public class MonitoringTabController implements Localizable, FileChangeListener,
         uiUpdater.updateClearContentToggleText(clearContentToggle);
         uiUpdater.setComboBoxItems(versionControlModeComboBox);
         if (monitoringTabData != null) {
-            setSelectedVersion(monitoringTabData.getVersionControlMode());
-        }
-    }
-
-    public void setSelectedVersion(String versionControlMode) {
-        if (versionControlMode != null && !versionControlMode.isEmpty()) {
-            String translatedMode = switch (versionControlMode) {
-                case "символ", "symbol" -> bundle.getString("monitoringTabController.versionControlModeComboBox.symbol");
-                case "слово", "word" -> bundle.getString("monitoringTabController.versionControlModeComboBox.word");
-                case "строка", "line" -> bundle.getString("monitoringTabController.versionControlModeComboBox.line");
-                case "подсказка", "tooltip" -> bundle.getString("monitoringTabController.versionControlModeComboBox.tooltip");
-                case "color" -> bundle.getString("monitoringTabController.versionControlModeComboBox.color");
-                default -> bundle.getString("monitoringTabController.versionControlModeComboBox.symbol");
-            };
-            versionControlModeComboBox.getSelectionModel().select(translatedMode);
+            uiUpdater.setSelectedVersion(versionControlModeComboBox, monitoringTabData.getVersionControlMode());
         }
     }
 
@@ -391,70 +316,4 @@ public class MonitoringTabController implements Localizable, FileChangeListener,
             JsonLogger.log(level, message);
         }
     }
-
-    private void openVersionControlWindow() throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/dev/station/ui/monitoring/VersionControlWindow.fxml"));
-        Parent root = loader.load();
-
-        VersionControlWindowController controller = loader.getController();
-        String textArea = fileContentArea.getText();
-
-        VersionControlMode versionControlMode = getSelectedVersionControlMode();
-        controller.prepareToVersionControl(textArea, versionControlMode, monitoringService);
-        monitoringService.addFileChangeListener(controller);
-
-        Scene scene = new Scene(root, 825, 600);
-        Stage versionControlWindowStage = new Stage();
-        versionControlWindowStage.setTitle(getTranslate("versionControlWindowController.title"));
-        versionControlWindowStage.setScene(scene);
-
-        versionControlWindowStage.setOnCloseRequest(windowEvent -> {
-            // If monitoring is enabled, save the current contents of the file in the main UI
-            if (toggleMonitoring.isSelected()) {
-                fileContentArea.setVisible(true);
-                controller.getCurrentContent(content -> Platform.runLater(() -> fileContentArea.setText(content)));
-            }
-            // Remove the controller from the list of file change listeners in FileMonitoringService
-            monitoringService.removeFileChangeListener(controller);
-        });
-
-        WindowManager.addStage(versionControlWindowStage);
-        versionControlWindowStage.show();
-        fileContentArea.setVisible(false);
-    }
-
-    private void setMultilingual() {
-        bundle = LanguageManager.getResourceBundle();
-        notificationManager = new NotificationManager(bundle);
-        LanguageManager.registerNotificationManager(notificationManager);
-    }
-
-    /**
-     * Loading user values
-     */
-    public void loadData(MonitoringTabData tabData) {
-        setMonitoringTabData(tabData);
-
-        filePath.setText(tabData.getFilePath());
-        fileName.setText(tabData.getFileName());
-        monitoringFrequency.setText(String.valueOf(tabData.getMonitoringFrequency()));
-        toggleMonitoring.setSelected(tabData.isToggleMonitoring());
-        clearContentToggle.setSelected(tabData.isClearContentToggle());
-
-        // Code to set the selected version control mode
-        setSelectedVersion(tabData.getVersionControlMode());
-
-        // Code to start or stop monitoring
-        if (toggleMonitoring.isSelected()) {
-            fileContentArea.setVisible(true);
-            fileMonitoringHandler.startMonitoring(tabData.getFilePath(), tabData.getFileName(), tabData.getMonitoringFrequency());
-        } else {
-            fileContentArea.setVisible(false);
-            if (timer != null) {
-                fileMonitoringHandler.stopMonitoring();
-            }
-        }
-    }
-
-    public void updateUI(ResourceBundle bundle) {}
 }
