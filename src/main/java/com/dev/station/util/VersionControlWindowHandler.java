@@ -1,24 +1,16 @@
 package com.dev.station.util;
 
+import com.dev.station.controller.monitoring.FileMonitorAppColor;
 import com.dev.station.controller.monitoring.VersionControlMode;
-import com.dev.station.controller.monitoring.VersionControlWindowController;
-import com.dev.station.manager.WindowManager;
 import com.dev.station.service.FileMonitoringService;
-import javafx.application.Platform;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.ToggleButton;
 import javafx.stage.Stage;
 
-import java.io.IOException;
 import java.util.ResourceBundle;
 
-/**
- * Control the opening of the version control window
- */
+/** Control the opening of the version control window */
 public class VersionControlWindowHandler {
 
     private final ResourceBundle bundle;
@@ -33,28 +25,22 @@ public class VersionControlWindowHandler {
         this.fileContentArea = fileContentArea;
     }
 
-    public void openVersionControlWindow(String textArea, VersionControlMode versionControlMode) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/dev/station/ui/monitoring/VersionControlWindow.fxml"));
-        Parent root = loader.load();
+    public void openVersionControlWindow(String textArea, VersionControlMode versionControlMode)  {
+        try {
+            // Create a new Stage instance
+            Stage stage = new Stage();
+            FileMonitorAppColor fileMonitorAppColor = new FileMonitorAppColor();
+            fileMonitorAppColor.start(stage);
 
-        VersionControlWindowController controller = loader.getController();
-        controller.prepareToVersionControl(textArea, versionControlMode, monitoringService);
-        monitoringService.addFileChangeListener(controller);
-
-        Stage versionControlWindowStage = new Stage();
-        versionControlWindowStage.setTitle(bundle.getString("versionControlWindowController.title"));
-        versionControlWindowStage.setScene(new Scene(root, 825, 600));
-        versionControlWindowStage.setOnCloseRequest(windowEvent -> {
-            if (toggleMonitoring.isSelected()) {
-                fileContentArea.setVisible(true);
-                controller.getCurrentContent(content -> Platform.runLater(() -> fileContentArea.setText(content)));
+            if (monitoringService == null) {
+                throw new NullPointerException("monitoringService is null");
             }
-            monitoringService.removeFileChangeListener(controller);
-        });
-
-        WindowManager.addStage(versionControlWindowStage);
-        versionControlWindowStage.show();
-        fileContentArea.setVisible(false);
+            // Adding a controller to track file changes
+            monitoringService.addFileChangeListener(fileMonitorAppColor);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to open version control window.", e);
+        }
     }
 
     /**
