@@ -81,4 +81,39 @@ public class UIUpdater {
         stage.setScene(scene);
         return stage;
     }
+
+    public void setSelectedVersion(ComboBox<String> versionControlModeComboBox, String versionControlMode) {
+        if (versionControlMode != null && !versionControlMode.isEmpty()) {
+            String translatedMode = switch (versionControlMode) {
+                case "символ", "symbol" -> bundle.getString("monitoringTabController.versionControlModeComboBox.symbol");
+                case "слово", "word" -> bundle.getString("monitoringTabController.versionControlModeComboBox.word");
+                case "строка", "line" -> bundle.getString("monitoringTabController.versionControlModeComboBox.line");
+                case "подсказка", "tooltip" -> bundle.getString("monitoringTabController.versionControlModeComboBox.tooltip");
+                case "color" -> bundle.getString("monitoringTabController.versionControlModeComboBox.color");
+                default -> bundle.getString("monitoringTabController.versionControlModeComboBox.symbol");
+            };
+            versionControlModeComboBox.getSelectionModel().select(translatedMode);
+        }
+    }
+
+    public void updateToggleButtonText(ToggleButton toggleMonitoring, ToggleButton clearContentToggle) {
+        updateToggleMonitoring(toggleMonitoring);
+        updateClearContentToggle(clearContentToggle);
+    }
+
+    private void updateToggleMonitoring(ToggleButton toggleMonitoring) {
+        if (toggleMonitoring.isSelected()) {
+            toggleMonitoring.setText(bundle.getString("monitoringTabController.toggleMonitoring.on"));
+        } else {
+            toggleMonitoring.setText(bundle.getString("monitoringTabController.toggleMonitoring.off"));
+        }
+    }
+
+    private void updateClearContentToggle(ToggleButton clearContentToggle) {
+        if(clearContentToggle.isSelected()) {
+            clearContentToggle.setText(bundle.getString("monitoringTabController.clearContentToggle.on"));
+        } else {
+            clearContentToggle.setText(bundle.getString("monitoringTabController.clearContentToggle.off"));
+        }
+    }
 }

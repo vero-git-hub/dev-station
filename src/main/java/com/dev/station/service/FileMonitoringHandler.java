@@ -15,6 +15,10 @@ public class FileMonitoringHandler {
         this.fullFilePath = fullFilePath;
     }
 
+    public FileMonitoringService getMonitoringService() {
+        return monitoringService;
+    }
+
     public void startMonitoring(String filePath, String fileName, int frequency) {
         if (monitoringService != null) {
             monitoringService.stopMonitoring();
