@@ -4,6 +4,7 @@ import com.dev.station.manager.WindowManager;
 import com.dev.station.service.FileMonitoringService;
 import com.dev.station.util.alert.AlertUtils;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.io.*;
@@ -65,5 +66,9 @@ public class FileUtils {
             AlertUtils.showErrorAlert("", e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    public String getFullFilePath(TextField filePath, TextField fileName) {
+        return filePath.getText() + "\\" + fileName.getText();
     }
 }
