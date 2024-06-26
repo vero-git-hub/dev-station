@@ -67,8 +67,4 @@ public class FileUtils {
             e.printStackTrace();
         }
     }
-
-    public String getFullFilePath(TextField filePath, TextField fileName) {
-        return filePath.getText() + "\\" + fileName.getText();
-    }
 }

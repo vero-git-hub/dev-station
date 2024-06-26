@@ -1,5 +1,7 @@
 package com.dev.station.controller.monitoring;
 
+import com.dev.station.service.FileChangeListener;
+import com.dev.station.service.FileContentProvider;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
@@ -18,20 +20,20 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class FileMonitorAppColor extends Application {
+public class FileMonitorAppColor extends Application implements FileChangeListener {
     private static final String FILE_1_PATH = "file3.txt";
     private static final String FILE_2_PATH = "file4.txt";
     private static final int CHECK_INTERVAL = 30000; // 30 seconds
 
     private TextFlow file1Content;
     private FileTime lastModifiedTime;
+    private Stage stage;
 
-    public static void main(String[] args) {
-        launch(args);
-    }
+    public FileMonitorAppColor() {}
 
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage stage) {
+        this.stage = stage;
         file1Content = new TextFlow();
 
         Button startButton = new Button("Start Monitoring");
@@ -40,9 +42,9 @@ public class FileMonitorAppColor extends Application {
         VBox root = new VBox(10, file1Content, startButton);
         Scene scene = new Scene(root, 600, 400);
 
-        primaryStage.setScene(scene);
-        primaryStage.setTitle("File Monitor");
-        primaryStage.show();
+        stage.setScene(scene);
+        stage.setTitle("File Monitor");
+        stage.show();
     }
 
     private void startMonitoring() {
@@ -110,6 +112,18 @@ public class FileMonitorAppColor extends Application {
                     text.setStyle("-fx-fill: red;"); // Highlighting changed lines in red
                 }
                 file1Content.getChildren().add(text);
+            }
+        });
+    }
+
+    @Override
+    public void onFileChange(FileContentProvider contentProvider) {
+        Platform.runLater(() -> {
+            try {
+                String content = contentProvider.getContent();
+                displayFileContent(content);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         });
     }

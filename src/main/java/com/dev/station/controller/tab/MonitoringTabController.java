@@ -131,7 +131,7 @@ public class MonitoringTabController implements Localizable, FileChangeListener,
 
     /** Show file content in another window */
     @FXML public void handleViewFileAction(ActionEvent actionEvent) {
-        fileUtils.displayFileContent(fileUtils.getFullFilePath(filePath, fileName), uiUpdater);
+        fileUtils.displayFileContent(getFullFilePath(), uiUpdater);
     }
 
     /** Save data from fields to file */
@@ -141,18 +141,21 @@ public class MonitoringTabController implements Localizable, FileChangeListener,
     }
 
     @FXML public void initialize() {
-        String filePathValue = fileUtils.getFullFilePath(filePath, fileName);
         bundle = LanguageManager.getResourceBundle();
         notificationManager = new NotificationManager(bundle);
         LanguageManager.registerNotificationManager(notificationManager);
-        fileMonitoringHandler = new FileMonitoringHandler(fileContentArea, filePathValue);
+        fileMonitoringHandler = new FileMonitoringHandler(fileContentArea, getFullFilePath());
         uiUpdater = new UIUpdater(bundle);
         fileUtils = new FileUtils();
         tabManager = new TabManager();
         fileValidationHandler = new FileValidationHandler(fileUtils, toggleMonitoring, fileContentArea);
-        versionControlWindowHandler = new VersionControlWindowHandler(bundle, fileMonitoringHandler.getMonitoringService(), toggleMonitoring, fileContentArea);
+
+        monitoringService = new FileMonitoringService(filePath.getText(), fileName.getText(), this);
+
+        versionControlWindowHandler = new VersionControlWindowHandler(bundle, monitoringService, toggleMonitoring, fileContentArea);
+
         tabDataLoader = new TabDataLoader(uiUpdater, fileMonitoringHandler);
-        contentWindowHandler = new ContentWindowHandler(uiUpdater, fileContentArea, toggleMonitoring, clearContentToggle, monitoringService, filePathValue);
+        contentWindowHandler = new ContentWindowHandler(uiUpdater, fileContentArea, toggleMonitoring, clearContentToggle, monitoringService, getFullFilePath());
 
         setMultilingual();
         loadSavedLanguage();
@@ -164,6 +167,10 @@ public class MonitoringTabController implements Localizable, FileChangeListener,
 
         uiUpdater.setTooltips(toggleMonitoring, openContentButton, viewFileContentButton, versionControlButton, clearContentToggle, saveSettingsButton);
         uiUpdater.setComboBoxItems(versionControlModeComboBox);
+    }
+
+    public String getFullFilePath() {
+        return filePath.getText() + "\\" + fileName.getText();
     }
 
     private boolean validateSettings() {
