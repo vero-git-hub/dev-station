@@ -26,13 +26,14 @@ public class VersionControlWindowHandler {
         this.fileContentArea = fileContentArea;
     }
 
-    public void openVersionControlWindow(String textArea, VersionControlMode versionControlMode, String fullPath)  {
+    public void openVersionControlWindow(String textArea, VersionControlMode versionControlMode, String fullPath, int checkInterval)  {
         try {
             // Create a new Stage instance
             Stage stage = new Stage();
             FileMonitorAppColor fileMonitorAppColor = new FileMonitorAppColor();
             fileMonitorAppColor.setInitialContent(textArea);
             fileMonitorAppColor.setFile1Path(fullPath);
+            fileMonitorAppColor.setCheckInterval(checkInterval);
             fileMonitorAppColor.start(stage);
 
             if (monitoringService == null) {
