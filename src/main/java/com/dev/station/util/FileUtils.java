@@ -8,6 +8,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.io.*;
+import java.util.UUID;
 
 public class FileUtils {
     /**
@@ -71,5 +72,10 @@ public class FileUtils {
             AlertUtils.showErrorAlert("", e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    public static String generateUniqueFilePath() {
+        String uniqueID = UUID.randomUUID().toString();
+        return "temp_" + uniqueID + ".txt";
     }
 }
