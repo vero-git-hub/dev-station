@@ -21,7 +21,7 @@ import java.util.TimerTask;
 
 public class FileMonitorAppColor extends Application implements FileChangeListener {
     private String file1Path;
-    private static final String FILE_2_PATH = "file4.txt";
+    private String file2Path;
     private TextFlow file1Content;
     private int checkInterval;
     private FileTime lastModifiedTime;
@@ -37,6 +37,10 @@ public class FileMonitorAppColor extends Application implements FileChangeListen
 
     public void setFile1Path(String file1Path) {
         this.file1Path = file1Path;
+    }
+
+    public void setFile2Path(String file2Path) {
+        this.file2Path = file2Path;
     }
 
     public void setCheckInterval(int checkInterval) {
@@ -79,7 +83,7 @@ public class FileMonitorAppColor extends Application implements FileChangeListen
     private void startMonitoring() {
         try {
             displayFileContent(file1Path);
-            copyFileContent(file1Path, FILE_2_PATH);
+            copyFileContent(file1Path, file2Path);
             clearFileContent(file1Path);
             updateLastModifiedTime(file1Path);
 
@@ -123,7 +127,7 @@ public class FileMonitorAppColor extends Application implements FileChangeListen
         FileTime currentModifiedTime = Files.getLastModifiedTime(Paths.get(file1Path));
         if (!currentModifiedTime.equals(lastModifiedTime)) {
             highlightChanges();
-            copyFileContent(file1Path, FILE_2_PATH);
+            copyFileContent(file1Path, file2Path);
             clearFileContent(file1Path);
             updateLastModifiedTime(file1Path);
         }
@@ -131,7 +135,7 @@ public class FileMonitorAppColor extends Application implements FileChangeListen
 
     private void highlightChanges() throws IOException {
         List<String> file1Lines = Files.readAllLines(Paths.get(file1Path));
-        List<String> file2Lines = Files.readAllLines(Paths.get(FILE_2_PATH));
+        List<String> file2Lines = Files.readAllLines(Paths.get(file2Path));
 
         Platform.runLater(() -> {
             file1Content.getChildren().clear();

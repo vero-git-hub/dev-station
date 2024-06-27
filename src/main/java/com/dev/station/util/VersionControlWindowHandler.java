@@ -33,6 +33,7 @@ public class VersionControlWindowHandler {
             FileMonitorAppColor fileMonitorAppColor = new FileMonitorAppColor();
             fileMonitorAppColor.setInitialContent(textArea);
             fileMonitorAppColor.setFile1Path(fullPath);
+            fileMonitorAppColor.setFile2Path(FileUtils.generateUniqueFilePath());
             fileMonitorAppColor.setCheckInterval(checkInterval);
             fileMonitorAppColor.start(stage);
 
