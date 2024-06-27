@@ -50,6 +50,11 @@ public class FileUtils {
         return file.exists();
     }
 
+    public boolean fileExists(String fullPath) {
+        File file = new File(fullPath);
+        return file.exists();
+    }
+
     public void displayFileContent(String fullFilePath, UIUpdater uiUpdater) {
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(fullFilePath))) {
             StringBuilder content = new StringBuilder();

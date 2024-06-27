@@ -20,7 +20,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class FileMonitorAppColor extends Application implements FileChangeListener {
-    private static final String FILE_1_PATH = "file3.txt";
+    private String file1Path;
     private static final String FILE_2_PATH = "file4.txt";
     private static final int CHECK_INTERVAL = 30000; // 30 seconds
 
@@ -28,11 +28,16 @@ public class FileMonitorAppColor extends Application implements FileChangeListen
     private FileTime lastModifiedTime;
     private Stage stage;
     private String initialContent;
+    private Timer timer;
 
     public FileMonitorAppColor() {}
 
     public void setInitialContent(String content) {
         this.initialContent = content;
+    }
+
+    public void setFile1Path(String file1Path) {
+        this.file1Path = file1Path;
     }
 
     @Override
@@ -70,12 +75,12 @@ public class FileMonitorAppColor extends Application implements FileChangeListen
 
     private void startMonitoring() {
         try {
-            displayFileContent(FILE_1_PATH);
-            copyFileContent(FILE_1_PATH, FILE_2_PATH);
-            clearFileContent(FILE_1_PATH);
-            updateLastModifiedTime(FILE_1_PATH);
+            displayFileContent(file1Path);
+            copyFileContent(file1Path, FILE_2_PATH);
+            clearFileContent(file1Path);
+            updateLastModifiedTime(file1Path);
 
-            Timer timer = new Timer(true);
+            timer = new Timer(true);
             timer.scheduleAtFixedRate(new TimerTask() {
                 @Override
                 public void run() {
@@ -112,17 +117,17 @@ public class FileMonitorAppColor extends Application implements FileChangeListen
     }
 
     private void checkFileChanges() throws IOException {
-        FileTime currentModifiedTime = Files.getLastModifiedTime(Paths.get(FILE_1_PATH));
+        FileTime currentModifiedTime = Files.getLastModifiedTime(Paths.get(file1Path));
         if (!currentModifiedTime.equals(lastModifiedTime)) {
             highlightChanges();
-            copyFileContent(FILE_1_PATH, FILE_2_PATH);
-            clearFileContent(FILE_1_PATH);
-            updateLastModifiedTime(FILE_1_PATH);
+            copyFileContent(file1Path, FILE_2_PATH);
+            clearFileContent(file1Path);
+            updateLastModifiedTime(file1Path);
         }
     }
 
     private void highlightChanges() throws IOException {
-        List<String> file1Lines = Files.readAllLines(Paths.get(FILE_1_PATH));
+        List<String> file1Lines = Files.readAllLines(Paths.get(file1Path));
         List<String> file2Lines = Files.readAllLines(Paths.get(FILE_2_PATH));
 
         Platform.runLater(() -> {
@@ -130,11 +135,18 @@ public class FileMonitorAppColor extends Application implements FileChangeListen
             for (int i = 0; i < file1Lines.size(); i++) {
                 Text text = new Text(file1Lines.get(i) + "\n");
                 if (i >= file2Lines.size() || !file1Lines.get(i).equals(file2Lines.get(i))) {
-                    text.setStyle("-fx-fill: red;"); // Highlighting changed lines in red
+                    text.setStyle("-fx-fill: red;");
                 }
                 file1Content.getChildren().add(text);
             }
         });
+    }
+
+    public void stopMonitoring() {
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
+        }
     }
 
     @Override
