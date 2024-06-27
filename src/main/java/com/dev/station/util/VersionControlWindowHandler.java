@@ -26,12 +26,13 @@ public class VersionControlWindowHandler {
         this.fileContentArea = fileContentArea;
     }
 
-    public void openVersionControlWindow(String textArea, VersionControlMode versionControlMode)  {
+    public void openVersionControlWindow(String textArea, VersionControlMode versionControlMode, String fullPath)  {
         try {
             // Create a new Stage instance
             Stage stage = new Stage();
             FileMonitorAppColor fileMonitorAppColor = new FileMonitorAppColor();
             fileMonitorAppColor.setInitialContent(textArea);
+            fileMonitorAppColor.setFile1Path(fullPath);
             fileMonitorAppColor.start(stage);
 
             if (monitoringService == null) {
@@ -46,6 +47,8 @@ public class VersionControlWindowHandler {
                     fileMonitorAppColor.getCurrentContent(content -> Platform.runLater(() -> fileContentArea.setText(content)));
                 }
                 monitoringService.removeFileChangeListener(fileMonitorAppColor);
+                // Stop the timer when closing a window
+                fileMonitorAppColor.stopMonitoring();
             });
 
             stage.show();

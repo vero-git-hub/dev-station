@@ -122,10 +122,13 @@ public class MonitoringTabController implements Localizable, FileChangeListener,
      */
     @FXML public void handleVersionControlAction(ActionEvent actionEvent) {
         if (!validateMonitoringState()) return;
-        try {
-            versionControlWindowHandler.openVersionControlWindow(fileContentArea.getText(), versionControlWindowHandler.getSelectedVersionControlMode(versionControlModeComboBox));
-        } catch (Exception e) {
-            AlertUtils.showErrorAlert("", e.getMessage());
+        String fullPath = getFullFilePath(); // from fields
+        if(fileUtils.fileExists(fullPath)){
+            try {
+                versionControlWindowHandler.openVersionControlWindow(fileContentArea.getText(), versionControlWindowHandler.getSelectedVersionControlMode(versionControlModeComboBox), fullPath);
+            } catch (Exception e) {
+                AlertUtils.showErrorAlert("", e.getMessage());
+            }
         }
     }
 
