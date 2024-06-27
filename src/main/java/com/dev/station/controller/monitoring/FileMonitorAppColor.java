@@ -22,9 +22,8 @@ import java.util.TimerTask;
 public class FileMonitorAppColor extends Application implements FileChangeListener {
     private String file1Path;
     private static final String FILE_2_PATH = "file4.txt";
-    private static final int CHECK_INTERVAL = 30000; // 30 seconds
-
     private TextFlow file1Content;
+    private int checkInterval;
     private FileTime lastModifiedTime;
     private Stage stage;
     private String initialContent;
@@ -38,6 +37,10 @@ public class FileMonitorAppColor extends Application implements FileChangeListen
 
     public void setFile1Path(String file1Path) {
         this.file1Path = file1Path;
+    }
+
+    public void setCheckInterval(int checkInterval) {
+        this.checkInterval = checkInterval * 10000;
     }
 
     @Override
@@ -90,7 +93,7 @@ public class FileMonitorAppColor extends Application implements FileChangeListen
                         e.printStackTrace();
                     }
                 }
-            }, CHECK_INTERVAL, CHECK_INTERVAL);
+            }, checkInterval, checkInterval);
         } catch (IOException e) {
             e.printStackTrace();
         }
