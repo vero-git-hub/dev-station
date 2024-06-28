@@ -2,6 +2,7 @@ package com.dev.station.util;
 
 import com.dev.station.controller.monitoring.FileMonitorAppColor;
 import com.dev.station.controller.monitoring.VersionControlMode;
+import com.dev.station.manager.WindowManager;
 import com.dev.station.service.FileMonitoringService;
 import javafx.application.Platform;
 import javafx.scene.control.ComboBox;
@@ -26,14 +27,15 @@ public class VersionControlWindowHandler {
         this.fileContentArea = fileContentArea;
     }
 
-    public void openVersionControlWindow(String textArea, VersionControlMode versionControlMode, String fullPath, int checkInterval)  {
+    public void openVersionControlWindow(String textArea, VersionControlMode versionControlMode, String file1Path, int checkInterval)  {
         try {
             // Create a new Stage instance
             Stage stage = new Stage();
             FileMonitorAppColor fileMonitorAppColor = new FileMonitorAppColor();
             fileMonitorAppColor.setInitialContent(textArea);
-            fileMonitorAppColor.setFile1Path(fullPath);
-            fileMonitorAppColor.setFile2Path(FileUtils.generateUniqueFilePath());
+            fileMonitorAppColor.setFile1Path(file1Path);
+            String file2Path = FileUtils.generateUniqueFilePath();
+            fileMonitorAppColor.setFile2Path(file2Path);
             fileMonitorAppColor.setCheckInterval(checkInterval);
             fileMonitorAppColor.start(stage);
 
@@ -51,8 +53,11 @@ public class VersionControlWindowHandler {
                 monitoringService.removeFileChangeListener(fileMonitorAppColor);
                 // Stop the timer when closing a window
                 fileMonitorAppColor.stopMonitoring();
+                WindowManager.removeMonitoringWindow(stage);
             });
 
+            WindowManager.addMonitoringWindow(stage); // Adding to WindowManager
+            stage.setUserData(fileMonitorAppColor); // Setting UserData for a Window
             stage.show();
             fileContentArea.setVisible(false);
         } catch (Exception e) {
