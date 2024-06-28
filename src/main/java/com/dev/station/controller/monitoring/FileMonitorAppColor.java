@@ -29,6 +29,7 @@ public class FileMonitorAppColor extends Application implements FileChangeListen
     private String initialContent;
     private Timer timer;
     private String tabId;
+    private boolean clearContentToggle;
 
     public FileMonitorAppColor() {}
 
@@ -54,6 +55,10 @@ public class FileMonitorAppColor extends Application implements FileChangeListen
 
     public void setTabId(String tabId) {
         this.tabId = tabId;
+    }
+
+    public void setClearContentToggle(boolean clearContentToggle) {
+        this.clearContentToggle = clearContentToggle;
     }
 
     @Override
@@ -93,7 +98,9 @@ public class FileMonitorAppColor extends Application implements FileChangeListen
         try {
             displayFileContent(file1Path);
             copyFileContent(file1Path, file2Path);
-            clearFileContent(file1Path);
+            if (clearContentToggle) {
+                clearFileContent(file1Path);
+            }
             updateLastModifiedTime(file1Path);
 
             timer = new Timer(true);
@@ -137,7 +144,9 @@ public class FileMonitorAppColor extends Application implements FileChangeListen
         if (!currentModifiedTime.equals(lastModifiedTime)) {
             highlightChanges();
             copyFileContent(file1Path, file2Path);
-            clearFileContent(file1Path);
+            if (clearContentToggle) {
+                clearFileContent(file1Path);
+            }
             updateLastModifiedTime(file1Path);
         }
     }
