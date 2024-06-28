@@ -27,7 +27,7 @@ public class VersionControlWindowHandler {
         this.fileContentArea = fileContentArea;
     }
 
-    public void openVersionControlWindow(String textArea, VersionControlMode versionControlMode, String file1Path, int checkInterval, String tabId)  {
+    public void openVersionControlWindow(String textArea, VersionControlMode versionControlMode, String file1Path, int checkInterval, String tabId, boolean isClearContentToggle)  {
         try {
             // Create a new Stage instance
             Stage stage = new Stage();
@@ -38,6 +38,7 @@ public class VersionControlWindowHandler {
             fileMonitorAppColor.setFile2Path(file2Path);
             fileMonitorAppColor.setCheckInterval(checkInterval);
             fileMonitorAppColor.setTabId(tabId);
+            fileMonitorAppColor.setClearContentToggle(isClearContentToggle);
             fileMonitorAppColor.start(stage);
 
             if (monitoringService == null) {

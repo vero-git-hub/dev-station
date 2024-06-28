@@ -144,10 +144,13 @@ public class MonitoringTabController implements Localizable, FileChangeListener,
         String fullPath = getFullFilePath();
         int checkInterval = Integer.parseInt(monitoringFrequency.getText());
         String tabId = myTab.getId();
+        boolean isClearContentToggle = clearContentToggle.isSelected();
+        System.out.println(isClearContentToggle);
+
 
         if(fileUtils.fileExists(fullPath)){
             try {
-                versionControlWindowHandler.openVersionControlWindow(fileContentArea.getText(), versionControlWindowHandler.getSelectedVersionControlMode(versionControlModeComboBox), fullPath, checkInterval, tabId);
+                versionControlWindowHandler.openVersionControlWindow(fileContentArea.getText(), versionControlWindowHandler.getSelectedVersionControlMode(versionControlModeComboBox), fullPath, checkInterval, tabId, isClearContentToggle);
             } catch (Exception e) {
                 AlertUtils.showErrorAlert("", e.getMessage());
             }
