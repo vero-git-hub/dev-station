@@ -145,8 +145,6 @@ public class MonitoringTabController implements Localizable, FileChangeListener,
         int checkInterval = Integer.parseInt(monitoringFrequency.getText());
         String tabId = myTab.getId();
         boolean isClearContentToggle = clearContentToggle.isSelected();
-        System.out.println(isClearContentToggle);
-
 
         if(fileUtils.fileExists(fullPath)){
             try {
