@@ -28,6 +28,14 @@ public class VersionControlWindowHandler {
     }
 
     public void openVersionControlWindow(String textArea, VersionControlMode versionControlMode, String file1Path, int checkInterval, String tabId, boolean isClearContentToggle)  {
+        if(versionControlMode == null) { return; }
+
+        if(versionControlMode == VersionControlMode.COLOR) {
+            createAndOpenMonitoringWindow(textArea, file1Path, checkInterval, tabId, isClearContentToggle);
+        }
+    }
+
+    private void createAndOpenMonitoringWindow(String textArea, String file1Path, int checkInterval, String tabId, boolean isClearContentToggle) {
         try {
             // Create a new Stage instance
             Stage stage = new Stage();
