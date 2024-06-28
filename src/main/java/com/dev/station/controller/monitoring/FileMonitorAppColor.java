@@ -154,6 +154,15 @@ public class FileMonitorAppColor extends Application implements FileChangeListen
             timer.cancel();
             timer = null;
         }
+        deleteFile(file2Path);
+    }
+
+    private void deleteFile(String filePath) {
+        try {
+            Files.deleteIfExists(Paths.get(filePath));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
