@@ -1,6 +1,7 @@
 package com.dev.station.controller.tab;
 
 import com.dev.station.Localizable;
+import com.dev.station.controller.monitoring.FileMonitorAppColor;
 import com.dev.station.logs.JsonLogger;
 import com.dev.station.logs.Loggable;
 import com.dev.station.manager.LanguageManager;
@@ -8,6 +9,7 @@ import com.dev.station.manager.NotificationManager;
 import com.dev.station.manager.SettingsManager;
 import com.dev.station.manager.TabManager;
 import com.dev.station.manager.monitoring.MonitoringTabData;
+import com.dev.station.manager.WindowManager;
 import com.dev.station.service.FileChangeListener;
 import com.dev.station.service.FileContentProvider;
 import com.dev.station.service.FileMonitoringHandler;
@@ -101,8 +103,22 @@ public class MonitoringTabController implements Localizable, FileChangeListener,
             fileMonitoringHandler.startMonitoring(path, file, Integer.parseInt(monitoringFrequency.getText()));
         } else {
             fileMonitoringHandler.stopMonitoring();
+            closeVersionControlWindows(myTab.getId());
             fileContentArea.setVisible(false);
             closeStage(monitoringWindowStage);
+        }
+    }
+
+    private void closeVersionControlWindows(String tabId) {
+        for (Stage stage : WindowManager.getMonitoringWindows()) {
+            Object userData = stage.getUserData();
+            if (userData instanceof FileMonitorAppColor) {
+                FileMonitorAppColor fileMonitorAppColor = (FileMonitorAppColor) userData;
+                if (fileMonitorAppColor.getTabId().equals(tabId)) {
+                    fileMonitorAppColor.stopMonitoring();
+                    stage.close();
+                }
+            }
         }
     }
 
@@ -126,10 +142,11 @@ public class MonitoringTabController implements Localizable, FileChangeListener,
         // from fields
         String fullPath = getFullFilePath();
         int checkInterval = Integer.parseInt(monitoringFrequency.getText());
+        String tabId = myTab.getId();
 
         if(fileUtils.fileExists(fullPath)){
             try {
-                versionControlWindowHandler.openVersionControlWindow(fileContentArea.getText(), versionControlWindowHandler.getSelectedVersionControlMode(versionControlModeComboBox), fullPath, checkInterval);
+                versionControlWindowHandler.openVersionControlWindow(fileContentArea.getText(), versionControlWindowHandler.getSelectedVersionControlMode(versionControlModeComboBox), fullPath, checkInterval, tabId);
             } catch (Exception e) {
                 AlertUtils.showErrorAlert("", e.getMessage());
             }
