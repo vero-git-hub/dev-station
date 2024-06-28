@@ -5,6 +5,7 @@ import com.dev.station.service.FileContentProvider;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
@@ -30,6 +31,7 @@ public class FileMonitorAppColor extends Application implements FileChangeListen
     private Timer timer;
     private String tabId;
     private boolean clearContentToggle;
+    private String windowTitle;
 
     public FileMonitorAppColor() {}
 
@@ -61,6 +63,10 @@ public class FileMonitorAppColor extends Application implements FileChangeListen
         this.clearContentToggle = clearContentToggle;
     }
 
+    public void setWindowTitle(String windowTitle) {
+        this.windowTitle = windowTitle;
+    }
+
     @Override
     public void start(Stage stage) {
         this.stage = stage;
@@ -73,11 +79,15 @@ public class FileMonitorAppColor extends Application implements FileChangeListen
             });
         }
 
-        VBox root = new VBox(10, file1Content);
-        Scene scene = new Scene(root, 600, 400);
+        ScrollPane scrollPane = new ScrollPane(file1Content);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setFitToHeight(true);
+
+        VBox root = new VBox(10, scrollPane);
+        Scene scene = new Scene(root, 800, 600);
 
         stage.setScene(scene);
-        stage.setTitle("File Monitor");
+        stage.setTitle(windowTitle != null ? windowTitle : "File Monitor");
         stage.show();
         startMonitoring();
     }
@@ -104,6 +114,7 @@ public class FileMonitorAppColor extends Application implements FileChangeListen
             updateLastModifiedTime(file1Path);
 
             timer = new Timer(true);
+            // start monitoring at a fixed interval
             timer.scheduleAtFixedRate(new TimerTask() {
                 @Override
                 public void run() {
@@ -141,6 +152,8 @@ public class FileMonitorAppColor extends Application implements FileChangeListen
 
     private void checkFileChanges() throws IOException {
         FileTime currentModifiedTime = Files.getLastModifiedTime(Paths.get(file1Path));
+//        System.out.println("Current Monitoring Time: " + System.currentTimeMillis());
+//        System.out.println("Last Modified Time: " + currentModifiedTime.toMillis());
         if (!currentModifiedTime.equals(lastModifiedTime)) {
             highlightChanges();
             copyFileContent(file1Path, file2Path);
