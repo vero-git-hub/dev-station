@@ -116,4 +116,17 @@ public class UIUpdater {
             clearContentToggle.setText(bundle.getString("monitoringTabController.clearContentToggle.off"));
         }
     }
+
+    public void updateControlStates(ToggleButton toggleMonitoring, ToggleButton clearContentToggle, Button saveSettingsButton, TextField filePath, TextField fileName, TextField monitoringFrequency, ComboBox<String> versionControlModeComboBox) {
+        boolean monitoringActive = toggleMonitoring.isSelected();
+        //openContentButton.setDisable(monitoringActive);
+        clearContentToggle.setDisable(monitoringActive);
+        //versionControlButton.setDisable(monitoringActive);
+        //viewFileContentButton.setDisable(monitoringActive);
+        saveSettingsButton.setDisable(monitoringActive);
+        filePath.setDisable(monitoringActive);
+        fileName.setDisable(monitoringActive);
+        monitoringFrequency.setDisable(monitoringActive);
+        versionControlModeComboBox.setDisable(monitoringActive);
+    }
 }

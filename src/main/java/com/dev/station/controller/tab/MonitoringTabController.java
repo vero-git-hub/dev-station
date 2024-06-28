@@ -107,6 +107,7 @@ public class MonitoringTabController implements Localizable, FileChangeListener,
             fileContentArea.setVisible(false);
             closeStage(monitoringWindowStage);
         }
+        uiUpdater.updateControlStates(toggleMonitoring, clearContentToggle, saveSettingsButton, filePath, fileName, monitoringFrequency, versionControlModeComboBox);
     }
 
     private void closeVersionControlWindows(String tabId) {
