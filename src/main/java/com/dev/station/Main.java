@@ -1,5 +1,6 @@
 package com.dev.station;
 
+import com.dev.station.controller.monitoring.FileMonitorAppColor;
 import com.dev.station.manager.TimerManager;
 import com.dev.station.manager.WindowManager;
 import com.dev.station.model.SettingsModel;
@@ -8,6 +9,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+
+import java.util.List;
 
 public class Main extends Application {
     @Override
@@ -33,6 +36,7 @@ public class Main extends Application {
 
             stage.setOnCloseRequest(event -> {
                 TimerManager.stopAll();
+                closeAllMonitoringWindows(); // Closing all monitoring windows
                 WindowManager.closeAllStages();
             });
 
@@ -41,6 +45,16 @@ public class Main extends Application {
             e.printStackTrace();
         }
 
+    }
+
+    private void closeAllMonitoringWindows() {
+        List<Stage> monitoringWindows = WindowManager.getMonitoringWindows(); // Getting a list of all monitoring windows
+        for (Stage window : monitoringWindows) {
+            if (window.getUserData() instanceof FileMonitorAppColor) {
+                ((FileMonitorAppColor) window.getUserData()).stopMonitoring();
+            }
+            window.close();
+        }
     }
 
     public static void main(String[] args) {

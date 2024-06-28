@@ -9,9 +9,18 @@ import java.util.List;
  */
 public class WindowManager {
     private static final List<Stage> openStages = new ArrayList<>();
+    private static final List<Stage> monitoringWindows = new ArrayList<>(); // List of monitoring windows
 
     public static void addStage(Stage stage) {
         openStages.add(stage);
+    }
+
+    public static void addMonitoringWindow(Stage stage) {
+        monitoringWindows.add(stage);
+    }
+
+    public static List<Stage> getMonitoringWindows() {
+        return new ArrayList<>(monitoringWindows);
     }
 
     public static void closeAllStages() {
@@ -21,5 +30,13 @@ public class WindowManager {
             }
         }
         openStages.clear();
+    }
+
+    public static void removeStage(Stage stage) {
+        openStages.remove(stage);
+    }
+
+    public static void removeMonitoringWindow(Stage stage) {
+        monitoringWindows.remove(stage);
     }
 }
