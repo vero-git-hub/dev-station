@@ -27,7 +27,7 @@ public class VersionControlWindowHandler {
         this.fileContentArea = fileContentArea;
     }
 
-    public void openVersionControlWindow(String textArea, VersionControlMode versionControlMode, String file1Path, int checkInterval)  {
+    public void openVersionControlWindow(String textArea, VersionControlMode versionControlMode, String file1Path, int checkInterval, String tabId)  {
         try {
             // Create a new Stage instance
             Stage stage = new Stage();
@@ -37,6 +37,7 @@ public class VersionControlWindowHandler {
             String file2Path = FileUtils.generateUniqueFilePath();
             fileMonitorAppColor.setFile2Path(file2Path);
             fileMonitorAppColor.setCheckInterval(checkInterval);
+            fileMonitorAppColor.setTabId(tabId);
             fileMonitorAppColor.start(stage);
 
             if (monitoringService == null) {

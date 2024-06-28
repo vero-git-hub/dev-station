@@ -28,6 +28,7 @@ public class FileMonitorAppColor extends Application implements FileChangeListen
     private Stage stage;
     private String initialContent;
     private Timer timer;
+    private String tabId;
 
     public FileMonitorAppColor() {}
 
@@ -45,6 +46,14 @@ public class FileMonitorAppColor extends Application implements FileChangeListen
 
     public void setCheckInterval(int checkInterval) {
         this.checkInterval = checkInterval * 10000;
+    }
+
+    public String getTabId() {
+        return tabId;
+    }
+
+    public void setTabId(String tabId) {
+        this.tabId = tabId;
     }
 
     @Override
