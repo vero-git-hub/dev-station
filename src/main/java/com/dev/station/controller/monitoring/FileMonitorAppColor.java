@@ -6,6 +6,7 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
@@ -24,6 +25,7 @@ public class FileMonitorAppColor extends Application implements FileChangeListen
     private String file1Path;
     private String file2Path;
     private TextFlow file1Content;
+    private TextFlow lineNumberFlow;
     private int checkInterval;
     private FileTime lastModifiedTime;
     private Stage stage;
@@ -71,11 +73,13 @@ public class FileMonitorAppColor extends Application implements FileChangeListen
     public void start(Stage stage) {
         this.stage = stage;
         file1Content = new TextFlow();
+        lineNumberFlow = new TextFlow();
 
         if (initialContent != null) {
             Platform.runLater(() -> {
                 file1Content.getChildren().clear();
                 file1Content.getChildren().add(new Text(initialContent));
+                updateLineNumbers();
             });
         }
 
@@ -83,13 +87,34 @@ public class FileMonitorAppColor extends Application implements FileChangeListen
         scrollPane.setFitToWidth(true);
         scrollPane.setFitToHeight(true);
 
-        VBox root = new VBox(10, scrollPane);
+        ScrollPane lineNumberScrollPane = new ScrollPane(lineNumberFlow);
+        lineNumberScrollPane.setFitToWidth(true);
+        lineNumberScrollPane.setFitToHeight(true);
+        lineNumberScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+
+        scrollPane.vvalueProperty().bindBidirectional(lineNumberScrollPane.vvalueProperty());
+
+        HBox contentBox = new HBox(lineNumberScrollPane, scrollPane);
+        VBox root = new VBox(10, contentBox);
         Scene scene = new Scene(root, 800, 600);
 
         stage.setScene(scene);
         stage.setTitle(windowTitle != null ? windowTitle : "File Monitor");
         stage.show();
         startMonitoring();
+    }
+
+    private void updateLineNumbers() {
+        Platform.runLater(() -> {
+            lineNumberFlow.getChildren().clear();
+            int lineNumber = 1;
+            for (var node : file1Content.getChildren()) {
+                if (node instanceof Text) {
+                    lineNumberFlow.getChildren().add(new Text(lineNumber + "\n"));
+                    lineNumber++;
+                }
+            }
+        });
     }
 
     public void getCurrentContent(ContentConsumer consumer) {
@@ -135,6 +160,7 @@ public class FileMonitorAppColor extends Application implements FileChangeListen
         Platform.runLater(() -> {
             file1Content.getChildren().clear();
             lines.forEach(line -> file1Content.getChildren().add(new Text(line + "\n")));
+            updateLineNumbers();
         });
     }
 
@@ -176,6 +202,7 @@ public class FileMonitorAppColor extends Application implements FileChangeListen
                     text.setStyle("-fx-fill: red;");
                 }
                 file1Content.getChildren().add(text);
+                updateLineNumbers();
             }
         });
     }
