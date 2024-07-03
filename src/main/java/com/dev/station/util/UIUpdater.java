@@ -129,4 +129,12 @@ public class UIUpdater {
         monitoringFrequency.setDisable(monitoringActive);
         versionControlModeComboBox.setDisable(monitoringActive);
     }
+
+    public void setTimerComboBoxItems(ComboBox<Integer> monitoringFrequencyComboBox) {
+        // Populate monitoringFrequencyComboBox with values from 0 to 60
+        for (int i = 0; i <= 60; i++) {
+            monitoringFrequencyComboBox.getItems().add(i);
+        }
+        monitoringFrequencyComboBox.setValue(0); // Set default value
+    }
 }
