@@ -86,6 +86,8 @@ public class FileMonitorAppColor extends Application implements FileChangeListen
             try {
                 displayFileContent(file1Path);
                 remainingTime = checkInterval / 1000;  // Reset the timer
+                updateButtonTimerDisplay();  // Update button immediately
+                startButtonTimer();  // Restart the button timer
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -160,6 +162,9 @@ public class FileMonitorAppColor extends Application implements FileChangeListen
     }
 
     private void startButtonTimer() {
+        if (buttonTimer != null) {
+            buttonTimer.cancel();
+        }
         buttonTimer = new Timer(true);
         buttonTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
@@ -173,6 +178,10 @@ public class FileMonitorAppColor extends Application implements FileChangeListen
                 });
             }
         }, 1000, 1000);
+    }
+
+    private void updateButtonTimerDisplay() {
+        Platform.runLater(() -> refreshButton.setText(refreshButtonText + "(" + remainingTime + refreshButtonSecondText + ")"));
     }
 
     private void displayFileContent(String filePath) throws IOException {
