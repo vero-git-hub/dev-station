@@ -1,6 +1,7 @@
 package com.dev.station.manager;
 
 import com.dev.station.util.alert.AlertUtils;
+import com.dev.station.util.alert.HeaderAlertUtils;
 
 import java.util.ResourceBundle;
 
@@ -17,16 +18,16 @@ public class NotificationManager {
 
     public void showInformationAlert(String key) {
         String message = getTranslatedText(key);
-        AlertUtils.showSuccessAlert(bundle.getString("informationAlert"), message);
+        HeaderAlertUtils.showSuccessAlert(bundle.getString("informationAlert"), message);
     }
 
     public void showErrorAlert(String messageKey) {
         String message = getTranslatedText("errorAlert") + " " + getTranslatedText(messageKey);
-        AlertUtils.showErrorAlert(bundle.getString("errorAlert"), message);
+        HeaderAlertUtils.showErrorAlert(bundle.getString("errorAlert"), message);
     }
 
     public void showDetailsErrorAlert(String message) {
-        AlertUtils.showErrorAlert(getTranslatedText("errorAlert"),message);
+        HeaderAlertUtils.showErrorAlert(getTranslatedText("errorAlert"),message);
     }
 
     private String getTranslatedText(String key) {

@@ -10,6 +10,7 @@ import com.dev.station.model.ScriptsModel;
 import com.dev.station.model.SettingsModel;
 import com.dev.station.util.alert.AlertUtils;
 import com.dev.station.util.FileUtils;
+import com.dev.station.util.alert.HeaderAlertUtils;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -488,7 +489,7 @@ public class ScriptsController implements Localizable {
                         launchManager.launchJarApplication(path);
                     }
                 } else {
-                    AlertUtils.showErrorAlert("Wrong extension", "Check extension, only exe or jar is correct for 'run' action.");
+                    HeaderAlertUtils.showErrorAlert("Wrong extension", "Check extension, only exe or jar is correct for 'run' action.");
                 }
             }
 

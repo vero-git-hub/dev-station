@@ -3,6 +3,7 @@ package com.dev.station.manager;
 import com.dev.station.entity.WebParser;
 import com.dev.station.entity.driver.VersionExtractor;
 import com.dev.station.util.alert.AlertUtils;
+import com.dev.station.util.alert.HeaderAlertUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -45,7 +46,7 @@ public class DriverManager {
             if (exitCode == 0 && versionOutput != null) {
                 return versionOutput;
             } else {
-                AlertUtils.showErrorAlert("Error version", "Error getting ChromeDriver version");
+                HeaderAlertUtils.showErrorAlert("Error version", "Error getting ChromeDriver version");
             }
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();

@@ -4,6 +4,7 @@ import com.dev.station.controller.sidebar.MonitoringController;
 import com.dev.station.controller.tab.MonitoringTabController;
 import com.dev.station.manager.LanguageManager;
 import com.dev.station.util.alert.AlertUtils;
+import com.dev.station.util.alert.HeaderAlertUtils;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -97,7 +98,7 @@ public class MonitoringTabManager {
 
             return newTab;
         } catch (IOException e) {
-            AlertUtils.showErrorAlert("", e.getMessage());
+            HeaderAlertUtils.showErrorAlert("", e.getMessage());
             e.printStackTrace();
             return null;
         }
@@ -155,11 +156,11 @@ public class MonitoringTabManager {
 
                 boolean isTabPaneRemoved = tabPane.getTabs().remove(tab);
 
-                AlertUtils.showSuccessAlert("", controller.getTranslate("monitoringTabManager.deletionSuccess"));
+                HeaderAlertUtils.showSuccessAlert("", controller.getTranslate("monitoringTabManager.deletionSuccess"));
             }
 
         } else {
-            AlertUtils.showInformationAlert("", controller.getTranslate("alerts.deletionCancelled"));
+            HeaderAlertUtils.showInformationAlert("", controller.getTranslate("alerts.deletionCancelled"));
         }
     }
 

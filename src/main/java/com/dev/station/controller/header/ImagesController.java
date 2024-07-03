@@ -3,6 +3,7 @@ package com.dev.station.controller.header;
 import com.dev.station.entity.ImageSettings;
 import com.dev.station.model.SettingsModel;
 import com.dev.station.util.alert.AlertUtils;
+import com.dev.station.util.alert.HeaderAlertUtils;
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -42,7 +43,7 @@ public class ImagesController {
                 }
             }
         } else {
-            AlertUtils.showErrorAlert("Failed load", "Image settings not loaded.");
+            HeaderAlertUtils.showErrorAlert("Failed load", "Image settings not loaded.");
         }
     }
 

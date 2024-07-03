@@ -3,6 +3,7 @@ package com.dev.station.util;
 import com.dev.station.manager.WindowManager;
 import com.dev.station.service.FileMonitoringService;
 import com.dev.station.util.alert.AlertUtils;
+import com.dev.station.util.alert.HeaderAlertUtils;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -33,7 +34,7 @@ public class FileUtils {
 
             boolean success = file.setLastModified(System.currentTimeMillis() + 1000);
             if (!success) {
-                AlertUtils.showErrorAlert("", errorMessage);
+                HeaderAlertUtils.showErrorAlert("", errorMessage);
                 return;
             }
 
@@ -41,7 +42,7 @@ public class FileUtils {
                 monitoringService.updateLastModified(file.lastModified());
             }
         } catch (IOException e) {
-            AlertUtils.showErrorAlert("", e.getMessage());
+            HeaderAlertUtils.showErrorAlert("", e.getMessage());
         }
     }
 
@@ -69,7 +70,7 @@ public class FileUtils {
             WindowManager.addStage(stage);
             stage.show();
         } catch (IOException e) {
-            AlertUtils.showErrorAlert("", e.getMessage());
+            HeaderAlertUtils.showErrorAlert("", e.getMessage());
             e.printStackTrace();
         }
     }

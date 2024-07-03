@@ -4,7 +4,7 @@ import com.dev.station.controller.monitoring.FileMonitorAppColor;
 import com.dev.station.controller.monitoring.VersionControlMode;
 import com.dev.station.manager.WindowManager;
 import com.dev.station.service.FileMonitoringService;
-import com.dev.station.util.alert.AlertUtils;
+import com.dev.station.util.alert.HeaderAlertUtils;
 import javafx.application.Platform;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
@@ -34,7 +34,7 @@ public class VersionControlWindowHandler {
         if(versionControlMode == VersionControlMode.COLOR) {
             createAndOpenMonitoringWindow(textArea, file1Path, checkInterval, tabId, isClearContentToggle);
         } else {
-            AlertUtils.showInformationAlert("Info message", "Sorry other VCS modes in development. Choose \"color\" VCS mode.");
+            HeaderAlertUtils.showInformationAlert("Info message", "Sorry other VCS modes in development. Choose \"color\" VCS mode.");
         }
     }
 

@@ -8,6 +8,7 @@ import com.dev.station.service.FileContentProvider;
 import com.dev.station.service.FileMonitoringService;
 import com.dev.station.util.alert.AlertUtils;
 import com.dev.station.util.FileUtils;
+import com.dev.station.util.alert.HeaderAlertUtils;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
@@ -68,7 +69,7 @@ public class MonitoringWindowController implements Localizable, FileChangeListen
                     FileUtils.clearFileAndSetLastModified(filePathToClear, monitoringService, errorMessage);
                 }
             } catch (IOException e) {
-                AlertUtils.showErrorAlert("", e.getMessage());
+                HeaderAlertUtils.showErrorAlert("", e.getMessage());
             }
         });
     }

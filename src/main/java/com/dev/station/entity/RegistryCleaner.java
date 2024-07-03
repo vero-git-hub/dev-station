@@ -1,6 +1,7 @@
 package com.dev.station.entity;
 
 import com.dev.station.util.alert.AlertUtils;
+import com.dev.station.util.alert.HeaderAlertUtils;
 
 import java.io.IOException;
 
@@ -12,9 +13,9 @@ public class RegistryCleaner {
             Process process = Runtime.getRuntime().exec(command);
             int exitCode = process.waitFor();
             if (exitCode == 0) {
-                AlertUtils.showSuccessAlert("Success clean registry", "Registry folder deleted successfully.");
+                HeaderAlertUtils.showSuccessAlert("Success clean registry", "Registry folder deleted successfully.");
             } else {
-                AlertUtils.showErrorAlert("Error clean registry", "Error occurred while deleting registry folder.");
+                HeaderAlertUtils.showErrorAlert("Error clean registry", "Error occurred while deleting registry folder.");
             }
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();

@@ -5,6 +5,7 @@ import com.dev.station.entity.DriverSettings;
 import com.dev.station.entity.ImageSettings;
 import com.dev.station.entity.SeleniumSettings;
 import com.dev.station.util.alert.AlertUtils;
+import com.dev.station.util.alert.HeaderAlertUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.nio.file.Files;
@@ -307,9 +308,9 @@ public class SettingsModel {
             // Update the cache with the new value
             developerModeCached = isEnabled;
 
-            AlertUtils.showSuccessAlert("", settingsController.getTranslate("successSaveSettings"));
+            HeaderAlertUtils.showSuccessAlert("", settingsController.getTranslate("successSaveSettings"));
         } catch (IOException e) {
-            AlertUtils.showErrorAlert("", e.getMessage());
+            HeaderAlertUtils.showErrorAlert("", e.getMessage());
             e.printStackTrace();
         }
     }

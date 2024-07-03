@@ -4,6 +4,7 @@ import com.dev.station.Localizable;
 import com.dev.station.manager.LanguageManager;
 import com.dev.station.model.SettingsModel;
 import com.dev.station.util.alert.AlertUtils;
+import com.dev.station.util.alert.HeaderAlertUtils;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -122,7 +123,7 @@ public class PingController implements Localizable {
             }
             return host;
         } catch (Exception e) {
-            AlertUtils.showErrorAlert("Error extract domain", "Please enter valid url.");
+            HeaderAlertUtils.showErrorAlert("Error extract domain", "Please enter valid url.");
             return null;
         }
     }
@@ -156,7 +157,7 @@ public class PingController implements Localizable {
                 try {
                     Desktop.getDesktop().browse(new URI(originalUrl));
                 } catch (Exception e) {
-                    AlertUtils.showErrorAlert("Error opening site","Please check the url (must start with http/https)");
+                    HeaderAlertUtils.showErrorAlert("Error opening site","Please check the url (must start with http/https)");
                     e.printStackTrace();
                 }
             }

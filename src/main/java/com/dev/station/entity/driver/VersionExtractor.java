@@ -1,6 +1,7 @@
 package com.dev.station.entity.driver;
 
 import com.dev.station.util.alert.AlertUtils;
+import com.dev.station.util.alert.HeaderAlertUtils;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,7 +21,7 @@ public class VersionExtractor {
         if (matcher.find()) {
             return matcher.group();
         } else {
-            AlertUtils.showErrorAlert("Error extract version", "Version number not found.");
+            HeaderAlertUtils.showErrorAlert("Error extract version", "Version number not found.");
             return "";
         }
     }

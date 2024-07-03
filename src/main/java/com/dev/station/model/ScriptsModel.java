@@ -3,6 +3,7 @@ package com.dev.station.model;
 import com.dev.station.entity.CategoryData;
 import com.dev.station.entity.ProgramData;
 import com.dev.station.util.alert.AlertUtils;
+import com.dev.station.util.alert.HeaderAlertUtils;
 import javafx.event.ActionEvent;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -47,7 +48,7 @@ public class ScriptsModel {
         }
 
         if (categoryJson == null) {
-            AlertUtils.showErrorAlert("Error", "Category not found.");
+            HeaderAlertUtils.showErrorAlert("Error", "Category not found.");
             return;
         }
 
@@ -81,7 +82,7 @@ public class ScriptsModel {
             Files.write(Paths.get(JSON_FILE_PATH), rootArray.toString(4).getBytes(), StandardOpenOption.CREATE, StandardOpenOption.WRITE);
         } catch (IOException e) {
             e.printStackTrace();
-            AlertUtils.showErrorAlert("Error", "Save error. Contact the developer.");
+            HeaderAlertUtils.showErrorAlert("Error", "Save error. Contact the developer.");
         }
     }
 
@@ -120,7 +121,7 @@ public class ScriptsModel {
                 Files.write(Paths.get(jsonFilePath), categoriesArray.toString(4).getBytes(), StandardOpenOption.CREATE, StandardOpenOption.WRITE);
             } catch (IOException e) {
                 e.printStackTrace();
-                AlertUtils.showErrorAlert("Error adding category", "");
+                HeaderAlertUtils.showErrorAlert("Error adding category", "");
             }
         }
     }
@@ -174,7 +175,7 @@ public class ScriptsModel {
             }
         } catch (IOException e) {
             e.printStackTrace();
-            AlertUtils.showErrorAlert("Loading error", "Failed to read category file");
+            HeaderAlertUtils.showErrorAlert("Loading error", "Failed to read category file");
         }
 
         return categoryList;
@@ -208,7 +209,7 @@ public class ScriptsModel {
             Files.write(Paths.get(JSON_FILE_PATH), categoriesArray.toString(4).getBytes(), StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE);
         } catch (IOException e) {
             e.printStackTrace();
-            AlertUtils.showErrorAlert("Error", "Delete error. Contact the developer.");
+            HeaderAlertUtils.showErrorAlert("Error", "Delete error. Contact the developer.");
         }
     }
 
@@ -233,7 +234,7 @@ public class ScriptsModel {
             Files.write(Paths.get(JSON_FILE_PATH), categoriesArray.toString(4).getBytes(), StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE);
         } catch (IOException e) {
             e.printStackTrace();
-            AlertUtils.showErrorAlert("Error", "Error saving changes.");
+            HeaderAlertUtils.showErrorAlert("Error", "Error saving changes.");
         }
     }
 
@@ -248,7 +249,7 @@ public class ScriptsModel {
                 if (currentCategory.getInt("categoryId") == category.getId()) {
                     JSONArray programsArray = currentCategory.getJSONArray("programs");
                     if (programsArray.length() > 0) {
-                        AlertUtils.showErrorAlert("Error", "First, remove all programs in the category.");
+                        HeaderAlertUtils.showErrorAlert("Error", "First, remove all programs in the category.");
                         return;
                     } else {
                         categoriesArray.remove(i);
@@ -260,7 +261,7 @@ public class ScriptsModel {
             Files.write(Paths.get(JSON_FILE_PATH), categoriesArray.toString(4).getBytes(), StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE);
         } catch (IOException e) {
             e.printStackTrace();
-            AlertUtils.showErrorAlert("Error", "Error when deleting a category.");
+            HeaderAlertUtils.showErrorAlert("Error", "Error when deleting a category.");
         }
     }
 

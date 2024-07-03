@@ -7,6 +7,7 @@ import com.dev.station.manager.clear.TabData;
 import com.dev.station.manager.LanguageManager;
 
 import com.dev.station.util.alert.AlertUtils;
+import com.dev.station.util.alert.HeaderAlertUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -57,7 +58,7 @@ public class AddPathFormController {
         String exclusionsString = exclusionsField.getText().trim();
 
         if (pathName.isEmpty() || directoryPath.isEmpty()) {
-            AlertUtils.showErrorAlert("Empty fields", "Please fill fields.");
+            HeaderAlertUtils.showErrorAlert("Empty fields", "Please fill fields.");
             return;
         }
 
@@ -109,9 +110,9 @@ public class AddPathFormController {
         }
 
         if (saveResult) {
-            AlertUtils.showSuccessAlert("Saving successful", "Path saved successfully");
+            HeaderAlertUtils.showSuccessAlert("Saving successful", "Path saved successfully");
         } else {
-            AlertUtils.showErrorAlert("Saving failed", "Error saving path");
+            HeaderAlertUtils.showErrorAlert("Saving failed", "Error saving path");
         }
     }
 
