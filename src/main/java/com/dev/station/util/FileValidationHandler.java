@@ -1,6 +1,7 @@
 package com.dev.station.util;
 
 import com.dev.station.util.alert.AlertUtils;
+import com.dev.station.util.alert.HeaderAlertUtils;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.ToggleButton;
 
@@ -20,15 +21,15 @@ public class FileValidationHandler {
 
     public boolean validateFile(String filePath, String fileName, ResourceBundle bundle) {
         if (!fileUtils.fileExists(filePath, fileName)) {
-            AlertUtils.showErrorAlert("", bundle.getString("alert.fileNotFound") + " " + filePath + File.separator + fileName);
+            HeaderAlertUtils.showErrorAlert("", bundle.getString("alert.fileNotFound") + " " + filePath + File.separator + fileName);
             return false;
         }
         return true;
     }
 
     public void handleFileNotFound(String filePath, String fileName, ResourceBundle bundle) {
-        AlertUtils.showErrorAlert("", bundle.getString("alert.fileNotFound") + " " + filePath);
-        AlertUtils.showErrorAlert("", bundle.getString("alert.fileNotFound") + " " + filePath + " " + fileName);
+        HeaderAlertUtils.showErrorAlert("", bundle.getString("alert.fileNotFound") + " " + filePath);
+        HeaderAlertUtils.showErrorAlert("", bundle.getString("alert.fileNotFound") + " " + filePath + " " + fileName);
         doIfFileNotExists();
     }
 

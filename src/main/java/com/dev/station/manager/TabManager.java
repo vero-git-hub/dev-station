@@ -3,6 +3,7 @@ package com.dev.station.manager;
 import com.dev.station.manager.monitoring.MonitoringJsonTabsManager;
 import com.dev.station.manager.monitoring.MonitoringTabData;
 import com.dev.station.util.alert.AlertUtils;
+import com.dev.station.util.alert.HeaderAlertUtils;
 
 import java.util.List;
 import java.util.ResourceBundle;
@@ -24,13 +25,13 @@ public class TabManager {
         }
 
         if(!isTabExists) {
-            AlertUtils.showErrorAlert("", "No update tab found.");
+            HeaderAlertUtils.showErrorAlert("", "No update tab found.");
         } else {
             boolean success = jsonTabsManager.saveMonitoringTabs(1, "Monitoring", tabs);
             if (success) {
-                AlertUtils.showSuccessAlert("", bundle.getString("alerts.successSaving"));
+                HeaderAlertUtils.showSuccessAlert("", bundle.getString("alerts.successSaving"));
             } else {
-                AlertUtils.showErrorAlert("", bundle.getString("alerts.errorSaving"));
+                HeaderAlertUtils.showErrorAlert("", bundle.getString("alerts.errorSaving"));
             }
         }
     }

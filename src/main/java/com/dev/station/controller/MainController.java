@@ -24,7 +24,7 @@ import java.util.ResourceBundle;
 
 public class MainController implements Localizable {
 
-    @FXML public HBox notificationArea;
+    @FXML private HBox notificationArea;
     @FXML private StackPane contentArea;
     @FXML private Button scriptsButton;
     @FXML private Button clearButton;
@@ -34,9 +34,9 @@ public class MainController implements Localizable {
     @FXML private Button settingsButton;
     @FXML private Button pingButton;
     @FXML private Button monitoringButton;
-    @FXML public Button debuggingButton;
+    @FXML private Button debuggingButton;
     @FXML private Label footerLabel;
-    @FXML public Button switchThemeButton;
+    @FXML private Button switchThemeButton;
     @FXML private ComboBox<String> languageComboBox;
     @FXML private VBox menuVBox;
     ResourceBundle bundle;
@@ -54,7 +54,7 @@ public class MainController implements Localizable {
         loadSavedLanguage();
         setButtonActions();
         notificationManager = new HeaderAlertUtils(notificationArea);
-        footerLabel.setText("v0.4");
+        footerLabel.setText("v0.5");
         notificationManager.showSuccessMessage(getTranslate("helloMessage"));
     }
 

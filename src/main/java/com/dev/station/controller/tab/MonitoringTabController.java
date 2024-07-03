@@ -16,6 +16,7 @@ import com.dev.station.service.FileMonitoringHandler;
 import com.dev.station.service.FileMonitoringService;
 import com.dev.station.util.*;
 import com.dev.station.util.alert.AlertUtils;
+import com.dev.station.util.alert.HeaderAlertUtils;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -129,7 +130,7 @@ public class MonitoringTabController implements Localizable, FileChangeListener,
         try {
             contentWindowHandler.openContentWindow();
         } catch (IOException e) {
-            AlertUtils.showErrorAlert("", e.getMessage());
+            HeaderAlertUtils.showErrorAlert("", e.getMessage());
         }
     }
 
@@ -150,7 +151,7 @@ public class MonitoringTabController implements Localizable, FileChangeListener,
             try {
                 versionControlWindowHandler.openVersionControlWindow(fileContentArea.getText(), versionControlWindowHandler.getSelectedVersionControlMode(versionControlModeComboBox), fullPath, checkInterval, tabId, isClearContentToggle);
             } catch (Exception e) {
-                AlertUtils.showErrorAlert("", e.getMessage());
+                HeaderAlertUtils.showErrorAlert("", e.getMessage());
             }
         }
     }
@@ -211,7 +212,7 @@ public class MonitoringTabController implements Localizable, FileChangeListener,
         try {
             timerComboBox.getValue();
         } catch (NumberFormatException e) {
-            AlertUtils.showErrorAlert("", getTranslate("monitoringTabController.frequencyError"));
+            HeaderAlertUtils.showErrorAlert("", getTranslate("monitoringTabController.frequencyError"));
             return false;
         }
 
@@ -250,7 +251,7 @@ public class MonitoringTabController implements Localizable, FileChangeListener,
         }
 
         if (!toggleMonitoring.isSelected()) {
-            AlertUtils.showErrorAlert("", getTranslate("monitoringTabController.monitoringNotEnabled"));
+            HeaderAlertUtils.showErrorAlert("", getTranslate("monitoringTabController.monitoringNotEnabled"));
             return false;
         }
 
@@ -320,7 +321,7 @@ public class MonitoringTabController implements Localizable, FileChangeListener,
                     FileUtils.clearFileAndSetLastModified(fullFilePath, monitoringService, errorMessage);
                 }
             } catch (IOException e) {
-                AlertUtils.showErrorAlert("", e.getMessage());
+                HeaderAlertUtils.showErrorAlert("", e.getMessage());
             }
         });
     }

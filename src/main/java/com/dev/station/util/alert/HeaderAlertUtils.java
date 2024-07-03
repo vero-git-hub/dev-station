@@ -1,22 +1,18 @@
 package com.dev.station.util.alert;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.PauseTransition;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
-import javafx.animation.KeyFrame;
-import javafx.animation.PauseTransition;
-import javafx.animation.Timeline;
-import javafx.scene.Node;
-import javafx.scene.control.Label;
-import javafx.scene.layout.HBox;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.util.Duration;
 
 public class HeaderAlertUtils {
@@ -24,14 +20,16 @@ public class HeaderAlertUtils {
     private static final String PATH_TO_ERROR_ICON = "/images/alert/red-cross-30.png";
     public static final String PATH_TO_SUCCESS_ICON = "/images/alert/check-mark-32.png";
     private static final String PATH_TO_INFO_ICON = "/images/alert/info-40.png";
+    public static final String PATH_TO_CLOSE_ICON = "/images/alert/close-24.png";
 
-    private HBox notificationArea;
+    private static HBox notificationArea;
 
     public HeaderAlertUtils(HBox notificationArea) {
-        this.notificationArea = notificationArea;
+        HeaderAlertUtils.notificationArea = notificationArea;
     }
 
-    public void showSuccessMessage(String message) {
+    // Hello message
+    public static void showSuccessMessage(String message) {
         Platform.runLater(() -> {
             clearNotifications();
             Node notificationNode = createNotificationNode(message, "success");
@@ -39,7 +37,7 @@ public class HeaderAlertUtils {
         });
     }
 
-    public void showErrorMessage(String message) {
+    public static void showErrorMessage(String message) {
         Platform.runLater(() -> {
             clearNotifications();
             Node notificationNode = createNotificationNode(message, "error");
@@ -47,13 +45,13 @@ public class HeaderAlertUtils {
         });
     }
 
-    private Node createNotificationNode(String message, String messageType) {
+    private static Node createNotificationNode(String message, String messageType) {
         Label messageLabel = new Label();
         messageLabel.setId("notificationMessageLabel");
         messageLabel.setText("");
 
         String iconPath = messageType.equals("error") ? PATH_TO_ERROR_ICON : PATH_TO_SUCCESS_ICON;
-        ImageView iconView = new ImageView(new Image(getClass().getResourceAsStream(iconPath)));
+        ImageView iconView = new ImageView(new Image(HeaderAlertUtils.class.getResourceAsStream(iconPath)));
         iconView.setFitHeight(24);
         iconView.setFitWidth(24);
         iconView.setPreserveRatio(true);
@@ -102,7 +100,74 @@ public class HeaderAlertUtils {
         return hbox;
     }
 
-    private void clearNotifications() {
-        notificationArea.getChildren().clear();
+    // All messages
+    private static void clearNotifications() {
+        if(notificationArea.getChildren() != null) {
+            notificationArea.getChildren().clear();
+        }
+    }
+
+    public static void showErrorAlert(String title, String content) {
+        String message = (title == null || title.isEmpty()) ? content : title + " - " + content;
+        showCustomAlert(message, PATH_TO_ERROR_ICON, 5);
+    }
+
+    public static void showSuccessAlert(String title, String content) {
+        showCustomAlert(content, PATH_TO_SUCCESS_ICON, 5);
+    }
+
+    public static void showInformationAlert(String title, String content) {
+        showCustomAlert(content, PATH_TO_INFO_ICON, 5);
+    }
+
+    /**
+     * Shows a custom notification.
+     * @param message Message to display.
+     * @param iconPath Path to the icon (can be null if the icon is not needed).
+     * @param duration Duration of notification display in seconds.
+     */
+    public static void showCustomAlert(String message, String iconPath, double duration) {
+        Platform.runLater(() -> {
+            clearNotifications();
+            HBox hbox = new HBox(10);
+            hbox.setAlignment(Pos.CENTER_LEFT);
+
+            if (iconPath != null && !iconPath.isEmpty()) {
+                ImageView icon = new ImageView(new Image(AlertUtils.class.getResourceAsStream(iconPath)));
+                icon.setFitHeight(24);
+                icon.setPreserveRatio(true);
+                hbox.getChildren().add(icon);
+            }
+
+            Label messageLabel = new Label(message);
+            hbox.getChildren().add(messageLabel);
+
+            Region spacer = new Region();
+            HBox.setHgrow(spacer, Priority.ALWAYS);
+            hbox.getChildren().add(spacer);
+
+            Image closeImage = new Image(AlertUtils.class.getResourceAsStream(PATH_TO_CLOSE_ICON));
+            ImageView closeIcon = new ImageView(closeImage);
+            closeIcon.setFitHeight(16);
+            closeIcon.setFitWidth(16);
+            closeIcon.setPreserveRatio(true);
+
+            Button closeButton = new Button();
+            closeButton.setGraphic(closeIcon);
+            closeButton.getStyleClass().add("close-button");
+
+            closeButton.setOnAction(e -> notificationArea.getChildren().remove(hbox));
+            hbox.getChildren().add(closeButton);
+
+            hbox.setStyle("-fx-background-color: rgba(255, 255, 255, 0.9); -fx-background-radius: 5px;");
+
+            notificationArea.getChildren().add(hbox);
+
+            if (duration > 0) {
+                PauseTransition delay = new PauseTransition(Duration.seconds(duration));
+                delay.setOnFinished(e -> notificationArea.getChildren().remove(hbox));
+                delay.play();
+            }
+        });
     }
 }

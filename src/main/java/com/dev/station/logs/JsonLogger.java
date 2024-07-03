@@ -2,6 +2,7 @@ package com.dev.station.logs;
 
 import com.dev.station.model.SettingsModel;
 import com.dev.station.util.alert.AlertUtils;
+import com.dev.station.util.alert.HeaderAlertUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -59,9 +60,9 @@ public class JsonLogger {
         try {
             // Write an empty JSON array to clear the file
             Files.write(Paths.get(LOG_FILE), "[]".getBytes());
-            AlertUtils.showSuccessAlert("", bundle.getString("clearLogs.success"));
+            HeaderAlertUtils.showSuccessAlert("", bundle.getString("clearLogs.success"));
         } catch (IOException e) {
-            AlertUtils.showErrorAlert("", e.getMessage());
+            HeaderAlertUtils.showErrorAlert("", e.getMessage());
         }
     }
 }

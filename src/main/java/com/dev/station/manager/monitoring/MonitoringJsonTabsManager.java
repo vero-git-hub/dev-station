@@ -1,6 +1,7 @@
 package com.dev.station.manager.monitoring;
 
 import com.dev.station.util.alert.AlertUtils;
+import com.dev.station.util.alert.HeaderAlertUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.io.File;
@@ -34,7 +35,7 @@ public class MonitoringJsonTabsManager {
                 }
             }
         } catch (IOException e) {
-            AlertUtils.showErrorAlert("Error", e.getMessage());
+            HeaderAlertUtils.showErrorAlert("Error", e.getMessage());
             e.printStackTrace();
         }
         return tabs;
@@ -75,7 +76,7 @@ public class MonitoringJsonTabsManager {
             Files.write(Paths.get(FILE_PATH), jsonString.getBytes());
             return true;
         } catch (IOException e) {
-            AlertUtils.showErrorAlert("", e.getMessage());
+            HeaderAlertUtils.showErrorAlert("", e.getMessage());
             e.printStackTrace();
             return false;
         }
