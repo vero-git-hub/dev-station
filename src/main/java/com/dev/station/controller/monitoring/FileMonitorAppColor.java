@@ -5,6 +5,7 @@ import com.dev.station.service.FileContentProvider;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -31,9 +32,14 @@ public class FileMonitorAppColor extends Application implements FileChangeListen
     private Stage stage;
     private String initialContent;
     private Timer timer;
+    private Timer buttonTimer;
     private String tabId;
     private boolean clearContentToggle;
+    private Button refreshButton;
+    private int remainingTime;
     private String windowTitle;
+    private final String refreshButtonText = "Update";
+    private final String refreshButtonSecondText = "s";
 
     public FileMonitorAppColor() {}
 
@@ -50,7 +56,7 @@ public class FileMonitorAppColor extends Application implements FileChangeListen
     }
 
     public void setCheckInterval(int checkInterval) {
-        this.checkInterval = checkInterval * 10000;
+        this.checkInterval = checkInterval * 1000;
     }
 
     public String getTabId() {
@@ -74,6 +80,16 @@ public class FileMonitorAppColor extends Application implements FileChangeListen
         this.stage = stage;
         file1Content = new TextFlow();
         lineNumberFlow = new TextFlow();
+        refreshButton = new Button(refreshButtonText);
+
+        refreshButton.setOnAction(event -> {
+            try {
+                displayFileContent(file1Path);
+                remainingTime = checkInterval / 1000;  // Reset the timer
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
 
         if (initialContent != null) {
             Platform.runLater(() -> {
@@ -95,26 +111,14 @@ public class FileMonitorAppColor extends Application implements FileChangeListen
         scrollPane.vvalueProperty().bindBidirectional(lineNumberScrollPane.vvalueProperty());
 
         HBox contentBox = new HBox(lineNumberScrollPane, scrollPane);
-        VBox root = new VBox(10, contentBox);
+        VBox root = new VBox(10, refreshButton, contentBox);
         Scene scene = new Scene(root, 800, 600);
 
         stage.setScene(scene);
         stage.setTitle(windowTitle != null ? windowTitle : "File Monitor");
         stage.show();
         startMonitoring();
-    }
-
-    private void updateLineNumbers() {
-        Platform.runLater(() -> {
-            lineNumberFlow.getChildren().clear();
-            int lineNumber = 1;
-            for (var node : file1Content.getChildren()) {
-                if (node instanceof Text) {
-                    lineNumberFlow.getChildren().add(new Text(lineNumber + "\n"));
-                    lineNumber++;
-                }
-            }
-        });
+        startButtonTimer();
     }
 
     public void getCurrentContent(ContentConsumer consumer) {
@@ -155,12 +159,41 @@ public class FileMonitorAppColor extends Application implements FileChangeListen
         }
     }
 
+    private void startButtonTimer() {
+        buttonTimer = new Timer(true);
+        buttonTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                Platform.runLater(() -> {
+                    remainingTime--;
+                    if (remainingTime <= 0) {
+                        remainingTime = checkInterval / 1000;
+                    }
+                    refreshButton.setText(refreshButtonText + "(" + remainingTime + refreshButtonSecondText + ")");
+                });
+            }
+        }, 1000, 1000);
+    }
+
     private void displayFileContent(String filePath) throws IOException {
         List<String> lines = Files.readAllLines(Paths.get(filePath));
         Platform.runLater(() -> {
             file1Content.getChildren().clear();
             lines.forEach(line -> file1Content.getChildren().add(new Text(line + "\n")));
             updateLineNumbers();
+        });
+    }
+
+    private void updateLineNumbers() {
+        Platform.runLater(() -> {
+            lineNumberFlow.getChildren().clear();
+            int lineNumber = 1;
+            for (var node : file1Content.getChildren()) {
+                if (node instanceof Text) {
+                    lineNumberFlow.getChildren().add(new Text(lineNumber + "\n"));
+                    lineNumber++;
+                }
+            }
         });
     }
 
@@ -211,6 +244,10 @@ public class FileMonitorAppColor extends Application implements FileChangeListen
         if (timer != null) {
             timer.cancel();
             timer = null;
+        }
+        if (buttonTimer != null) {
+            buttonTimer.cancel();
+            buttonTimer = null;
         }
         deleteFile(file2Path);
     }
