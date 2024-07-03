@@ -19,14 +19,16 @@ public class TabDataLoader {
     /**
      * Loading user values
      */
-    public void loadData(MonitoringTabData tabData, TextField filePath, TextField fileName, TextField monitoringFrequency,
+    public void loadData(MonitoringTabData tabData, TextField filePath, TextField fileName, ComboBox<Integer> timerComboBox,
                          ToggleButton toggleMonitoring, ToggleButton clearContentToggle, ComboBox<String> versionControlModeComboBox,
                          TextArea fileContentArea) {
         //setMonitoringTabData(tabData);
 
         filePath.setText(tabData.getFilePath());
         fileName.setText(tabData.getFileName());
-        monitoringFrequency.setText(String.valueOf(tabData.getMonitoringFrequency()));
+
+        timerComboBox.setValue(tabData.getMonitoringFrequency());
+
         toggleMonitoring.setSelected(tabData.isToggleMonitoring());
         clearContentToggle.setSelected(tabData.isClearContentToggle());
 

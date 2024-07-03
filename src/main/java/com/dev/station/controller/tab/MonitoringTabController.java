@@ -39,7 +39,7 @@ public class MonitoringTabController implements Localizable, FileChangeListener,
     // Fields
     @FXML public TextField filePath;
     @FXML public TextField fileName;
-    @FXML public TextField monitoringFrequency;
+    @FXML public ComboBox<Integer> timerComboBox;
     @FXML public ComboBox<String> versionControlModeComboBox;
 
     // Buttons
@@ -100,14 +100,14 @@ public class MonitoringTabController implements Localizable, FileChangeListener,
 
         if (toggleMonitoring.isSelected()) {
             fileContentArea.setVisible(true);
-            fileMonitoringHandler.startMonitoring(path, file, Integer.parseInt(monitoringFrequency.getText()));
+            fileMonitoringHandler.startMonitoring(path, file, timerComboBox.getValue());
         } else {
             fileMonitoringHandler.stopMonitoring();
             closeVersionControlWindows(myTab.getId());
             fileContentArea.setVisible(false);
             closeStage(monitoringWindowStage);
         }
-        uiUpdater.updateControlStates(toggleMonitoring, clearContentToggle, saveSettingsButton, filePath, fileName, monitoringFrequency, versionControlModeComboBox);
+        uiUpdater.updateControlStates(toggleMonitoring, clearContentToggle, saveSettingsButton, filePath, fileName, new TextField(), versionControlModeComboBox);
     }
 
     private void closeVersionControlWindows(String tabId) {
@@ -142,7 +142,7 @@ public class MonitoringTabController implements Localizable, FileChangeListener,
 
         // from fields
         String fullPath = getFullFilePath();
-        int checkInterval = Integer.parseInt(monitoringFrequency.getText());
+        int checkInterval = timerComboBox.getValue();
         String tabId = myTab.getId();
         boolean isClearContentToggle = clearContentToggle.isSelected();
 
@@ -193,6 +193,7 @@ public class MonitoringTabController implements Localizable, FileChangeListener,
 
         uiUpdater.setTooltips(toggleMonitoring, openContentButton, viewFileContentButton, versionControlButton, clearContentToggle, saveSettingsButton);
         uiUpdater.setComboBoxItems(versionControlModeComboBox);
+        uiUpdater.setTimerComboBoxItems(timerComboBox);
     }
 
     public String getFullFilePath() {
@@ -208,7 +209,7 @@ public class MonitoringTabController implements Localizable, FileChangeListener,
         }
 
         try {
-            Integer.parseInt(monitoringFrequency.getText());
+            timerComboBox.getValue();
         } catch (NumberFormatException e) {
             AlertUtils.showErrorAlert("", getTranslate("monitoringTabController.frequencyError"));
             return false;
@@ -221,7 +222,7 @@ public class MonitoringTabController implements Localizable, FileChangeListener,
         String tabId = myTab.getId();
         String filePathValue = filePath.getText();
         String fileNameValue = fileName.getText();
-        int frequency = Integer.parseInt(monitoringFrequency.getText());
+        int frequency = timerComboBox.getValue();
         boolean toggleMonitoringValue = toggleMonitoring.isSelected();
         boolean clearContentToggleValue = clearContentToggle.isSelected();
         String versionControlMode = versionControlModeComboBox.getValue();
@@ -275,7 +276,16 @@ public class MonitoringTabController implements Localizable, FileChangeListener,
 
     /** Using in MonitoringTabManager */
     public void loadData(MonitoringTabData tabData) {
-        tabDataLoader.loadData(tabData, filePath, fileName, monitoringFrequency, toggleMonitoring, clearContentToggle, versionControlModeComboBox, fileContentArea);
+        tabDataLoader.loadData(
+                tabData,
+                filePath,
+                fileName,
+                timerComboBox,
+                toggleMonitoring,
+                clearContentToggle,
+                versionControlModeComboBox,
+                fileContentArea
+        );
     }
 
     public void updateUI(ResourceBundle bundle) {}
