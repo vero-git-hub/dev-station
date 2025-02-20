@@ -10,8 +10,6 @@ import com.dev.station.model.SettingsModel;
 import com.dev.station.service.FileChangeListener;
 import com.dev.station.service.FileContentProvider;
 import com.dev.station.service.FileMonitoringService;
-import com.dev.station.util.FileUtils;
-import com.dev.station.util.alert.AlertUtils;
 import com.dev.station.util.alert.HeaderAlertUtils;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -114,7 +112,7 @@ public class VersionControlWindowController implements Localizable, FileChangeLi
      * @param newContent
      */
     private void highlightChanges(String oldContent, String newContent) {
-        System.out.println("highlightChanges called"); // Для отладки
+        System.out.println("highlightChanges called");
         chooseVersionControlMode();
 
         if (highlightStrategy != null) {
@@ -122,12 +120,12 @@ public class VersionControlWindowController implements Localizable, FileChangeLi
             System.out.println("New content: " + newContent);
 
             StyleSpans<Collection<String>> highlightedTextSpans = highlightStrategy.highlightChanges(oldContent, newContent);
-            System.out.println("Highlighted text spans: " + highlightedTextSpans); // Для отладки
+            System.out.println("Highlighted text spans: " + highlightedTextSpans);
 
-            //Highlighting changes in text
+            // Highlighting changes in text
             Platform.runLater(() -> {
                 versionControlTextArea.replaceText(newContent);
-                versionControlTextArea.setStyle("-fx-text-fill: black;"); // Применяем явные стили для теста
+                versionControlTextArea.setStyle("-fx-text-fill: black;");
                 versionControlTextArea.setStyleSpans(0, highlightedTextSpans);
             });
         } else {
@@ -183,7 +181,7 @@ public class VersionControlWindowController implements Localizable, FileChangeLi
     private void testHighlight() {
         Platform.runLater(() -> {
             StyleSpansBuilder<Collection<String>> spansBuilder = new StyleSpansBuilder<>();
-            spansBuilder.add(Collections.singleton("highlight"), 5); // Подсветка первых 5 символов
+            spansBuilder.add(Collections.singleton("highlight"), 5); // Highlight the first 5 characters
             versionControlTextArea.setStyleSpans(0, spansBuilder.create());
         });
     }

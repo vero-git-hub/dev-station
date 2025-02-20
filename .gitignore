@@ -5,9 +5,9 @@ target/
 
 ### IntelliJ IDEA ###
 .idea/modules.xml
-.idea/jarRepositories.xml
-.idea/compiler.xml
 .idea/libraries/
+.idea/workspace.xml
+.idea/artifacts/
 *.iws
 *.iml
 *.ipr
@@ -37,15 +37,5 @@ build/
 ### Mac OS ###
 .DS_Store
 
-.idea/
-.mvn/
-mvnw
-mvnw.cmd
-
-src/main/resources/images/
-/out
-/src/main/resources/com/dev/station/hello-view.fxml
-/src/main/resources/messages_ru.properties
-/ds_settings.json
-/programs.json
-/tabs_config.json
+# Compile
+out/

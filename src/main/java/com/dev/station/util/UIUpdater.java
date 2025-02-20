@@ -84,15 +84,8 @@ public class UIUpdater {
 
     public void setSelectedVersion(ComboBox<String> versionControlModeComboBox, String versionControlMode) {
         if (versionControlMode != null && !versionControlMode.isEmpty()) {
-            String translatedMode = switch (versionControlMode) {
-                case "символ", "symbol" -> bundle.getString("monitoringTabController.versionControlModeComboBox.symbol");
-                case "слово", "word" -> bundle.getString("monitoringTabController.versionControlModeComboBox.word");
-                case "строка", "line" -> bundle.getString("monitoringTabController.versionControlModeComboBox.line");
-                case "подсказка", "tooltip" -> bundle.getString("monitoringTabController.versionControlModeComboBox.tooltip");
-                case "цвет", "color" -> bundle.getString("monitoringTabController.versionControlModeComboBox.color");
-                default -> bundle.getString("monitoringTabController.versionControlModeComboBox.symbol");
-            };
-            versionControlModeComboBox.getSelectionModel().select(translatedMode);
+            String bundleString = bundle.getString("monitoringTabController.versionControlModeComboBox.word");
+            versionControlModeComboBox.getSelectionModel().select(bundleString);
         }
     }
 

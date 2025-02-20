@@ -9,7 +9,6 @@ import java.util.Collection;
 
 public class HighlightChangesBySymbol implements HighlightStrategy {
 
-    // Метод для экранирования HTML, предполагается, что он перенесен или доступен здесь
     private String escapeHtml(String string) {
         String escapedText = string.replace("&", "&amp;")
                 .replace("<", "&lt;")

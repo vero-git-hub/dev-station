@@ -2,18 +2,14 @@ package com.dev.station.controller.monitoring.highlight;
 
 import com.github.difflib.DiffUtils;
 import com.github.difflib.patch.AbstractDelta;
-import com.github.difflib.patch.DeltaType;
-import com.github.difflib.patch.Patch;
 import org.fxmisc.richtext.model.StyleSpans;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import org.fxmisc.richtext.model.StyleSpans;
 import org.fxmisc.richtext.model.StyleSpansBuilder;
 import java.util.Collections;
-import java.util.List;
 
 /**
  * Identifying differences & changes by words
@@ -29,11 +25,11 @@ public class HighlightChangesByWord implements HighlightStrategy {
             int deltaStart = delta.getSource().getPosition();
             int oldSize = delta.getSource().getLines().size();
 
-            // Добавить неизмененный текст до начала изменения
+            // Add unchanged text before changing
             spansBuilder.add(Collections.emptyList(), deltaStart - currentIndex);
             currentIndex = deltaStart;
 
-            // Обработка изменений
+            // Processing Changes
             switch (delta.getType()) {
                 case DELETE:
                     spansBuilder.add(Collections.singleton("removed"), oldSize);
@@ -51,7 +47,7 @@ public class HighlightChangesByWord implements HighlightStrategy {
             currentIndex += oldSize;
         }
 
-        // Добавить оставшийся неизмененный текст
+        // Add remaining unchanged text
         spansBuilder.add(Collections.emptyList(), oldContent.length() - currentIndex);
 
         return spansBuilder.create();
@@ -67,32 +63,32 @@ public class HighlightChangesByWord implements HighlightStrategy {
 //        StyleSpansBuilder<Collection<String>> spansBuilder = new StyleSpansBuilder<>();
 //        int currentIndex = 0;
 //
-//        System.out.println("Начало создания StyleSpans"); // Для отладки
+//        System.out.println("Start of creation StyleSpans");
 //        for (AbstractDelta<String> delta : deltas) {
 //            int originalPos = delta.getSource().getPosition();
 //            int originalSize = delta.getSource().getLines().size();
 //            int revisedSize = delta.getTarget().getLines().size();
 //
-//            System.out.printf("Delta: %s, Pos: %d, OriginalSize: %d, RevisedSize: %d%n", delta.getType(), originalPos, originalSize, revisedSize); // Для отладки
+//            System.out.printf("Delta: %s, Pos: %d, OriginalSize: %d, RevisedSize: %d%n", delta.getType(), originalPos, originalSize, revisedSize);
 //
-//            // Добавляем неизмененный текст до начала изменения
+//            // Adding unchanged text before changing
 //            spansBuilder.add(Collections.emptyList(), originalPos - currentIndex);
-//            System.out.printf("Добавлен неизмененный спан: %d%n", originalPos - currentIndex); // Для отладки
+//            System.out.printf("Added unchanged span: %d%n", originalPos - currentIndex);
 //            currentIndex += originalPos - currentIndex;
 //
-//            // Добавляем стиль для измененной части
+//            // Adding a style to the changed part
 //            String styleClass = getStyleClassByDeltaType(delta.getType());
 //            spansBuilder.add(Collections.singleton(styleClass), Math.max(originalSize, revisedSize));
-//            System.out.printf("Добавлен стиль '%s' на длине %d%n", styleClass, Math.max(originalSize, revisedSize)); // Для отладки
+//            System.out.printf("Added style '%s' at length %d%n", styleClass, Math.max(originalSize, revisedSize));
 //
 //            if (delta.getType() != DeltaType.INSERT) {
 //                currentIndex += originalSize;
 //            }
 //        }
 //
-//        // Добавляем оставшийся неизмененный текст
+//        // Add the remaining unchanged text
 //        spansBuilder.add(Collections.emptyList(), oldWords.size() - currentIndex);
-//        System.out.printf("Добавлен конечный неизмененный спан: %d%n", oldWords.size() - currentIndex); // Для отладки
+//        System.out.printf("Added final unmodified span: %d%n", oldWords.size() - currentIndex);
 //
 //        return spansBuilder.create();
 //    }

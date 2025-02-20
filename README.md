@@ -1,43 +1,74 @@
 # Dev Station
-Dev Station is a utility application designed to automate routine tasks for programmers. This desktop application allows users to create scripts for launching, update drivers, clear files, check website functionality, and track changes in files, among other features.
+Dev Station is a **desktop utility** designed to **automate routine tasks** for programmers. It allows users to **create scripts for launching applications**, **update drivers**, **clean up files**, **check website functionality**, and **track file changes**, among other features.
 
-## Features
-* **Scripts**: Launch all your programs from one place by simply creating a script.
-* **Driver**: Compare driver versions, download, and launch all in one place.
-* **Clean**: Emulate a recycle bin: move files to a pseudo-recycle bin and restore them.
-* **Ping**: Internal terminal for checking website ping.
-* **Monitoring**: View files, track and highlight changes with a timer and cleanup (for logs).
-* **Debugging**: View system resources.
+## 🚀 Features
 
-### Additional Features
-You can also look forward to two interface themes, multiple languages, and an image folder: specify the path to a folder with images, and all pictures will be displayed in the Dev Station program window.
+### 🔹 Scripts
+* Quickly **launch multiple programs** from a single script.
 
-## Technologies
-* Java, JavaFX, FXML, Maven
-* IntelliJ IDEA
+### 🔹 Driver
+*  **Compare driver versions**, download updates, and install them **in one place**.
 
-## Installation and Launch
-To use the application, you need to:
+### 🔹 File Cleanup (Recycle Bin)
+*  Move files to a **pseudo-recycle bin** with the ability to **restore them**.
 
-Clone the repository:
+### 🔹 Website Ping Check
+*  Built-in **terminal for checking website ping** and availability.
+
+### 🔹 File Monitoring & Logs
+*  View **file changes in real-time**.
+*  Highlight modifications with **automatic tracking**.
+*  **Scheduled cleanup** for log files.
+
+### 🔹 Debugging & System Monitoring
+*  View **system resources** and performance statistics.
+
+
+## ✨ Additional Features
+✅ Two UI Themes (Light & Dark).
+
+✅ Multilingual Support.
+
+✅ Image Viewer: Specify a folder, and Dev Station will display all images inside the application.
+
+## 🛠 Technologies
+* **Java, JavaFX, FXML, Maven**
+* Developed using **IntelliJ IDEA**
+
+## 📥 Installation & Setup
+1️⃣ Clone the Repository
 ```
-git clone https://github.com/yourusername/monitoring-app.git
+git clone https://github.com/vero-git-hub/dev-station.git
+cd dev-station
 ```
-Build the project:
+
+2️⃣ Build the Project
 ```
-cd monitoring-app
 mvn package
 ```
-Launch the application:
+
+3️⃣ Run the Application
 ```
-java -jar target/monitoring-app.jar
+java -jar target/dev-station.jar
 ```
 
-## Usage
-After launching the application, the user can configure paths to folders through the settings button, as well as in the corresponding tabs in the left sidebar.
+## 📌 Usage Guide
 
-## Contribution
-If you want to contribute to the project, please create a pull request with a description of the changes made. All suggestions for improvements are welcome!
+* After launching the application, configure **paths to folders** via the **Settings** menu.
+* Use the **left sidebar** to navigate through different functionalities.
 
-## License
-This project is licensed under the MIT License.
+## 🤝 Contribution
+Welcome contributions! 🚀
+To contribute:
+
+1. **Fork** the repository.
+2. **Create a new branch** for your feature (```git checkout -b feature-name```).
+3. **Commit your changes** (```git commit -m "Added new feature"```).
+4. **Push to GitHub** (```git push origin feature-name```).
+5. **Submit a Pull Request** with a brief description.
+
+# Image Sources
+The images used in this project were obtained from open and free resources. Unfortunately, the original source links are unavailable. If you recognize your work and would like attribution, please contact.
+
+## 📜 License
+This project is licensed under the **MIT License**.

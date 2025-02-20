@@ -1,0 +1,22 @@
+[{
+    "developerMode": true,
+    "driverSettings": {
+        "path": "",
+        "url": ""
+    },
+    "language": "EN",
+    "theme": "dark",
+    "id": 1,
+    "seleniumSettings": {
+        "pathJar": "",
+        "pathExe": ""
+    },
+    "imageSettings": {
+        "path": "",
+        "resizeOptions": {
+            "keepOriginalSize": false,
+            "width": 300,
+            "height": 300
+        }
+    }
+}]
